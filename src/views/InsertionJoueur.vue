@@ -1,24 +1,28 @@
 <script>
 import SideBar from '@/components/SideBar.vue';
 import { ref } from 'vue';
+import { createJoueur } from '@/services/JoueurService';
+
 export default {
   name: 'FormulaireJoueur',
   components: { SideBar},
   setup() {
     const joueur = ref({
+      idclubClub: { idclub: 1 },
+      idpostePoste: { idposte: 1 },
+      idstatutjoueurStatutjoueur: { idstatutjoueur: 1 },
+      idpiedfortPiedfort: { idpiedfort: 1 },
       nom: '',
       prenom: '',
-      dateNaissance: '',
-      age: null,
-      adresse: '',
-      contact: '',
-      email: ''
+      datenaissance: '',
+      dateinscription: new Date().toISOString().slice(0, 10)
     });
 
+
     const calculerAge = () => {
-      if (joueur.value.dateNaissance) {
+      if (joueur.value.datenaissance) {
         const today = new Date();
-        const birthDate = new Date(joueur.value.dateNaissance);
+        const birthDate = new Date(joueur.value.datenaissance);
         let age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
         
@@ -32,22 +36,29 @@ export default {
       }
     };
 
-    const submitForm = () => {
-      console.log('Joueur à enregistrer :', joueur.value);
-      // Ici vous ajouteriez l'appel API pour enregistrer le joueur
-      alert('Joueur enregistré avec succès !');
-      resetForm();
+    const submitForm = async () => {
+      try {
+        const result = await createJoueur(joueur.value);
+        alert('Joueur enregistré avec succès !');
+        console.log('Réponse API :', result);
+        resetForm();
+      } catch (error) {
+        alert('Erreur lors de l’enregistrement du joueur.');
+      }
     };
 
     const resetForm = () => {
       joueur.value = {
         nom: '',
         prenom: '',
-        dateNaissance: '',
+        datenaissance: '',
         age: null,
         adresse: '',
         contact: '',
-        email: ''
+        email: '',
+        idclubClub: { idclub: 1 },      
+        idpostePoste: { idposte: 1 },
+        idpiedfortPiedfort: { idpiedfort: 1 }
       };
     };
 
@@ -99,7 +110,7 @@ export default {
           <input 
             type="date" 
             id="naissance" 
-            v-model="joueur.dateNaissance" 
+            v-model="joueur.datenaissance" 
             required
             @change="calculerAge"
           >

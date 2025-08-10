@@ -1,19 +1,32 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { getAllJoueurs } from '@/services/JoueurService';
+import { getAllPostes } from '@/services/PosteService';
+import { Joueur } from '@/models/joueur';
+import { Poste } from '@/models/poste';
 
-const postes = ref(['TOUS', 'GARDIENS', 'DEFENSEURS', 'MILLIEUX', 'ATTAQUANTS']);
+const postes = ref(['TOUS']);
+const joueurs = ref([]);
 const currentFilter = ref('TOUS');
 
-const joueurs = ref([
-  { id: 1, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 2, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 3, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 4, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 5, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 6, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 7, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-  { id: 8, nom: 'RABEKOTO AINA', poste: 'DEFENSE', dateNaissance: '09/04/1987', nationalite: 'Malgache', numero: 10 },
-]);
+const loadData = async () => {
+  try {
+    // Fetch postes and prepend 'TOUS'
+    const postesResp = await getAllPostes();
+    const postesList = Poste.listFromApiData(postesResp);
+    postes.value = ['TOUS', ...postesList.map(p => p.libelle.toUpperCase())];
+
+    // Fetch joueurs
+    const joueursResp = await getAllJoueurs();
+    joueurs.value = Joueur.listFromApiData(joueursResp);
+  } catch (err) {
+    console.error('Erreur chargement données:', err);
+  }
+};
+
+onMounted(() => {
+  loadData();
+});
 
 const filteredJoueurs = computed(() => {
   if (currentFilter.value === 'TOUS') return joueurs.value;
@@ -69,6 +82,7 @@ const filterByPoste = (poste) => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .joueurs-container {
