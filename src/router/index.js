@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ListeJoueurs from '@/views/ListeJoueur.vue'
 import InsertionJoueur from '@/views/InsertionJoueur.vue'
 import SeanceEntrenementMatch from '@/views/SeanceEntrenementMatch.vue'
+import ListePresence from '@/views/ListePresence.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/seance',
     name: 'SeanceEntrenementMatch',
     component: SeanceEntrenementMatch
+  },
+  {
+    path:'/presence',
+    name:'ListePresence',
+    component:ListePresence
   }
 ]
 
