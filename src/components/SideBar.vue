@@ -25,41 +25,46 @@
       </router-link>
 
       <router-link 
-        to="/statistiques" 
+        to="/seance" 
         class="nav-item"
         active-class="active"
       >
-       
+        <i class="fas fa-calendar-alt"></i>
+        <span>Séance</span>
       </router-link>
 
       <router-link 
-        to="/parametres" 
+        to="/presence" 
         class="nav-item"
         active-class="active"
       >
-       
+        <i class="fas fa-clipboard-check"></i>
+        <span>Présence</span>
+      </router-link>
+
+      <router-link 
+        to="/match" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-futbol"></i>
+        <span>Match</span>
+      </router-link>
+
+      <router-link 
+        to="/composition" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-chess"></i>
+        <span>Composition</span>
       </router-link>
     </nav>
-
-    <div class="sidebar-footer">
-      <div class="user-profile">
-        <!-- <img 
-          src="https://randomuser.me/api/portraits/men/32.jpg" 
-          alt="Admin"
-          class="profile-img"
-        > -->
-        <!-- <div class="profile-info">
-          <span class="username">Admin</span>
-          <span class="role">Administrateur</span>
-        </div> -->
-      </div>
-    </div>
   </aside>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-const isCollapsed = ref(false);
+// Aucune logique nécessaire pour le moment
 </script>
 
 <style scoped>
@@ -70,7 +75,6 @@ const isCollapsed = ref(false);
   color: white;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
   position: fixed;
   left: 0;
   top: 0;
@@ -94,7 +98,6 @@ const isCollapsed = ref(false);
 .nav-menu {
   flex: 1;
   padding: 20px 0;
-  overflow-y: auto;
 }
 
 .nav-item {
@@ -103,7 +106,6 @@ const isCollapsed = ref(false);
   padding: 12px 20px;
   color: #b3b3b3;
   text-decoration: none;
-  transition: all 0.3s;
 }
 
 .nav-item i {
@@ -123,68 +125,13 @@ const isCollapsed = ref(false);
   color: white;
 }
 
-.sidebar-footer {
-  padding: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-}
-
-.profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-  object-fit: cover;
-}
-
-.profile-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.username {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.role {
-  font-size: 0.8rem;
-  color: #b3b3b3;
-}
-
-/* Version réduite */
-.sidebar.collapsed {
-  width: 70px;
-}
-
-.sidebar.collapsed .logo-container h2,
-.sidebar.collapsed .nav-item span,
-.sidebar.collapsed .profile-info {
-  display: none;
-}
-
-.sidebar.collapsed .nav-item {
-  justify-content: center;
-  padding: 15px 0;
-}
-
-.sidebar.collapsed .nav-item i {
-  margin-right: 0;
-  font-size: 1.3rem;
-}
-
 @media (max-width: 768px) {
   .sidebar {
     width: 70px;
   }
   
   .logo-container h2,
-  .nav-item span,
-  .profile-info {
+  .nav-item span {
     display: none;
   }
   
