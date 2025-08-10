@@ -16,12 +16,12 @@
       </router-link>
 
       <router-link 
-        to="/ajouter" 
+        to="/insertion" 
         class="nav-item"
         active-class="active"
       >
         <i class="fas fa-user-plus"></i>
-        <span>Ajouter un Joueur</span>
+        <span>Insertion Joueur</span>
       </router-link>
 
       <router-link 
@@ -29,8 +29,7 @@
         class="nav-item"
         active-class="active"
       >
-        <i class="fas fa-chart-bar"></i>
-        <span>Statistiques</span>
+       
       </router-link>
 
       <router-link 
@@ -38,22 +37,21 @@
         class="nav-item"
         active-class="active"
       >
-        <i class="fas fa-cog"></i>
-        <span>Paramètres</span>
+       
       </router-link>
     </nav>
 
     <div class="sidebar-footer">
       <div class="user-profile">
-        <img 
+        <!-- <img 
           src="https://randomuser.me/api/portraits/men/32.jpg" 
           alt="Admin"
           class="profile-img"
-        >
-        <div class="profile-info">
+        > -->
+        <!-- <div class="profile-info">
           <span class="username">Admin</span>
           <span class="role">Administrateur</span>
-        </div>
+        </div> -->
       </div>
     </div>
   </aside>
