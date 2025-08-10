@@ -4,6 +4,7 @@ import ListeJoueurs from '@/views/ListeJoueur.vue'
 import InsertionJoueur from '@/views/InsertionJoueur.vue'
 import SeanceEntrenementMatch from '@/views/SeanceEntrenementMatch.vue'
 import ListePresence from '@/views/ListePresence.vue'
+import ListeMatch from '@/views/ListeMatch.vue'
 
 const routes = [
   {
@@ -18,14 +19,20 @@ const routes = [
   },
   {
     path: '/seance',
-    name: 'SeanceEntrenementMatch',
+    name: 'seanceEntrenementMatch',
     component: SeanceEntrenementMatch
   },
   {
     path:'/presence',
     name:'ListePresence',
     component:ListePresence
+  },
+  {
+    path:'/match',
+    name:'listeMatch',
+    component:ListeMatch
   }
+
 ]
 
 const router = createRouter({
