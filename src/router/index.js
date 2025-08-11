@@ -9,6 +9,7 @@ import ListeMatch from '@/views/ListeMatch.vue'
 import ListeComposition from '@/views/ListeComposition.vue'
 import InsertionPresence from '@/views/InsertionPresence.vue'
 import InsertionMatch from '@/views/InsertionMatch.vue'
+import InsertionComposition from '@/views/InsertionComposition.vue'
 
 const routes = [
   {
@@ -17,9 +18,14 @@ const routes = [
     component: ListeJoueurs
   },
   {
-    path: '/insertion',
-    name: 'insertion',
+    path: '/insertion-joueur',
+    name: 'insertionJoueur',
     component: InsertionJoueur
+  },
+  {
+    path: '/insertion-composition',
+    name: 'insertionComposition',
+    component: InsertionComposition
   },
   {
     path: '/liste-seance',
@@ -55,7 +61,7 @@ const routes = [
     path: '/composition',
     name:'listeComposition',
     component:ListeComposition
-  }
+  },
 ]
 
 const router = createRouter({

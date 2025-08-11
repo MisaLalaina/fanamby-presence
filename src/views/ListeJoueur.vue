@@ -59,6 +59,7 @@ const filterByPoste = (poste) => {
           :key="joueur.id" 
           class="joueur-card"
         >
+          <img src="https://placehold.co/150x100" alt="Avatar" class="joueur-avatar">
           <div class="joueur-numero">{{ joueur.numero }}</div>
           <div class="joueur-nom">{{ joueur.nom }}</div>
           <div class="joueur-poste">{{ joueur.poste }}</div>

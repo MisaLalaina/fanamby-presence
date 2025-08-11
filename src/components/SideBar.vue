@@ -16,7 +16,7 @@
       </router-link>
 
       <router-link 
-        to="/insertion" 
+        to="/insertion-joueur" 
         class="nav-item"
         active-class="active"
       >
@@ -84,6 +84,14 @@
       >
         <i class="fas fa-chess"></i>
         <span>Liste Composition</span>
+      </router-link>
+      <router-link 
+        to="/insertion-composition" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-chess"></i>
+        <span>Insertion Composition</span>
       </router-link>
       <hr>
     </nav>
