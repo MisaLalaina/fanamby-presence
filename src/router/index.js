@@ -2,10 +2,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ListeJoueurs from '@/views/ListeJoueur.vue'
 import InsertionJoueur from '@/views/InsertionJoueur.vue'
-import SeanceEntrenementMatch from '@/views/SeanceEntrenementMatch.vue'
+import ListeSeance from '@/views/ListeSeance.vue'
+import InsertionSeance from '@/views/InsertionSeance.vue'
 import ListePresence from '@/views/ListePresence.vue'
 import ListeMatch from '@/views/ListeMatch.vue'
 import ListeComposition from '@/views/ListeComposition.vue'
+import InsertionPresence from '@/views/InsertionPresence.vue'
+import InsertionMatch from '@/views/InsertionMatch.vue'
+import InsertionComposition from '@/views/InsertionComposition.vue'
 
 const routes = [
   {
@@ -14,14 +18,24 @@ const routes = [
     component: ListeJoueurs
   },
   {
-    path: '/insertion',
-    name: 'insertion',
+    path: '/insertion-joueur',
+    name: 'insertionJoueur',
     component: InsertionJoueur
   },
   {
-    path: '/seance',
-    name: 'seanceEntrenementMatch',
-    component: SeanceEntrenementMatch
+    path: '/insertion-composition',
+    name: 'insertionComposition',
+    component: InsertionComposition
+  },
+  {
+    path: '/liste-seance',
+    name: 'listeSeance',
+    component: ListeSeance
+  },
+  {
+    path: '/insertion-seance',
+    name: 'insertionSeance',
+    component: InsertionSeance
   },
   {
     path:'/presence',
@@ -29,14 +43,25 @@ const routes = [
     component:ListePresence
   },
   {
+    path:'/insertion-presence',
+    name:'InsertionPresence',
+    component:InsertionPresence
+  },
+  {
     path:'/match',
     name:'listeMatch',
     component:ListeMatch
   },
-  {path: '/composition',
-  name:'listeComposition',
-  component:ListeComposition
-  }
+  {
+    path:'/insertion-match',
+    name:'InsertionMatch',
+    component:InsertionMatch
+  },
+  {
+    path: '/composition',
+    name:'listeComposition',
+    component:ListeComposition
+  },
 ]
 
 const router = createRouter({
