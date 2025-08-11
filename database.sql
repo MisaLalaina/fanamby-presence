@@ -247,7 +247,6 @@ CREATE TABLE MatchFoot (
     scoreAdversaire INT CHECK (scoreAdversaire >= 0),
     tempsAdditionnel1 INT DEFAULT 0,
     tempsAdditionnel2 INT DEFAULT 0,
-    public INT,
     incidents TEXT,
     observations TEXT,
     FOREIGN KEY (idSeance) REFERENCES Seance(idSeance),

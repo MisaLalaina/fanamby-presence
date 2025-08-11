@@ -7,6 +7,8 @@ import InsertionSeance from '@/views/InsertionSeance.vue'
 import ListePresence from '@/views/ListePresence.vue'
 import ListeMatch from '@/views/ListeMatch.vue'
 import ListeComposition from '@/views/ListeComposition.vue'
+import InsertionPresence from '@/views/InsertionPresence.vue'
+import InsertionMatch from '@/views/InsertionMatch.vue'
 
 const routes = [
   {
@@ -35,13 +37,24 @@ const routes = [
     component:ListePresence
   },
   {
+    path:'/insertion-presence',
+    name:'InsertionPresence',
+    component:InsertionPresence
+  },
+  {
     path:'/match',
     name:'listeMatch',
     component:ListeMatch
   },
-  {path: '/composition',
-  name:'listeComposition',
-  component:ListeComposition
+  {
+    path:'/insertion-match',
+    name:'InsertionMatch',
+    component:InsertionMatch
+  },
+  {
+    path: '/composition',
+    name:'listeComposition',
+    component:ListeComposition
   }
 ]
 
