@@ -17,6 +17,7 @@ export class Joueur {
         : 'Inconnue';
       this.nationalite = nationalite || 'Inconnue';
       this.numero = numeromaillot || '-';
+      
     }
   
     static fromApiData(data) {

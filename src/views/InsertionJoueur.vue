@@ -5,19 +5,60 @@ import { createJoueur } from '@/services/JoueurService';
 
 export default {
   name: 'FormulaireJoueur',
-  components: { SideBar},
+  components: { SideBar },
   setup() {
     const joueur = ref({
-      idclubClub: { idclub: 1 },
-      idpostePoste: { idposte: 1 },
-      idstatutjoueurStatutjoueur: { idstatutjoueur: 1 },
-      idpiedfortPiedfort: { idpiedfort: 1 },
+      idclubClub: { 
+        idclub: 1,
+        nomclub: "Fanamby Madagascar",
+        ville: "Antananarivo",
+        datecreation: "2020-05-15",
+        couleurs: "Bleu et Blanc",
+        logo: "",
+        email: "contact@fanamby-madagascar.mg",
+        motdepasse: "",
+        telephone: "+261 34 12 345 67",
+        adresse: "Lot II M 47 Bis Ambatobe",
+        president: "Jean Rakotomalala",
+        datefondation: 2020,
+        stadeprincipal: "Stade Municipal de Mahamasina",
+        siteweb: ""
+      },
+      idpostePoste: { 
+        idposte: 1,
+        libelle: "Attaquant",
+        description: "Joueur offensif" 
+      },
+      idstatutjoueurStatutjoueur: { 
+        idstatutjoueur: 1,
+        libelle: "Actif",
+        peutjouer: true 
+      },
+      idpiedfortPiedfort: { 
+        idpiedfort: 1,
+        libelle: "Droit" 
+      },
       nom: '',
       prenom: '',
       datenaissance: '',
-      dateinscription: new Date().toISOString().slice(0, 10)
+      lieunaissance: 'Antananarivo',
+      nationalite: 'Malagasy',
+      taille: 0,
+      poids: 0,
+      photo: '',
+      numeromaillot: 0,
+      telephone: '',
+      email: '',
+      nompere: '',
+      nommere: '',
+      telparent: '',
+      certificatmedical: '',
+      datevaliditecertificat: '',
+      numerolicence: '',
+      dateinscription: new Date().toISOString().slice(0, 10),
+      adresse: '',
+      contact: ''
     });
-
 
     const calculerAge = () => {
       if (joueur.value.datenaissance) {
@@ -38,17 +79,22 @@ export default {
 
     const submitForm = async () => {
       try {
+        // Map the contact field to telephone
+        joueur.value.telephone = joueur.value.contact;
+        
         const result = await createJoueur(joueur.value);
         alert('Joueur enregistré avec succès !');
         console.log('Réponse API :', result);
         resetForm();
       } catch (error) {
-        alert('Erreur lors de l’enregistrement du joueur.');
+        console.error('Erreur API:', error);
+        alert('Erreur lors de l`enregistrement du joueur: ' + (error.response?.data?.message || error.message));
       }
     };
 
     const resetForm = () => {
       joueur.value = {
+        ...joueur.value, // Keep the nested objects
         nom: '',
         prenom: '',
         datenaissance: '',
@@ -56,9 +102,20 @@ export default {
         adresse: '',
         contact: '',
         email: '',
-        idclubClub: { idclub: 1 },      
-        idpostePoste: { idposte: 1 },
-        idpiedfortPiedfort: { idpiedfort: 1 }
+        lieunaissance: 'Antananarivo',
+        nationalite: 'Malagasy',
+        taille: 0,
+        poids: 0,
+        photo: '',
+        numeromaillot: 0,
+        telephone: '',
+        nompere: '',
+        nommere: '',
+        telparent: '',
+        certificatmedical: '',
+        datevaliditecertificat: '',
+        numerolicence: '',
+        dateinscription: new Date().toISOString().slice(0, 10)
       };
     };
 
