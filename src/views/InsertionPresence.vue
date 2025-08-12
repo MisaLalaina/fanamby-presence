@@ -1,14 +1,15 @@
 <script setup>
   import { ref, onMounted } from 'vue';
+  import { getAllPresenceStatus } from '@/services/PresenceStatusService';
+  import SeanceService from '@/services/SeanceService';
+  import { Seance } from '@/models/seance';
+  import { getAllJoueurs } from '@/services/JoueurService';
+  import { Joueur } from '@/models/joueur';
+  import { createPresence } from '@/services/PresenceService.js';
 
   const sessions = ref([]);
   const players = ref([]);
-  const presenceStatuses = ref([
-    { idStatutPresence: 1, libelle: 'Present', code: 'P' },
-    { idStatutPresence: 2, libelle: 'Absent', code: 'A' },
-    { idStatutPresence: 3, libelle: 'Retard', code: 'R' },
-    { idStatutPresence: 4, libelle: 'Excusé', code: 'E' }
-  ]);
+  const presenceStatuses = ref([]);
 
   const form = ref({
     idSeance: '',
@@ -20,30 +21,33 @@
   const successMessage = ref('');
 
   const fetchSessions = async () => {
-    sessions.value = [
-      { idSeance: 1, type: 'Entrainement', dateSeance: '2023-10-15', heureDebut: '08:00' },
-      { idSeance: 2, type: 'Match amical', dateSeance: '2023-10-20', heureDebut: '15:00' }
-    ];
+    const response = await SeanceService.getAllSeances();
+    sessions.value = Seance.formatSeances(response);
+  };
+
+  const loadPresenceStatuses = async () => {
+    const response = await getAllPresenceStatus();
+    presenceStatuses.value = response.data.content;
   };
 
   const fetchPlayers = async () => {
-    players.value = [
-      { idJoueur: 1, nom: 'Dupont', prenom: 'Jean', poste: 'Attaquant' },
-      { idJoueur: 2, nom: 'Martin', prenom: 'Pierre', poste: 'Milieu' },
-      { idJoueur: 3, nom: 'Bernard', prenom: 'Luc', poste: 'Défenseur' },
-      { idJoueur: 4, nom: 'Petit', prenom: 'Antoine', poste: 'Gardien' }
-    ];
+    const joueursResp = await getAllJoueurs();
+    players.value = Joueur.listFromApiData(joueursResp);
   };
 
   const formatSessionLabel = (session) => {
     return `${session.type} - ${session.dateSeance} (${session.heureDebut})`;
   };
 
-  const submitForm = () => {
-    // Ici, vous pouvez envoyer les données à une API ou les stocker localement
-    successMessage.value = "Présence ajoutée avec succès !";
-    resetForm();
-    setTimeout(() => { successMessage.value = ''; }, 2500);
+  const submitForm = async () => {
+    try {
+      await createPresence(form.value);
+      successMessage.value = "Présence ajoutée avec succès !";
+      resetForm();
+      setTimeout(() => { successMessage.value = ''; }, 2500);
+    } catch (error) {
+      alert("Erreur lors de l'ajout de la présence : " + error.message);
+    }
   };
 
   const resetForm = () => {
@@ -58,6 +62,7 @@
   onMounted(() => {
     fetchSessions();
     fetchPlayers();
+    loadPresenceStatuses();
   });
 </script>
 
@@ -87,7 +92,7 @@
         <label>Statut :</label>
         <select v-model="form.idStatutPresence" required>
           <option value="">-- Choisir un statut --</option>
-          <option v-for="status in presenceStatuses" :key="status.idStatutPresence" :value="status.idStatutPresence">
+          <option v-for="status in presenceStatuses" :key="status.idstatutpresence" :value="status.idstatutpresence">
             {{ status.libelle }}
           </option>
         </select>

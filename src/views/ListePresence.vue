@@ -46,7 +46,7 @@ const fetchPlayers = async () => {
     console.log('Mise à jour présence:', {
       idJoueur: player.idJoueur,
       idSeance: selectedSession.value,
-      idStatutPresence: player.presenceStatus,
+      idstatutpresence: player.presenceStatus,
       commentaire: player.commentaire
     });
   };
@@ -119,7 +119,7 @@ const fetchPlayers = async () => {
             <td>{{ player.poste }}</td>
             <td>
               <select v-model="player.presenceStatus" @change="updatePresence(player)">
-                <option v-for="status in presenceStatuses" :key="status.idStatutPresence" :value="status.idStatutPresence">
+                <option v-for="status in presenceStatuses" :key="status.idstatutpresence" :value="status.idstatutpresence">
                   {{ status.libelle }}
                 </option>
               </select>
