@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { Seance } from '@/models/seance';
+import SeanceService from '@/services/SeanceService';
+import { createMatch } from '@/services/MatchFootService.js';
 
 const sessions = ref([]);
 const form = ref({
@@ -15,24 +18,8 @@ const form = ref({
 const successMessage = ref('');
 
 const fetchSessions = async () => {
-  sessions.value = [
-    {
-      idSeance: 1,
-      dateSeance: '2023-10-15',
-      heureDebut: '08:00',
-      heureFin: '10:00',
-      lieu: 'Terrain principal',
-      objectif: 'Amélioration des passes et du jeu collectif'
-    },
-    {
-      idSeance: 2,
-      dateSeance: '2023-10-20',
-      heureDebut: '15:00',
-      heureFin: '17:00',
-      lieu: 'Stade municipal',
-      objectif: 'Tester de nouvelles combinaisons offensives'
-    }
-  ];
+  const seancesData = await SeanceService.getAllSeances();
+  sessions.value = Seance.formatSeances(seancesData);
 };
 
 const selectedSeance = computed(() => {
@@ -48,11 +35,16 @@ const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString('fr-FR', options);
 };
 
-const submitForm = () => {
-  // Ici, vous pouvez envoyer les données à une API ou les stocker localement
-  successMessage.value = "Match ajouté avec succès !";
-  resetForm();
-  setTimeout(() => { successMessage.value = ''; }, 2500);
+
+const submitForm = async () => {
+  try {
+    const createdMatch = await createMatch(form.value);
+    successMessage.value = "Match ajouté avec succès !";
+    resetForm();
+    setTimeout(() => { successMessage.value = ''; }, 2500);
+  } catch (error) {
+    alert("Erreur lors de l'ajout du match : " + error.message);
+  }
 };
 
 const resetForm = () => {

@@ -14,8 +14,6 @@
   const filterDate = ref('');
   const isLoading = ref(false);
   const error = ref(null);
-  const clubId = ref(1); 
-  const statutId = ref(1); 
 
   // Form data
   const currentSeance = ref(Seance.getDefaultSeance());

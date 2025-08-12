@@ -29,3 +29,46 @@ export async function getAllMatches() {
     throw error;
   }
 }
+
+
+export async function createMatch(matchData) {
+  try {
+    const payload = {
+      idseanceSeance: {
+        idseance: matchData.idSeance,
+      },
+      competition: matchData.competition || '',
+      adversaire: matchData.adversaire || '',
+      domicile: Boolean(matchData.domicile),
+      scoreequipe: matchData.scoreEquipe || 0,
+      scoreadversaire: matchData.scoreAdversaire || 0,
+      tempsadditionnel1: 0,
+      tempsadditionnel2: 0,
+      incidents: matchData.incidents || '',
+      observations: matchData.observations || '',
+    };
+
+    const response = await fetch(`${BASE_URL}/matchfoots`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const json = await response.json();
+
+    if (json.returnCode !== 1) {
+      throw new Error(`API error: ${json.message || 'Unknown error'}`);
+    }
+    return MatchFoot.fromApi(json.data);
+
+  } catch (error) {
+    console.error('Error creating match:', error);
+    throw error;
+  }
+}
