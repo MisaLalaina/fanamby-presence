@@ -40,3 +40,42 @@ export async function createPresence(presenceData) {
     throw error;
   }
 }
+
+export async function getPresencesByIdSeance(idSeance) {
+  try {
+    const response = await fetch(`${BASE_URL}/presences`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const json = await response.json();
+    if (json.returnCode !== 1) {
+      throw new Error(`API error: ${json.message || 'Unknown error'}`);
+    }
+
+    // Extract all presences
+    const allPresences = json.data.content;
+
+    // Filter by idSeance
+    const filtered = allPresences.filter(p => p.idseanceSeance.idseance === idSeance);
+
+    // Map to optimized form for UI display
+    const simplified = filtered.map(p => ({
+      idPresence: p.idpresence,
+      idJoueur: p.idjoueurJoueur.idjoueur,
+      nom: p.idjoueurJoueur.nom,
+      prenom: p.idjoueurJoueur.prenom,
+      poste: p.idjoueurJoueur.idpostePoste?.libelle || '',
+      presenceStatus: p.idstatutpresenceStatutpresence?.idstatutpresence || null,
+      commentaire: p.commentaires || '',
+      heureArrivee: p.heurearrivee || null,
+      motifAbsence: p.motifabsence || null,
+      signature: p.signature || null,
+    }));
+
+    return simplified;
+
+  } catch (error) {
+    console.error('Error fetching presences:', error);
+    throw error;
+  }
+}

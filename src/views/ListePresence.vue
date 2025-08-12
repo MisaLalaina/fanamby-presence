@@ -1,6 +1,7 @@
 <script setup>
   import { ref, onMounted } from 'vue';
   import { getAllPresenceStatus } from '@/services/PresenceStatusService';
+  import { getPresencesByIdSeance } from '@/services/PresenceService.js';
   import SeanceService from '@/services/SeanceService';
   import { Seance } from '@/models/seance';
 
@@ -24,22 +25,18 @@
     sessions.value = Seance.formatSeances(response);
   };
 
-  // Simulated API fetch for players
-const fetchPlayers = async () => {
-    players.value = [
-      { idJoueur: 1, nom: 'Dupont', prenom: 'Jean', poste: 'Attaquant', presenceStatus: 1, commentaire: '' },
-      { idJoueur: 2, nom: 'Martin', prenom: 'Pierre', poste: 'Milieu', presenceStatus: 1, commentaire: '' },
-      { idJoueur: 3, nom: 'Bernard', prenom: 'Luc', poste: 'Défenseur', presenceStatus: 2, commentaire: 'Blessé' },
-      { idJoueur: 4, nom: 'Petit', prenom: 'Antoine', poste: 'Gardien', presenceStatus: 3, commentaire: 'Retard 15min' }
-    ];
-  };
-
   // Load presence data for the selected session
   const loadPresences = async () => {
     if (!selectedSession.value) return;
-    currentSession.value = sessions.value.find(s => s.idSeance == selectedSession.value) || {};
-    await fetchPlayers();
+    currentSession.value = sessions.value.find(s => s.idSeance === selectedSession.value) || {};
+    try {
+      players.value = await getPresencesByIdSeance(selectedSession.value);
+    } catch (error) {
+      alert("Erreur lors du chargement des présences : " + error.message);
+      players.value = [];
+    }
   };
+
 
   // Simulate updating presence status in database
   const updatePresence = async (player) => {
