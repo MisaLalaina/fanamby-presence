@@ -1,6 +1,5 @@
 import { BASE_URL } from './config';
 
-
 export async function getAllCompositions() {
     const res = await fetch(`${BASE_URL}/compositions`);
     if (!res.ok) throw new Error('Erreur récupération compositions');
@@ -9,13 +8,10 @@ export async function getAllCompositions() {
 }
 
 export async function getAllCompositionsByMatchId(matchId) {
-    const res = await fetch(`${BASE_URL}/compositions/${matchId}`);
-    if (!res.ok) throw new Error('Erreur récupération compositions via matchID');
-  
-    const { data } = await res.json();
-    const compositionsArray = Array.isArray(data) ? data : [data];
-  
-    return compositionsArray.map(c => ({
+  const compositions = await getAllCompositions();
+  return compositions
+    .filter(c => c.idmatchMatchfoot?.idmatch === matchId)
+    .map(c => ({
       idComposition: c.idcomposition,
       idMatch: c.idmatchMatchfoot?.idmatch || null,
       idJoueur: c.idjoueurJoueur?.idjoueur || null,
@@ -41,6 +37,36 @@ export async function getAllStatutCompositions() {
       idStatutComposition: s.idstatutcomposition,
       libelle: s.libelle
     }));
+}
+
+export async function createComposition(form) {
+  const body = {
+    idmatchMatchfoot: {
+      idmatch: form.idMatch
+    },
+    idjoueurJoueur: {
+      idjoueur: form.idJoueur
+    },
+    idstatutcompositionStatutcomposition: {
+      idstatutcomposition: form.idStatutComposition
+    },
+    numeromaillot: form.numeroMaillot || null,
+    position: form.position || null,
+    iscapitaine: !!form.isCapitaine,
+    commentaire: form.commentaire || ''
+  };
+
+  const res = await fetch(`${BASE_URL}/compositions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Erreur création composition: ${errorText}`);
   }
-  
-  
+
+  return await res.json();
+
+}

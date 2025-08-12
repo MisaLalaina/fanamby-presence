@@ -1,15 +1,14 @@
 <script setup>
   import { ref, onMounted } from 'vue';
-
+  import { createComposition, getAllStatutCompositions  } from '@/services/CompositionService';
+  import { getAllJoueurs } from '@/services/JoueurService';
+  import { Joueur } from '@/models/joueur';
+  import { getAllMatches } from '@/services/MatchFootService.js';
+  
   const matches = ref([]);
   const players = ref([]);
-  const playerStatuses = ref([
-    { idStatutComposition: 1, libelle: 'Titulaire' },
-    { idStatutComposition: 2, libelle: 'Remplacant' },
-    { idStatutComposition: 3, libelle: 'Blessé' },
-    { idStatutComposition: 4, libelle: 'Suspendu' },
-    { idStatutComposition: 5, libelle: 'Autre' }
-  ]);
+  const playerStatuses = ref([]);
+  const successMessage = ref('');
 
   const form = ref({
     idMatch: '',
@@ -21,33 +20,36 @@
     commentaire: ''
   });
 
-  const successMessage = ref('');
+
 
   const fetchMatches = async () => {
-    matches.value = [
-      { idMatch: 1, competition: 'Championnat Régional', adversaire: 'FC Olympique', dateMatch: '2023-10-15' },
-      { idMatch: 2, competition: 'Coupe Nationale', adversaire: 'AS Victory', dateMatch: '2023-10-22' }
-    ];
+    matches.value = await getAllMatches();
   };
 
   const fetchPlayers = async () => {
-    players.value = [
-      { idJoueur: 1, nom: 'Dupont', prenom: 'Jean', poste: 'Attaquant' },
-      { idJoueur: 2, nom: 'Martin', prenom: 'Pierre', poste: 'Milieu' },
-      { idJoueur: 3, nom: 'Bernard', prenom: 'Luc', poste: 'Défenseur' },
-      { idJoueur: 4, nom: 'Petit', prenom: 'Antoine', poste: 'Gardien' }
-    ];
+      const joueursResp = await getAllJoueurs();
+      players.value = Joueur.listFromApiData(joueursResp);
   };
+
+  const fetchPlayerStatuses = async () => {
+    playerStatuses.value = await getAllStatutCompositions();
+    
+  }
 
   const formatMatchLabel = (match) => {
     return `${match.competition} vs ${match.adversaire} (${match.dateMatch})`;
   };
 
-  const submitForm = () => {
-    // Ici, vous pouvez envoyer les données à une API ou les stocker localement
-    successMessage.value = "Composition ajoutée avec succès !";
-    resetForm();
-    setTimeout(() => { successMessage.value = ''; }, 2500);
+  const submitForm = async () => {
+    try {
+      await createComposition(form.value);
+      successMessage.value = "Composition ajoutée avec succès !";
+      resetForm();
+      setTimeout(() => { successMessage.value = ''; }, 2500);
+    } catch (error) {
+      console.error(error);
+      successMessage.value = "Erreur lors de l'ajout de la composition";
+    }
   };
 
   const resetForm = () => {
@@ -65,6 +67,7 @@
   onMounted(() => {
     fetchMatches();
     fetchPlayers();
+    fetchPlayerStatuses();
   });
 </script>
 
