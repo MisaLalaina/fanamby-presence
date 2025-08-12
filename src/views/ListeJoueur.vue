@@ -83,7 +83,6 @@ const filterByPoste = (poste) => {
   </div>
 </template>
 
-
 <style scoped>
 .joueurs-container {
   max-width: 1200px;

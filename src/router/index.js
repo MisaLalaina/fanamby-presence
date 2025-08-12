@@ -2,6 +2,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ListeJoueurs from '@/views/ListeJoueur.vue'
 import InsertionJoueur from '@/views/InsertionJoueur.vue'
+import SeanceEntrenementMatch from '@/views/SeanceEntrenementMatch.vue'
+import ListePresence from '@/views/ListePresence.vue'
+import ListeMatch from '@/views/ListeMatch.vue'
+import ListeComposition from '@/views/ListeComposition.vue'
 
 const routes = [
   {
@@ -13,6 +17,25 @@ const routes = [
     path: '/insertion',
     name: 'insertion',
     component: InsertionJoueur
+  },
+  {
+    path: '/seance',
+    name: 'seanceEntrenementMatch',
+    component: SeanceEntrenementMatch
+  },
+  {
+    path:'/presence',
+    name:'ListePresence',
+    component:ListePresence
+  },
+  {
+    path:'/match',
+    name:'listeMatch',
+    component:ListeMatch
+  },
+  {path: '/composition',
+  name:'listeComposition',
+  component:ListeComposition
   }
 ]
 
