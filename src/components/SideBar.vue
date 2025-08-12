@@ -16,49 +16,84 @@
       </router-link>
 
       <router-link 
-        to="/insertion" 
+        to="/insertion-joueur" 
         class="nav-item"
         active-class="active"
       >
         <i class="fas fa-user-plus"></i>
         <span>Insertion Joueur</span>
       </router-link>
+      <hr>
+        <router-link 
+          to="/liste-seance" 
+          class="nav-item"
+          active-class="active"
+        >
+          <i class="fas fa-calendar-check"></i>
+          <span>Liste des Séances</span>
+        </router-link>
 
-      <router-link 
-        to="/seance" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-calendar-alt"></i>
-        <span>Séance</span>
-      </router-link>
-
+        <router-link 
+          to="/insertion-seance" 
+          class="nav-item"
+          active-class="active"
+        >
+          <i class="fas fa-plus-circle"></i>
+          <span>Insertion Séance</span>
+        </router-link>
+<hr>
       <router-link 
         to="/presence" 
         class="nav-item"
         active-class="active"
       >
         <i class="fas fa-clipboard-check"></i>
-        <span>Présence</span>
+        <span>Liste Présence</span>
       </router-link>
 
+      <router-link 
+        to="/insertion-presence" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-clipboard-check"></i>
+        <span>Insertion Présence</span>
+      </router-link>
+      <hr>
       <router-link 
         to="/match" 
         class="nav-item"
         active-class="active"
       >
         <i class="fas fa-futbol"></i>
-        <span>Match</span>
+        <span>Liste Match</span>
       </router-link>
-
+      <router-link 
+        to="/insertion-match" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-futbol"></i>
+        <span>Insertion Match</span>
+      </router-link>
+      <hr>
       <router-link 
         to="/composition" 
         class="nav-item"
         active-class="active"
       >
         <i class="fas fa-chess"></i>
-        <span>Composition</span>
+        <span>Liste Composition</span>
       </router-link>
+      <router-link 
+        to="/insertion-composition" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-chess"></i>
+        <span>Insertion Composition</span>
+      </router-link>
+      <hr>
     </nav>
   </aside>
 </template>

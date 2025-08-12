@@ -78,6 +78,7 @@ const fetchPlayers = async () => {
 </script>
 
 
+
 <template>
   <div class="presence-container">
     <h2>Gestion des Présences</h2>
@@ -140,7 +141,6 @@ const fetchPlayers = async () => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .presence-container {
