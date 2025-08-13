@@ -10,6 +10,8 @@ import ListeComposition from '@/views/ListeComposition.vue'
 import InsertionPresence from '@/views/InsertionPresence.vue'
 import InsertionMatch from '@/views/InsertionMatch.vue'
 import InsertionComposition from '@/views/InsertionComposition.vue'
+import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
+import FeuilleMatch from '@/views/FeuilleMatch.vue'
 
 const routes = [
   {
@@ -62,6 +64,17 @@ const routes = [
     name:'listeComposition',
     component:ListeComposition
   },
+   {
+    path: '/insertion-rapide',
+    name:'insertionRapidePresence',
+    component:InsertionRapidePresence
+  },
+  {
+    path: '/feuille',
+    name:'feuilleMatch',
+    component:FeuilleMatch
+  },
+  
 ]
 
 const router = createRouter({

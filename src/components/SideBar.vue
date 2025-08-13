@@ -59,6 +59,14 @@
         <i class="fas fa-clipboard-check"></i>
         <span>Insertion Présence</span>
       </router-link>
+      <router-link 
+        to="/insertion-rapide" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-clipboard-check"></i>
+        <span>Insertion Rapide Présence</span>
+      </router-link>
       <hr>
       <router-link 
         to="/match" 
