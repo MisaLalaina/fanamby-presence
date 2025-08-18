@@ -70,7 +70,7 @@ const routes = [
     component:InsertionRapidePresence
   },
   {
-    path: '/feuille',
+    path: '/feuille-match',
     name:'feuilleMatch',
     component:FeuilleMatch
   },

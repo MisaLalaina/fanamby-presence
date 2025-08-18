@@ -44,6 +44,7 @@ export async function createPresence(presenceData) {
 export async function getPresencesByIdSeance(idSeance) {
   try {
     const response = await fetch(`${BASE_URL}/presences`);
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -51,6 +52,7 @@ export async function getPresencesByIdSeance(idSeance) {
     if (json.returnCode !== 1) {
       throw new Error(`API error: ${json.message || 'Unknown error'}`);
     }
+    console.log("Données des présences :", json.data);
 
     // Extract all presences
     const allPresences = json.data.content;

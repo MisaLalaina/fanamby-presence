@@ -1,7 +1,11 @@
 <script>
 import SideBar from '@/components/SideBar.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { createJoueur } from '@/services/JoueurService';
+import { getAllPostes } from '@/services/PosteService';
+import { Poste } from '@/models/poste';
+import { getAllPiedsFort } from '@/services/PiedFortService';
+import { PiedFort } from '@/models/piedFort';
 
 export default {
   name: 'FormulaireJoueur',
@@ -15,9 +19,40 @@ export default {
       nom: '',
       prenom: '',
       datenaissance: '',
-      dateinscription: new Date().toISOString().slice(0, 10)
+      dateinscription: new Date().toISOString().slice(0, 10),
+      nationalite: '',
+      taille: '',
+      poids: '',
+      numeroMaillot:'',
+      adresse: '',
+      contact: '',
+      email: ''
     });
 
+    const postes = ref([]);
+    const piedsFort = ref([]);
+
+    const fetchPostes = async () => {
+      try {
+        const data = await getAllPostes();
+        const postesList = Poste.listFromApiData(data);
+
+        postes.value = postesList;
+      } catch (error) {
+        console.error("Erreur lors du chargement des postes :", error);
+      }
+    };
+
+    const fetchPiedsFort = async () => {
+      try {
+        const data = await getAllPiedsFort();
+        const piedsFortList = PiedFort.listFromApiData(data);
+
+        piedsFort.value = piedsFortList;
+      } catch (error) {
+        console.error("Erreur lors du chargement des pieds fort :", error);
+      }
+    };
 
     const calculerAge = () => {
       if (joueur.value.datenaissance) {
@@ -38,6 +73,7 @@ export default {
 
     const submitForm = async () => {
       try {
+        // console.log(joueur.value);
         const result = await createJoueur(joueur.value);
         alert('Joueur enregistré avec succès !');
         console.log('Réponse API :', result);
@@ -46,6 +82,11 @@ export default {
         alert('Erreur lors de l’enregistrement du joueur.');
       }
     };
+
+    onMounted(() => {
+      fetchPostes();
+      fetchPiedsFort();
+    });
 
     const resetForm = () => {
       joueur.value = {
@@ -58,12 +99,14 @@ export default {
         email: '',
         idclubClub: { idclub: 1 },      
         idpostePoste: { idposte: 1 },
-        idpiedfortPiedfort: { idpiedfort: 1 }
+        idpiedfortPiedfort: { idpiedfort: 1 },
       };
     };
 
     return {
       joueur,
+      postes,
+      piedsFort,
       calculerAge,
       submitForm,
       resetForm
@@ -104,6 +147,34 @@ export default {
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="poste">Poste*</label>
+        <select 
+          id="poste" 
+          v-model="joueur.idpostePoste.idposte" 
+          required
+          class="form-control"
+        >
+          <option v-for="poste in postes" :key="poste.idposte" :value="poste.id">
+            {{ poste.libelle }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="piedfort">Pied fort*</label>
+        <select 
+          id="piedfort" 
+          v-model="joueur.idpiedfortPiedfort.idpiedfort" 
+          required
+          class="form-control"
+        >
+          <option v-for="piedfort in piedsFort" :key="piedfort.idpiedfort" :value="piedfort.id">
+            {{ piedfort.libelle }}
+          </option>
+        </select>
+      </div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="naissance">Date de naissance*</label>
@@ -116,7 +187,7 @@ export default {
           >
         </div>
         
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="age">Âge</label>
           <input 
             type="number" 
@@ -125,7 +196,7 @@ export default {
             disabled
             placeholder="Calculé automatiquement"
           >
-        </div>
+        </div> -->
       </div>
 
       <div class="form-group full-width">
@@ -138,6 +209,54 @@ export default {
           placeholder="Entrez l'adresse complète"
         >
       </div>
+      <div class="form-row">
+  <div class="form-group">
+    <label for="nationalite">Nationalité*</label>
+    <input 
+      type="text" 
+      id="nationalite" 
+      v-model="joueur.nationalite" 
+      required
+      placeholder="Ex: Malagasy, Français"
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="numeroMaillot">Numéro de maillot*</label>
+    <input 
+      type="number" 
+      id="numeroMaillot" 
+      v-model="joueur.numeroMaillot" 
+      required
+      placeholder="Ex: 10"
+    >
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-group">
+    <label for="taille">Taille (en cm)*</label>
+    <input 
+      type="number" 
+      id="taille" 
+      v-model="joueur.taille" 
+      required
+      placeholder="Ex: 175"
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="poids">Poids (en kg)*</label>
+    <input 
+      type="number" 
+      id="poids" 
+      v-model="joueur.poids" 
+      required
+      placeholder="Ex: 68"
+    >
+  </div>
+</div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="contact">Téléphone*</label>

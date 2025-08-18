@@ -101,6 +101,16 @@
         <i class="fas fa-chess"></i>
         <span>Insertion Composition</span>
       </router-link>
+
+      <router-link 
+        to="/feuille-match" 
+        class="nav-item"
+        active-class="active"
+      >
+        <i class="fas fa-chess"></i>
+        <span>Feuille de Match</span>
+      </router-link>
+
       <hr>
     </nav>
   </aside>
