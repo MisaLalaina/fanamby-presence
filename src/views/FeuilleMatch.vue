@@ -17,7 +17,7 @@
         <div class="match-info">
           <p>{{ matchData.competition }}</p>
           <p>{{ formatDate(matchData.dateSeance) }} à {{ formatTime(matchData.heureDebut) }}</p>
-          <p>{{ matchData.lieu }}</p>
+          <p v-if="seanceData">{{ seanceData.lieu }}</p>
         </div>
       </div>
       
@@ -28,19 +28,52 @@
       </div>
     </div>
 
-    <!-- Détails du match -->
-    <div class="match-details">
-      <div class="detail-section">
-        <h3>Incidents</h3>
-        <p v-if="matchData.incidents">{{ matchData.incidents }}</p>
-        <p v-else class="no-data">Aucun incident à signaler</p>
+    <!-- Détails de la séance -->
+    <div class="seance-details" v-if="seanceData">
+      <h3>Détails de la séance</h3>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Type :</span>
+          <span class="detail-value">{{ seanceData.typeSeance || 'Non spécifié' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Présences -->
+    <div class="presence-section" v-if="presences.length > 0">
+      <h3>Présences</h3>
+      <div class="presence-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Joueur</th>
+              <!-- <th>Poste</th> -->
+              <!-- <th>Statut</th> -->
+              <th>Heure arrivée</th>
+              <th>Commentaire</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="presence in presences" :key="presence.idPresence">
+              <td>{{ presence.prenom }} {{ presence.nom }}</td>
+              <!-- <td>{{ presence.poste }}</td> -->
+              <!-- <td>
+                <span class="status-badge" :class="presenceStatusClass(presence.idStatutPresence)">
+                  {{ getStatusLabel(presence.idStatutPresence) }}
+                </span>
+              </td> -->
+              <td>{{ presence.heureArrivee ? formatTime(presence.heureArrivee) : '-' }}</td>
+              <td>{{ presence.commentaires || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <!-- Composition de l'équipe -->
     <div class="team-compositions">
       <div class="team-sheet home-team">
-        <h3>Composition: {{ matchData.clubNom }}</h3>
+        <h3>Composition</h3>
         <div class="players-list">
           <div v-for="player in matchData.compositionClub" :key="player.idJoueur" class="player-card">
             <div class="player-number">{{ player.numeroMaillot }}</div>
@@ -56,121 +89,110 @@
 
     <!-- Remplacements -->
     <div class="substitutions-section">
-      <h3>Remplacements</h3>
+      <h3>Remplacents</h3>
       <div class="substitutions-grid">
-        <div class="substitution" v-for="sub in matchData.remplacements" :key="sub.id">
-          <span class="time">{{ sub.minute }}'</span>
-          <div class="substitution-players">
-            <span class="player-in">{{ sub.entrant }}</span>
-            <span class="sub-arrow">⇄</span>
-            <span class="player-out">{{ sub.sortant }}</span>
+        <div v-for="player in matchData.remplacents" :key="player.idJoueur" class="player-card">
+          <div class="player-number">{{ player.numeroMaillot }}</div>
+          <div class="player-info">
+            <div class="player-name">{{ player.prenom }} {{ player.nom }}</div>
+            <div class="player-position">{{ player.poste }}</div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Observations -->
-    <div class="observations-section">
-      <h3>Observations</h3>
-      <p v-if="matchData.observations">{{ matchData.observations }}</p>
-      <p v-else class="no-data">Aucune observation</p>
-    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'FeuilleMatch',
-  data() {
-    return {
-      matchData: {
-        idMatch: 1,
-        clubNom: 'FC Fanamby',
-        clubLogo: null,
-        adversaire: 'AS Adversaire',
-        adversaireLogo: null,
-        competition: 'Championnat Régional',
-        dateSeance: '2023-11-15',
-        heureDebut: '15:00:00',
-        lieu: 'Stade Municipal',
-        scoreEquipe: 2,
-        scoreAdversaire: 1,
-        tempsAdditionnel1: 2,
-        tempsAdditionnel2: 3,
-        public: 350,
-        incidents: "Carton jaune pour le joueur #10 à la 65ème minute",
-        observations: "Match bien arbitré dans l'ensemble",
-        compositionClub: [
-          {
-            idJoueur: 1,
-            numeroMaillot: 1,
-            nom: 'Rakoto',
-            prenom: 'Jean',
-            poste: 'Gardien',
-            isCapitaine: false
-          },
-          {
-            idJoueur: 2,
-            numeroMaillot: 4,
-            nom: 'Rabe',
-            prenom: 'Paul',
-            poste: 'Défenseur',
-            isCapitaine: true
-          },
-          {
-            idJoueur: 3,
-            numeroMaillot: 6,
-            nom: 'Randria',
-            prenom: 'Marc',
-            poste: 'Milieu',
-            isCapitaine: false
-          },
-          {
-            idJoueur: 4,
-            numeroMaillot: 9,
-            nom: 'Rasoa',
-            prenom: 'Pierre',
-            poste: 'Attaquant',
-            isCapitaine: false
-          }
-        ],
-        remplacements: [
-          {
-            minute: 65,
-            sortant: 'Rakoto Jean (#10)',
-            entrant: 'Randria Paul (#22)'
-          }
-        ]
-      }
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { getMatchById } from '@/services/MatchFootService.js';
+import { getAllCompositionsByMatchId } from '@/services/CompositionService.js';
+import { getPresencesByIdSeance } from '@/services/PresenceService.js';
+import seanceService from '@/services/SeanceService.js'
+import TypeSeanceService from '@/services/TypeSeanceService';
+
+const route = useRoute();
+const matchId = route.params.id;
+const matchData = ref({
+  compositionClub: [],
+  remplacents: []
+});
+const seanceData = ref(null);
+const presences = ref([]);
+
+const fetchMatchData = async () => {
+  try {
+    // Récupérer les données du match
+    const match = await getMatchById(matchId);
+    
+    // Récupérer la composition
+    const compositions = await getAllCompositionsByMatchId(match.idMatch);
+    
+    // Transformer les données pour le template
+    matchData.value = {
+      ...match,
+      compositionClub: compositions.filter(c => c.idStatutComposition === 1), // Titulaires
+      remplacents: compositions.filter(c => c.idStatutComposition === 2),
+    };
+
+    if(match.idSeance) {
+      // Récupérer les données de la séance
+      const seance = await seanceService.getSeanceById(match.idSeance);
+      const tps = await TypeSeanceService.getTypeSeanceById(seance.idTypeSeance);
+      seanceData.value = {
+        ...seance,
+        typeSeance: tps.libelle,
+      };
+      
+      // Récupérer les présences
+      const presenceResponse = await getPresencesByIdSeance(match.idSeance);
+      console.log(presenceResponse);
+      
+      presences.value = presenceResponse.map(p => ({
+        ...p,
+        statutPresence: getStatusLabel(p.idStatutPresence)
+      }));
     }
-  },
-  methods: {
-    formatDate(dateString) {
-      if (!dateString) return ''
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-      return new Date(dateString).toLocaleDateString('fr-FR', options)
-    },
-    formatTime(timeString) {
-      if (!timeString) return ''
-      return timeString.substring(0, 5)
-    },
-    fetchMatchData() {
-      // Implémentez l'appel API pour récupérer les données du match
-      // Exemple:
-      // axios.get(`/api/matches/${this.$route.params.id}`)
-      //   .then(response => {
-      //     this.matchData = response.data
-      //   })
-      //   .catch(error => {
-      //     console.error('Erreur lors du chargement du match:', error)
-      //   })
-    }
-  },
-  mounted() {
-    this.fetchMatchData()
+    
+  } catch (error) {
+    console.error('Erreur lors du chargement du match:', error);
   }
-}
+};
+
+const getStatusLabel = (statusId) => {
+  const statusMap = {
+    1: 'Présent',
+    2: 'Absent',
+    3: 'Retard',
+  };
+  return statusMap[statusId] || 'Inconnu';
+};
+
+const presenceStatusClass = (statusId) => {
+  return {
+    'status-present': statusId === 1,
+    'status-absent': statusId === 2,
+    'status-late': statusId === 3
+  };
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return '';
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('fr-FR', options);
+};
+
+const formatTime = (timeString) => {
+  if (!timeString) return '';
+  return timeString.substring(0, 5);
+};
+
+onMounted(() => {
+  fetchMatchData();
+});
 </script>
+
 
 <style scoped>
 .feuille-match-container {

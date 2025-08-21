@@ -114,6 +114,37 @@ export default {
       console.error('Error deleting seance:', error);
       throw error;
     }
-  }
+  },
   
+  async getSeanceById(id) {
+    try {
+      const response = await fetch(`${BASE_URL}/seances/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      if (data.returnCode !== 1) {
+        throw new Error(data.message || 'Error retrieving seance');
+      }
+
+      // Formatage des données de la séance pour une utilisation plus facile
+      const seance = data.data;
+      return {
+        idSeance: seance.idseance,
+        idTypeSeance: seance.idtypeseanceTypeseance?.idtypeseance,
+        clubId: seance.idclubClub?.idclub,
+        dateSeance: seance.dateseance,
+        heureDebut: seance.heuredebut?.substring(0, 5), // Format HH:mm
+        heureFin: seance.heurefin?.substring(0, 5),     // Format HH:mm
+        lieu: seance.lieu,
+        objectif: seance.objectif,
+        bilan: seance.bilan,
+        statutId: seance.idstatutseanceStatutseance?.idstatutseance
+      };
+    } catch (error) {
+      console.error(`Error fetching seance with ID ${id}:`, error);
+      throw error;
+    }
+  }
 };

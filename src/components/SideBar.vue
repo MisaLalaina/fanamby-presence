@@ -1,3 +1,6 @@
+<script setup>
+// Aucune logique nécessaire pour le moment
+</script>
 <template>
   <aside class="sidebar">
     <div class="logo-container">
@@ -116,9 +119,7 @@
   </aside>
 </template>
 
-<script setup>
-// Aucune logique nécessaire pour le moment
-</script>
+
 
 <style scoped>
 .sidebar {

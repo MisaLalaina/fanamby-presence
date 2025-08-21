@@ -9,6 +9,7 @@ export async function getAllCompositions() {
 
 export async function getAllCompositionsByMatchId(matchId) {
   const compositions = await getAllCompositions();
+
   return compositions
     .filter(c => c.idmatchMatchfoot?.idmatch === matchId)
     .map(c => ({

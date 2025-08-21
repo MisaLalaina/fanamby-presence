@@ -52,7 +52,7 @@ onMounted(() => {
 
 <template>
   <div class="seance-insert-container">
-    <h1>Insertion d'une séance</h1>
+    <h1>Insertion d'une séance d'entrainement</h1>
 
     <div v-if="error" class="error-message">{{ error }}</div>
     <div v-if="successMessage" class="success-message">{{ successMessage }}</div>

@@ -12,8 +12,14 @@ import InsertionMatch from '@/views/InsertionMatch.vue'
 import InsertionComposition from '@/views/InsertionComposition.vue'
 import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
+import LoginClub from '@/views/LoginClub.vue'
 
 const routes = [
+   {
+    path:'/login-club',
+    name:'loginClub',
+    component:LoginClub
+  },
   {
     path: '/',
     name: 'liste',
@@ -70,10 +76,11 @@ const routes = [
     component:InsertionRapidePresence
   },
   {
-    path: '/feuille-match',
+    path: '/feuille-match/:id',
     name:'feuilleMatch',
     component:FeuilleMatch
   },
+ 
   
 ]
 

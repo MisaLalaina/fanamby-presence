@@ -149,7 +149,7 @@
             </td>
             <td>{{ match.public ? match.public.toLocaleString() : '-' }}</td>
             <td class="actions">
-              <router-link :to="'/match/details/' + match.idMatch" class="btn-details" title="Détails">
+              <router-link :to="'/feuille-match/' + match.idMatch" class="btn-details" title="Détails">
                 <i class="fas fa-eye"></i>
               </router-link>
               <router-link :to="'/match/modifier/' + match.idMatch" class="btn-edit" title="Modifier">
