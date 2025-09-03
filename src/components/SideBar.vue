@@ -1,28 +1,68 @@
 <script setup>
-// Aucune logique nécessaire pour le moment
+import MyDropdown from './MyDropdown.vue';
 </script>
+
 <template>
   <aside class="sidebar">
     <div class="logo-container">
-      <h2>CLUB FANAMBY</h2>
+      <img 
+        src="@/assets/logo.jpg" alt="Logo" class="sidebar-logo"/>
     </div>
 
     <nav class="nav-menu">
-      <router-link 
-        to="/" 
-        class="nav-item"
-        active-class="active"
-        exact
-      >
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/joueur.svg" alt="Joueurs icon">
+          <span>Joueurs</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Liste Joueurs</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/insertion-joueur" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Insertion Joueur</span>
+            </router-link>
+          </li>
+        </template>
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/seance.svg" alt="Joueurs icon">
+          <span>Seance</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Liste seance</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/insertion-joueur" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Insertion seance</span>
+            </router-link>
+          </li>
+        </template>
+      </MyDropdown>
+      <MyDropdown>
+        
+      </MyDropdown>
+
+
+      <!-- <router-link  to="/" class="nav-item"active-class="active"exact>
         <i class="fas fa-list"></i>
-        <span>Liste des Joueurs</span>
+        <span>Joueurs</span>
       </router-link>
 
       <router-link 
-        to="/insertion-joueur" 
-        class="nav-item"
-        active-class="active"
-      >
+        to="/insertion-joueur" class="nav-item"active-class="active">
         <i class="fas fa-user-plus"></i>
         <span>Insertion Joueur</span>
       </router-link>
@@ -43,8 +83,8 @@
         >
           <i class="fas fa-plus-circle"></i>
           <span>Insertion Séance</span>
-        </router-link>
-<hr>
+        </router-link>  
+      <hr>
       <router-link 
         to="/presence" 
         class="nav-item"
@@ -106,60 +146,64 @@
       </router-link>
 
       <router-link 
-        to="/feuille-match" 
+        to="/dashboard" 
         class="nav-item"
         active-class="active"
       >
-        <i class="fas fa-chess"></i>
-        <span>Feuille de Match</span>
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
       </router-link>
-
-      <hr>
+       -->
     </nav>
   </aside>
 </template>
-
-
 
 <style scoped>
 .sidebar {
   width: 250px;
   height: 100vh;
-  background-color: #2c3e50;
-  color: white;
+  background-color:#174A7F;
   display: flex;
   flex-direction: column;
   position: fixed;
   left: 0;
   top: 0;
   z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  
 }
-
 .logo-container {
-  padding: 20px;
+  padding: 15px;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #174A7F;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+ .sidebar-logo {
+  width: 85px;
+  height: 85px;
+  margin-bottom: 10px;
+  
 }
 
-.logo-container h2 {
-  color: #fff;
-  margin: 0;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+
 
 .nav-menu {
   flex: 1;
   padding: 20px 0;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  color: #b3b3b3;
+  color: #2c3e50;
   text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .nav-item i {
@@ -167,19 +211,36 @@
   font-size: 1.1rem;
   width: 20px;
   text-align: center;
+  color: #2493BF;
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #e6f7ff;
+  color: #2493BF;
+}
+
+.dropdownTitle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* .nav-item.active {
+  background-color: #2493BF;
+  color: white;
+} */
+
+.nav-item.active i {
   color: white;
 }
 
-.nav-item.active {
-  background-color: #3498db;
-  color: white;
-}
+/* hr {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+  margin: 10px 15px;
+} */
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .sidebar {
     width: 70px;
   }
@@ -197,6 +258,6 @@
   .nav-item i {
     margin-right: 0;
     font-size: 1.3rem;
-  }
-}
+  } */
+/* } */
 </style>

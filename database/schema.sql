@@ -17,6 +17,13 @@ CREATE TABLE TypeSeance (
     description VARCHAR(255)
 );
 
+-- Type de Séance
+CREATE TABLE TypeMatch (
+    idTypeMatch SERIAL PRIMARY KEY,
+    libelle VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255)
+);
+
 -- Statut Présence
 CREATE TABLE StatutPresence (
     idStatutPresence SERIAL PRIMARY KEY,
@@ -31,11 +38,6 @@ CREATE TABLE StatutJoueur (
     peutJouer BOOLEAN NOT NULL DEFAULT TRUE
 );
 
--- Niveau Arbitre
-CREATE TABLE NiveauArbitre (
-    idNiveauArbitre SERIAL PRIMARY KEY,
-    libelle VARCHAR(50) NOT NULL UNIQUE
-);
 
 -- Niveau Match
 CREATE TABLE NiveauMatch (
@@ -82,37 +84,6 @@ CREATE TABLE Club (
     stadePrincipal VARCHAR(100),
     siteWeb VARCHAR(255),
     CONSTRAINT chk_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
-);
-
--- Arbitre
-CREATE TABLE Arbitre (
-    idArbitre SERIAL PRIMARY KEY,
-    nom VARCHAR(50) NOT NULL,
-    prenom VARCHAR(50) NOT NULL,
-    dateNaissance DATE,
-    licence VARCHAR(50) UNIQUE,
-    idNiveauArbitre INT NOT NULL,
-    telephone VARCHAR(20),
-    email VARCHAR(100),
-    dateDebutArbitrage DATE,
-    matchesDiriges INT DEFAULT 0,
-    FOREIGN KEY (idNiveauArbitre) REFERENCES NiveauArbitre(idNiveauArbitre),
-    CONSTRAINT unq_arbitre UNIQUE (nom, prenom, dateNaissance)
-);
-
--- Arbitrage
-CREATE TABLE Arbitrage (
-    idArbitrage SERIAL PRIMARY KEY,
-    idArbitrePrincipal INT NOT NULL,
-    idArbitreAssistant1 INT,
-    idArbitreAssistant2 INT,
-    idDelegue INT,
-    dateCertification DATE,
-    idNiveauMatch INT NOT NULL,
-    FOREIGN KEY (idNiveauMatch) REFERENCES NiveauMatch(idNiveauMatch),
-    FOREIGN KEY (idArbitrePrincipal) REFERENCES Arbitre(idArbitre),
-    FOREIGN KEY (idArbitreAssistant1) REFERENCES Arbitre(idArbitre),
-    FOREIGN KEY (idArbitreAssistant2) REFERENCES Arbitre(idArbitre)
 );
 
 -- Joueur
@@ -186,6 +157,7 @@ CREATE TABLE Presence (
 CREATE TABLE MatchFoot (
     idMatch SERIAL PRIMARY KEY,
     idSeance INT NOT NULL,
+    idTypeMatch INT NOT NULL,
     idArbitrage INT,
     competition VARCHAR(100),
     adversaire VARCHAR(100) NOT NULL,
@@ -198,6 +170,7 @@ CREATE TABLE MatchFoot (
     incidents TEXT,
     observations TEXT,
     FOREIGN KEY (idSeance) REFERENCES Seance(idSeance),
+    FOREIGN KEY (idTypeMatch) REFERENCES TypeMatch(idTypeMatch),
     FOREIGN KEY (idArbitrage) REFERENCES Arbitrage(idArbitrage),
     CONSTRAINT chk_temps_additionnel CHECK (tempsAdditionnel1 >= 0 AND tempsAdditionnel2 >= 0)
 );
@@ -217,3 +190,25 @@ CREATE TABLE Composition (
     FOREIGN KEY (idStatutComposition) REFERENCES StatutComposition(idStatutComposition),
     CONSTRAINT unq_composition UNIQUE (idMatch, idJoueur)
 );
+
+-- Index pour améliorer les performances des vues
+CREATE INDEX idx_seance_type_seance ON Seance(idTypeSeance);
+CREATE INDEX idx_seance_date ON Seance(dateSeance);
+CREATE INDEX idx_seance_club ON Seance(idClub);
+CREATE INDEX idx_seance_statut ON Seance(idStatutSeance);
+
+CREATE INDEX idx_presence_seance ON Presence(idSeance);
+CREATE INDEX idx_presence_statut ON Presence(idStatutPresence);
+CREATE INDEX idx_presence_joueur ON Presence(idJoueur);
+
+CREATE INDEX idx_match_seance ON MatchFoot(idSeance);
+CREATE INDEX idx_match_arbitrage ON MatchFoot(idArbitrage);
+
+CREATE INDEX idx_composition_match ON Composition(idMatch);
+CREATE INDEX idx_composition_joueur ON Composition(idJoueur);
+CREATE INDEX idx_composition_statut ON Composition(idStatutComposition);
+
+-- Index pour les jointures fréquentes
+CREATE INDEX idx_type_seance_libelle ON TypeSeance(libelle);
+CREATE INDEX idx_statut_seance_libelle ON StatutSeance(libelle);
+CREATE INDEX idx_statut_presence_code ON StatutPresence(code);

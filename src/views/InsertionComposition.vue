@@ -170,7 +170,7 @@
   gap: 10px;
 }
 .btn-submit {
-  background-color: #2ecc71;
+  background-color: #3498db;
   color: white;
   padding: 8px 15px;
   border: none;

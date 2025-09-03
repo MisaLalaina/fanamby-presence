@@ -73,12 +73,13 @@ export default {
 
     const submitForm = async () => {
       try {
-        // console.log(joueur.value);
+         console.log(joueur.value);
         const result = await createJoueur(joueur.value);
         alert('Joueur enregistré avec succès !');
         console.log('Réponse API :', result);
         resetForm();
       } catch (error) {
+        console.error(error)
         alert('Erreur lors de l’enregistrement du joueur.');
       }
     };
@@ -374,12 +375,12 @@ input:disabled {
 }
 
 .btn-submit {
-  background-color: #3498db;
+  background-color: #2493BF;
   color: white;
 }
 
 .btn-submit:hover {
-  background-color: #2980b9;
+  background-color: #2493BF;
 }
 
 .btn-cancel {

@@ -13,6 +13,7 @@ import InsertionComposition from '@/views/InsertionComposition.vue'
 import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
 import LoginClub from '@/views/LoginClub.vue'
+import Statistique from '@/views/Statistique.vue'
 
 const routes = [
    {
@@ -80,6 +81,11 @@ const routes = [
     name:'feuilleMatch',
     component:FeuilleMatch
   },
+  {
+    path: '/dashboard',
+    name:'statistique',
+    component: Statistique
+  }
  
   
 ]

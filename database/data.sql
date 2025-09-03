@@ -7,16 +7,15 @@ INSERT INTO Poste (libelle, description) VALUES
 
 INSERT INTO TypeSeance (libelle, description) VALUES 
 ('Entrainement', 'Séance d entraînement régulière'),
-('Match amical', 'Match sans enjeu compétitif'),
-('Match officiel', 'Match de championnat ou coupe'),
-('Seance physique', 'Séance axée sur la condition physique'),
-('Seance tactique', 'Séance axée sur la tactique d équipe');
+('Match', 'Match');
+
+INSERT INTO TypeMatch (libelle, description) VALUES
+('Amical', 'Match sans enjeu compétitif'),
+('Officiel', 'Match de championnat ou coupe');
 
 INSERT INTO StatutPresence (libelle, code) VALUES 
 ('Present', 'P'),
-('Absent', 'A'),
-('Retard', 'R'),
-('Excusé', 'E');
+('Absent', 'A');
 
 INSERT INTO StatutJoueur (libelle, peutJouer) VALUES 
 ('Actif', TRUE),
@@ -24,9 +23,6 @@ INSERT INTO StatutJoueur (libelle, peutJouer) VALUES
 ('Suspendu', FALSE),
 ('Inactif', FALSE),
 ('En convalescence', FALSE);
-
-INSERT INTO NiveauArbitre (libelle) VALUES 
-('Federal'), ('Regional'), ('Departemental'), ('Jeune');
 
 INSERT INTO NiveauMatch (libelle) VALUES 
 ('Regional'), ('Departemental'), ('Ligue'), ('National');
