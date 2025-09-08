@@ -14,7 +14,7 @@ import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
 import LoginClub from '@/views/LoginClub.vue'
 import Statistique from '@/views/Statistique.vue'
-// import Dashboard from '@/views/Dashboard.vue'
+import Dashboard from '@/views/Dashboard.vue'
 
 const routes = [
    {
