@@ -23,5 +23,12 @@ export async function getAllJoueurs() {
     const res = await fetch(`${BASE_URL}/joueurs`);
     if (!res.ok) throw new Error('Erreur récupération joueurs');
     const data = await res.json();
+    let page = data.data.page;
+    while(page.totalPages > page.number +1){
+      let nextRes = await fetch(`${BASE_URL}/joueurs?page=${page.number+1}`);
+      let nextData = await nextRes.json();
+      data.data.content = data.data.content.concat(nextData.data.content);
+      page = nextData.data.page
+    }
     return data;
 }
