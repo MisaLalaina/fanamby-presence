@@ -34,27 +34,124 @@ import MyDropdown from './MyDropdown.vue';
       <MyDropdown>
         <template #title>
           <img src="@/assets/seance.svg" alt="Joueurs icon">
-          <span>Seance</span>
+          <span>Séance</span>
         </template>
         <template #list>
           <li>
-            <router-link to="/" class="dropdown-item" active-class="active" exact>
+            <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Liste seance</span>
+              <span>Liste séance</span>
             </router-link>
           </li>
           <li>
-            <router-link to="/insertion-joueur" class="dropdown-item" active-class="active">
+            <router-link to="/insertion-seance" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
-              <span>Insertion seance</span>
+              <span>Insertion séance</span>
             </router-link>
           </li>
         </template>
       </MyDropdown>
+
       <MyDropdown>
-        
+        <template #title>
+          <img src="@/assets/presence.svg" alt="presence icon">
+          <span>Presence</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/presence" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Liste presence</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/insertion-rapide" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Insertion presence</span>
+            </router-link>
+          </li>
+        </template>
       </MyDropdown>
 
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/match.svg" alt="matchicon">
+          <span>Match</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/match" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Liste match</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Insertion match</span>
+            </router-link>
+          </li>
+        </template>
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img >
+          <span>Composition</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/composition" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Liste composition</span>
+            </router-link>
+          </li>
+          <!-- <li>
+            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Insertion match</span>
+            </router-link>
+          </li> -->
+        </template>
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/message.svg" alt="matchicon">
+          <span>Message</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/formulaire-message" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>message</span>
+            </router-link>
+          </li>
+        </template>
+
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/dashboard.svg" alt="dashboardicon">
+          <span>Dashboard</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/dashboard" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Statistique</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Statistique individuel</span>
+            </router-link>
+          </li>
+        </template>
+      </MyDropdown>
+      
 
       <!-- <router-link  to="/" class="nav-item"active-class="active"exact>
         <i class="fas fa-list"></i>
@@ -181,8 +278,8 @@ import MyDropdown from './MyDropdown.vue';
   align-items: center;
 }
  .sidebar-logo {
-  width: 85px;
-  height: 85px;
+  width: 90px;
+  height: 90px;
   margin-bottom: 10px;
   
 }
@@ -209,13 +306,13 @@ import MyDropdown from './MyDropdown.vue';
 .nav-item i {
   margin-right: 10px;
   font-size: 1.1rem;
-  width: 20px;
+  width: 2px;
   text-align: center;
   color: #2493BF;
 }
 
 .nav-item:hover {
-  background-color: #e6f7ff;
+  background-color: #f3f5f6;
   color: #2493BF;
 }
 
@@ -224,40 +321,11 @@ import MyDropdown from './MyDropdown.vue';
   gap: 0.5rem;
 }
 
-/* .nav-item.active {
-  background-color: #2493BF;
-  color: white;
-} */
+
 
 .nav-item.active i {
   color: white;
 }
 
-/* hr {
-  border: none;
-  height: 1px;
-  background-color: #ddd;
-  margin: 10px 15px;
-} */
 
-/* @media (max-width: 768px) {
-  .sidebar {
-    width: 70px;
-  }
-  
-  .logo-container h2,
-  .nav-item span {
-    display: none;
-  }
-  
-  .nav-item {
-    justify-content: center;
-    padding: 15px 0;
-  }
-  
-  .nav-item i {
-    margin-right: 0;
-    font-size: 1.3rem;
-  } */
-/* } */
 </style>

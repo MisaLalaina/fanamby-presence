@@ -14,6 +14,7 @@ import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
 import LoginClub from '@/views/LoginClub.vue'
 import Statistique from '@/views/Statistique.vue'
+// import Dashboard from '@/views/Dashboard.vue'
 
 const routes = [
    {
@@ -71,6 +72,7 @@ const routes = [
     name:'listeComposition',
     component:ListeComposition
   },
+  
    {
     path: '/insertion-rapide',
     name:'insertionRapidePresence',
@@ -85,7 +87,15 @@ const routes = [
     path: '/dashboard',
     name:'statistique',
     component: Statistique
+  },
+
+  {
+    path: '/statistique',
+    name:'dashboard',
+    component: Dashboard
   }
+
+
  
   
 ]

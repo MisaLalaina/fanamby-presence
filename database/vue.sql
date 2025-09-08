@@ -109,3 +109,34 @@ INNER JOIN (
         TO_CHAR(sc.dateSeance, 'YYYY-MM') AS annee_mois
     from seance_cpl sc where sc.dateSeance <= CURRENT_DATE AND sc.idStatutSeance = 2 AND sc.idTypeSeance = 2
 ) sca on sca.idSeance = pc.idSeance
+
+
+create or replace view v_presence_joueurs_generale
+select * from v_presence_entrainement
+union
+select * from v_presence_match
+
+create or replace view stat_presence_joueur as
+select
+    vpe.idJoueur,
+    vpe.nom,
+    vpe.prenom,
+    SUM(CASE WHEN vpe.idStatutPresence = 1 THEN 1 ELSE 0 END) AS totalPresences,
+    SUM(CASE WHEN vpe.idStatutPresence = 2 THEN 1 ELSE 0 END) AS totalAbsences,
+
+    -- Détails par type de séance
+    SUM(CASE WHEN vpe.idTypeSeance = 1 AND vpe.idStatutPresence = 1 THEN 1 ELSE 0 END) AS entPresences,
+    SUM(CASE WHEN vpe.idTypeSeance = 1 AND vpe.idStatutPresence = 2 ELSE 0 END) AS entAbsences,
+    SUM(CASE WHEN vpe.idTypeSeance = 2 AND vpe.idStatutPresence = 1 THEN 1 ELSE 0 END) AS matPresences,
+    SUM(CASE WHEN vpe.idTypeSeance = 2 AND vpe.idStatutPresence = 2 ELSE 0 END) AS matAbsences
+from v_presence_joueurs_generale vpe
+GROUP BY idJoueur,nom,prenom
+
+create or replace view stat_seance_globale
+select
+    sc.idTypeSeance,
+    sc.typeSeance,
+    COUNT(sc.idseance ) as nbSeance
+from seance_cpl sc
+GROUP BY sc.idTypeSeance, typeSeance
+
