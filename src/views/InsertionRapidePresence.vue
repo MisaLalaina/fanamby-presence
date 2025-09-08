@@ -1,62 +1,79 @@
-<script>
-export default {
-  name: 'InsertionRapidePresence',
-  data() {
-    // Exemple de séances et joueurs (à remplacer par vos données dynamiques)
-    const seances = [
-      { id: 1, label: 'Entraînement Lundi' },
-      { id: 2, label: 'Match Mercredi' },
-      { id: 3, label: 'Entraînement Vendredi' }
-    ];
-    const joueurs = [
-      { id: 1, nom: 'RAKOTO' },
-      { id: 2, nom: 'RANDRIA' },
-      { id: 3, nom: 'MIA' },
-      { id: 4, nom: 'KELY' }
-    ];
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import SeanceService from '@/services/SeanceService'
+import * as JoueurService from '@/services/JoueurService'
+import { Seance } from '@/models/seance'
+import { Joueur } from '@/models/joueur'
+import { createPresence } from '@/services/PresenceService'
 
-    // Initialisation des présences
-    const presences = {};
-    seances.forEach(seance => {
-      presences[seance.id] = {};
-      joueurs.forEach(joueur => {
-        presences[seance.id][joueur.id] = false; // false = absent, true = présent
-      });
-    });
+const ID_STATUT_PRESENT = 1;
+const ID_STATUT_ABSENT = 2;
 
-    return {
-      seances,
-      joueurs,
-      selectedSeance: seances[0].id,
-      presences,
-      searchTerm: '' // Nouveau champ pour la recherche
-    }
-  },
-  computed: {
-    filteredJoueurs() {
-      if (!this.searchTerm) return this.joueurs;
-      const term = this.searchTerm.toLowerCase();
-      return this.joueurs.filter(joueur => 
-        joueur.nom.toLowerCase().includes(term)
-      );
-    }
-  },
-  methods: {
-    savePresence() {
-      const dataToSave = this.joueurs.map(joueur => ({
-        joueur: joueur.nom,
-        present: this.presences[this.selectedSeance][joueur.id]
-      }));
-      console.log("Présences à enregistrer:", {
-        seance: this.selectedSeance,
-        presences: dataToSave
-      });
-      alert("Présences enregistrées !");
-      // Appel API ici si besoin
-    }
+// Références réactives
+const seances = ref([])
+const joueurs = ref([])
+const selectedSeance = ref(null)
+const selectedJoueur = ref([])
+const presences = ref({})
+const searchTerm = ref('')
+
+// Chargement des données
+const fetchData = async () => {
+  try {
+    const seanceData = await SeanceService.getAllSeances()
+    seances.value = Seance.formatSeances(seanceData)
+    console.log(seances.value);
+    
+    selectedSeance.value = seances.value.length ? seances.value[0].idSeance : null
+
+    const joueurData = await JoueurService.getAllJoueurs()
+    joueurs.value = Joueur.listFromApiData(joueurData);
+  } catch (err) {
+    console.error("Erreur lors du chargement des données:", err)
   }
 }
+
+onMounted(() => {
+  fetchData()
+})
+
+// Recherche des joueurs
+const filteredJoueurs = computed(() => {
+  if (!searchTerm.value) return joueurs.value
+  const term = searchTerm.value.toLowerCase()
+  return joueurs.value.filter(joueur => joueur.nom.toLowerCase().includes(term))
+})
+
+// Sauvegarde des présences (submit)
+const savePresence = async () => {
+  try {
+    const seanceId = selectedSeance.value;
+    const requests = [];
+
+    for (const joueurId in presences.value) {
+      const isPresent = presences.value[joueurId];
+      if (!isPresent) continue; // Skip if not set
+      const payload = {
+        idSeance: seanceId,
+        idJoueur: joueurId,
+        idStatutPresence: isPresent ? ID_STATUT_PRESENT : ID_STATUT_ABSENT,
+        commentaire: ''
+      };
+
+      requests.push(createPresence(payload));
+    }
+
+    await Promise.all(requests);
+
+    alert("Toutes les présences ont été enregistrées !");
+  } catch (error) {
+    console.error("Erreur lors de l'enregistrement des présences :", error);
+    alert("Erreur lors de l'enregistrement des présences.");
+  }
+};
+
 </script>
+
 
 <template>
   <div class="presence-container">
@@ -67,8 +84,8 @@ export default {
           <div class="form-group">
             <label for="seance-select">Séance :</label>
             <select id="seance-select" v-model="selectedSeance" class="form-control">
-              <option v-for="seance in seances" :key="seance.id" :value="seance.id">
-                {{ seance.label }}
+              <option v-for="seance in seances" :key="seance.idSeance" :value="seance.idSeance">
+                {{ seance.type }} - {{ seance.dateSeance }} ({{ seance.heureDebut }}) - {{ seance.lieu }}
               </option>
             </select>
 
@@ -99,7 +116,7 @@ export default {
                   <label class="checkbox-container">
                     <input
                       type="checkbox"
-                      v-model="presences[selectedSeance][joueur.id]"
+                      v-model="presences[joueur.id]"
                     />
                     <span class="checkmark"></span>
                   </label>

@@ -52,7 +52,7 @@ onMounted(() => {
 
 <template>
   <div class="seance-insert-container">
-    <h1>Insertion d'une séance</h1>
+    <h1>Insertion d'une séance d'entrainement</h1>
 
     <div v-if="error" class="error-message">{{ error }}</div>
     <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
@@ -101,10 +101,11 @@ onMounted(() => {
       </div>
 
       <div class="form-actions">
-        <button type="button" @click="resetForm" class="btn-cancel">Annuler</button>
-        <button type="submit" class="btn-submit" :disabled="isLoading">
+              <button type="submit" class="btn-submit" :disabled="isLoading">
           {{ isLoading ? 'Enregistrement...' : 'Ajouter' }}
         </button>
+        <button type="button" @click="resetForm" class="btn-cancel">Annuler</button>
+  
       </div>
     </form>
   </div>
@@ -162,12 +163,13 @@ onMounted(() => {
 }
 
 .btn-submit {
-  background-color: #2ecc71;
+  background-color: #2493BF;
   color: white;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  width: 20%;
 }
 
 .btn-cancel {
@@ -177,10 +179,11 @@ onMounted(() => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 20%;
 }
 
 .success-message {
-  color: #2ecc71;
+  color: #2493BF;
   margin-top: 10px;
   font-weight: bold;
 }

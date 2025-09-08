@@ -12,8 +12,16 @@ import InsertionMatch from '@/views/InsertionMatch.vue'
 import InsertionComposition from '@/views/InsertionComposition.vue'
 import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
+import LoginClub from '@/views/LoginClub.vue'
+import Statistique from '@/views/Statistique.vue'
+// import Dashboard from '@/views/Dashboard.vue'
 
 const routes = [
+   {
+    path:'/login-club',
+    name:'loginClub',
+    component:LoginClub
+  },
   {
     path: '/',
     name: 'liste',
@@ -64,16 +72,31 @@ const routes = [
     name:'listeComposition',
     component:ListeComposition
   },
+  
    {
     path: '/insertion-rapide',
     name:'insertionRapidePresence',
     component:InsertionRapidePresence
   },
   {
-    path: '/feuille',
+    path: '/feuille-match/:id',
     name:'feuilleMatch',
     component:FeuilleMatch
   },
+  {
+    path: '/dashboard',
+    name:'statistique',
+    component: Statistique
+  },
+
+  {
+    path: '/statistique',
+    name:'dashboard',
+    component: Dashboard
+  }
+
+
+ 
   
 ]
 
