@@ -17,7 +17,7 @@ CREATE TABLE TypeSeance (
     description VARCHAR(255)
 );
 
--- Type de Séance
+-- Type de Match
 CREATE TABLE TypeMatch (
     idTypeMatch SERIAL PRIMARY KEY,
     libelle VARCHAR(50) NOT NULL UNIQUE,
@@ -158,7 +158,6 @@ CREATE TABLE MatchFoot (
     idMatch SERIAL PRIMARY KEY,
     idSeance INT NOT NULL,
     idTypeMatch INT NOT NULL,
-    idArbitrage INT,
     competition VARCHAR(100),
     adversaire VARCHAR(100) NOT NULL,
     domicile BOOLEAN DEFAULT TRUE,
@@ -166,12 +165,10 @@ CREATE TABLE MatchFoot (
     scoreAdversaire INT CHECK (scoreAdversaire >= 0),
     tempsAdditionnel1 INT DEFAULT 0,
     tempsAdditionnel2 INT DEFAULT 0,
-    public INT,
     incidents TEXT,
     observations TEXT,
     FOREIGN KEY (idSeance) REFERENCES Seance(idSeance),
     FOREIGN KEY (idTypeMatch) REFERENCES TypeMatch(idTypeMatch),
-    FOREIGN KEY (idArbitrage) REFERENCES Arbitrage(idArbitrage),
     CONSTRAINT chk_temps_additionnel CHECK (tempsAdditionnel1 >= 0 AND tempsAdditionnel2 >= 0)
 );
 
@@ -202,7 +199,6 @@ CREATE INDEX idx_presence_statut ON Presence(idStatutPresence);
 CREATE INDEX idx_presence_joueur ON Presence(idJoueur);
 
 CREATE INDEX idx_match_seance ON MatchFoot(idSeance);
-CREATE INDEX idx_match_arbitrage ON MatchFoot(idArbitrage);
 
 CREATE INDEX idx_composition_match ON Composition(idMatch);
 CREATE INDEX idx_composition_joueur ON Composition(idJoueur);

@@ -10,7 +10,7 @@ FROM Joueur j
 INNER JOIN Club c ON j.idClub = c.idClub
 INNER JOIN Poste p ON j.idPoste = p.idPoste
 INNER JOIN StatutJoueur sj ON j.idStatutJoueur = sj.idStatutJoueur
-INNER JOIN PiedFort pf ON j.idPiedFort = pf.idPiedFort
+INNER JOIN PiedFort pf ON j.idPiedFort = pf.idPiedFort;
 
 create or REPLACE view seance_cpl as
 select
@@ -24,19 +24,6 @@ INNER JOIN TypeSeance ts ON ts.idTypeSeance = s.idTypeSeance
 INNER JOIN StatutSeance ss ON ss.idStatutSeance = s.idStatutSeance;
 
 
-select
-    jc.idJoueur,
-    jc.nom,
-    jc.prenom,
-    jc.numeroMaillot,
-    jc.poste,
-    jc.nomClub,
-
-
-From joueur_cpl jc
-LEFT JOIN Presence p on jc.idJoueur = p.idJoueur
-LEFT JOIN seance_cpl sc on p.idSeance = sc.idSeance
-
 create or REPLACE view presence_cpl as
 select 
     pres.*,
@@ -49,21 +36,7 @@ select
     s.statutSeance
 FROM Presence pres
 LEFT JOIN seance_cpl s ON pres.idSeance = s.idSeance
-LEFT JOIN StatutPresence sp ON pres.idStatutPresence = sp.idStatutPresence
-
-
-
-select
-    jc.idJoueur,
-    pc.idSeance,
-    pc.idPresence,
-    pc.idTypeSeance,
-    pc.typeSeance,
-    pc.idStatutPresence,
-    pc.statutPresence
-From joueur_cpl jc
-LEFT JOIN presence_cpl pc ON jc.idJoueur = pc.idJoueur
-WHERE pc.idTypeSeance = 1
+LEFT JOIN StatutPresence sp ON pres.idStatutPresence = sp.idStatutPresence;
 
 -- Stat Entrainement'
 create or replace view v_presence_entrainement as
@@ -85,7 +58,7 @@ INNER JOIN (
         EXTRACT(MONTH FROM sc.dateSeance) AS mois,
         TO_CHAR(sc.dateSeance, 'YYYY-MM') AS annee_mois
     from seance_cpl sc where sc.dateSeance <= CURRENT_DATE AND sc.idStatutSeance = 2 AND sc.idTypeSeance = 1
-) sca on sca.idSeance = pc.idSeance
+) sca on sca.idSeance = pc.idSeance;
 
 
 -- Stat Match'
@@ -108,13 +81,13 @@ INNER JOIN (
         EXTRACT(MONTH FROM sc.dateSeance) AS mois,
         TO_CHAR(sc.dateSeance, 'YYYY-MM') AS annee_mois
     from seance_cpl sc where sc.dateSeance <= CURRENT_DATE AND sc.idStatutSeance = 2 AND sc.idTypeSeance = 2
-) sca on sca.idSeance = pc.idSeance
+) sca on sca.idSeance = pc.idSeance;
 
 
-create or replace view v_presence_joueurs_generale
+create or replace view v_presence_joueurs_generale as
 select * from v_presence_entrainement
 union
-select * from v_presence_match
+select * from v_presence_match;
 
 create or replace view stat_presence_joueur as
 select
@@ -126,17 +99,17 @@ select
 
     -- Détails par type de séance
     SUM(CASE WHEN vpe.idTypeSeance = 1 AND vpe.idStatutPresence = 1 THEN 1 ELSE 0 END) AS entPresences,
-    SUM(CASE WHEN vpe.idTypeSeance = 1 AND vpe.idStatutPresence = 2 ELSE 0 END) AS entAbsences,
+    SUM(CASE WHEN vpe.idTypeSeance = 1 AND vpe.idStatutPresence = 2 THEN 1 ELSE 0 END) AS entAbsences,
     SUM(CASE WHEN vpe.idTypeSeance = 2 AND vpe.idStatutPresence = 1 THEN 1 ELSE 0 END) AS matPresences,
-    SUM(CASE WHEN vpe.idTypeSeance = 2 AND vpe.idStatutPresence = 2 ELSE 0 END) AS matAbsences
+    SUM(CASE WHEN vpe.idTypeSeance = 2 AND vpe.idStatutPresence = 2 THEN 1 ELSE 0 END) AS matAbsences
 from v_presence_joueurs_generale vpe
-GROUP BY idJoueur,nom,prenom
+GROUP BY idJoueur,nom,prenom;
 
-create or replace view stat_seance_globale
+create or replace view stat_seance_globale as
 select
     sc.idTypeSeance,
     sc.typeSeance,
     COUNT(sc.idseance ) as nbSeance
 from seance_cpl sc
-GROUP BY sc.idTypeSeance, typeSeance
+GROUP BY sc.idTypeSeance, typeSeance;
 

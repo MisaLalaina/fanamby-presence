@@ -11,8 +11,6 @@ DELETE FROM MatchFoot;
 DELETE FROM Presence;
 DELETE FROM Seance;
 DELETE FROM Joueur;
-DELETE FROM Arbitrage;
-DELETE FROM Arbitre;
 DELETE FROM Club;
 
 -- Supprimer les données des tables de référence
@@ -35,8 +33,6 @@ ALTER SEQUENCE MatchFoot_idMatch_seq RESTART WITH 1;
 ALTER SEQUENCE Presence_idPresence_seq RESTART WITH 1;
 ALTER SEQUENCE Seance_idSeance_seq RESTART WITH 1;
 ALTER SEQUENCE Joueur_idJoueur_seq RESTART WITH 1;
-ALTER SEQUENCE Arbitrage_idArbitrage_seq RESTART WITH 1;
-ALTER SEQUENCE Arbitre_idArbitre_seq RESTART WITH 1;
 ALTER SEQUENCE Club_idClub_seq RESTART WITH 1;
 ALTER SEQUENCE StatutComposition_idStatutComposition_seq RESTART WITH 1;
 ALTER SEQUENCE StatutSeance_idStatutSeance_seq RESTART WITH 1;
@@ -59,16 +55,15 @@ INSERT INTO Poste (libelle, description) VALUES
 
 INSERT INTO TypeSeance (libelle, description) VALUES 
 ('Entrainement', 'Séance d entraînement régulière'),
-('Match amical', 'Match sans enjeu compétitif'),
-('Match officiel', 'Match de championnat ou coupe'),
-('Seance physique', 'Séance axée sur la condition physique'),
-('Seance tactique', 'Séance axée sur la tactique d équipe');
+('Match', 'Match');
+
+INSERT INTO TypeMatch (libelle, description) VALUES
+('Amical', 'Match sans enjeu compétitif'),
+('Officiel', 'Match de championnat ou coupe');
 
 INSERT INTO StatutPresence (libelle, code) VALUES 
 ('Present', 'P'),
-('Absent', 'A'),
-('Retard', 'R'),
-('Excusé', 'E');
+('Absent', 'A');
 
 INSERT INTO StatutJoueur (libelle, peutJouer) VALUES 
 ('Actif', TRUE),
@@ -76,9 +71,6 @@ INSERT INTO StatutJoueur (libelle, peutJouer) VALUES
 ('Suspendu', FALSE),
 ('Inactif', FALSE),
 ('En convalescence', FALSE);
-
-INSERT INTO NiveauArbitre (libelle) VALUES 
-('Federal'), ('Regional'), ('Departemental'), ('Jeune');
 
 INSERT INTO NiveauMatch (libelle) VALUES 
 ('Regional'), ('Departemental'), ('Ligue'), ('National');
@@ -122,6 +114,3 @@ INSERT INTO Club (
     'Stade Municipal de Mahamasina', 
     'https://akademiafanamby.mg'
 );
-
--- Message de confirmation
-SELECT 'Base de données réinitialisée avec succès. Les données de référence ont été reinsérées.' AS message;
