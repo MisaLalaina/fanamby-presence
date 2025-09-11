@@ -7,7 +7,7 @@ import { BASE_URL } from './config';
  */
 export async function getAllPlayerPresenceStats() {
   try {
-    const initialUrl = `${BASE_URL}/presence-v2/statpresencejoueurs?page=0`;
+    const initialUrl = `${BASE_URL}/statpresencejoueurs?page=0`;
     const res = await fetch(initialUrl);
     
     if (!res.ok) throw new Error('Erreur récupération statistiques présence joueurs');
@@ -17,7 +17,7 @@ export async function getAllPlayerPresenceStats() {
     
     // Handle pagination if there are more pages
     while (page.totalPages > page.number + 1) {
-      const nextUrl = `${BASE_URL}/presence-v2/statpresencejoueurs?page=${page.number + 1}`;
+      const nextUrl = `${BASE_URL}/statpresencejoueurs?page=${page.number + 1}`;
       const nextRes = await fetch(nextUrl);
       
       if (!nextRes.ok) throw new Error('Erreur récupération page suivante');
@@ -40,7 +40,7 @@ export async function getAllPlayerPresenceStats() {
  */
 export async function getAllGlobalSessionStats() {
   try {
-    const initialUrl = `${BASE_URL}/presence-v2/statseanceglobales?page=0`;
+    const initialUrl = `${BASE_URL}/statseanceglobales?page=0`;
     const res = await fetch(initialUrl);
     
     if (!res.ok) throw new Error('Erreur récupération statistiques séances globales');
@@ -50,7 +50,7 @@ export async function getAllGlobalSessionStats() {
     
     // Handle pagination if there are more pages
     while (page.totalPages > page.number + 1) {
-      const nextUrl = `${BASE_URL}/presence-v2/statseanceglobales?page=${page.number + 1}`;
+      const nextUrl = `${BASE_URL}/statseanceglobales?page=${page.number + 1}`;
       const nextRes = await fetch(nextUrl);
       
       if (!nextRes.ok) throw new Error('Erreur récupération page suivante');
@@ -79,8 +79,8 @@ export async function getDashboardStats() {
     ]);
     
     return {
-      playerPresenceStats: playerStats.data,
-      globalSessionStats: sessionStats.data
+      playerPresenceStats: playerStats.data ? playerStats.data.content : [] ,
+      globalSessionStats: sessionStats.data.content
     };
   } catch (error) {
     console.error('Erreur lors de la récupération des statistiques du dashboard :', error);

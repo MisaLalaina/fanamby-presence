@@ -106,12 +106,12 @@ import MyDropdown from './MyDropdown.vue';
               <span>Liste composition</span>
             </router-link>
           </li>
-          <!-- <li>
-            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
+          <li>
+            <router-link to="/insertion-composition" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
-              <span>Insertion match</span>
+              <span>Insertion composition</span>
             </router-link>
-          </li> -->
+          </li>
         </template>
       </MyDropdown>
 
@@ -122,7 +122,7 @@ import MyDropdown from './MyDropdown.vue';
         </template>
         <template #list>
           <li>
-            <router-link to="/formulaire-message" class="dropdown-item" active-class="active" exact>
+            <router-link to="/message" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
               <span>message</span>
             </router-link>
@@ -151,6 +151,11 @@ import MyDropdown from './MyDropdown.vue';
           </li>
         </template>
       </MyDropdown>
+
+      
+
+
+
       
 
       <!-- <router-link  to="/" class="nav-item"active-class="active"exact>

@@ -55,11 +55,21 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import Chart from "chart.js/auto";
+import { getDashboardStats } from "@/services/statPresence";
 
 const generalCards = ref([]);
 const joueurs = ref([]);
 
+const stats = ref({
+      playerPresenceStats:  [] ,
+      globalSessionStats: []})
+
 onMounted(async () => {
+  console.log("Fetch dashboard");
+  
+  stats.value = await getDashboardStats();
+  console.log(stats.value);
+
   // 🔹 Exemple d'API fetch (à remplacer par ton backend qui expose les vues SQL)
   const resGeneral = await fetch("/api/statistiques/generales");
   const dataGeneral = await resGeneral.json();

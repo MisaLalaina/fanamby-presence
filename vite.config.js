@@ -15,4 +15,18 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+server: {
+    proxy: {
+      '/api': {
+        target: 'https://messaging.mapi.mg',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Proxying request to:', req.url);
+          });
+        }
+      }
+    }
+  }
 })

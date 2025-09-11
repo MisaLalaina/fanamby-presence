@@ -33,36 +33,44 @@
       </div>
     </div>
 
-    <div class="stats-grid">
-      <!-- Carte de résumé global -->
-      <div class="stat-card summary-card">
-        <div class="card-header">
-          <h3>Résumé Global</h3>
+    <!-- Carte de résumé global -->
+    <div class="stat-card summary-card">
+      <div class="card-header">
+        <h3>Résumé Global</h3>
+      </div>
+      <div class="card-content">
+        <div class="summary-item">
+          <div class="summary-value">{{ dashboardStat.global.tauxEntrainement }}%</div>
+          <div class="summary-label">Taux de présence entrainement</div>
         </div>
-        <div class="card-content">
-          <div class="summary-item">
-            <div class="summary-value">{{ overallStats.presenceRate }}%</div>
-            <div class="summary-label">Taux de présence</div>
+        <div class="summary-item">
+          <div class="summary-value">{{ dashboardStat.global.tauxMatch }}%</div>
+          <div class="summary-label">Taux de présence match</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value">{{ dashboardStat.global.tauxGeneral }}%</div>
+          <div class="summary-label">Taux de présence global</div>
+        </div>
+        <div class="summary-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ dashboardStat.global.totalSeance }}</span>
+            <span class="stat-text">Séances totales</span>
           </div>
-          <div class="summary-stats">
-            <div class="stat-item">
-              <span class="stat-number">{{ overallStats.totalSessions }}</span>
-              <span class="stat-text">Séances totales</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number">{{ overallStats.present }}</span>
-              <span class="stat-text">Présences</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number">{{ overallStats.absent }}</span>
-              <span class="stat-text">Absences</span>
-            </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ dashboardStat.global.totalEntrainement }}</span>
+            <span class="stat-text">Entrainement totales</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ dashboardStat.global.totalMatch }}</span>
+            <span class="stat-text">Matches totales</span>
           </div>
         </div>
       </div>
+    </div>
+    <div class="stats-grid">
 
       <!-- Graphique de tendance -->
-      <div class="stat-card chart-card">
+      <!-- <div class="stat-card chart-card">
         <div class="card-header">
           <h3>Évolution des présences</h3>
         </div>
@@ -79,9 +87,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <!-- Top joueurs -->
+      <!-- Top joueurs
       <div class="stat-card players-card">
         <div class="card-header">
           <h3>Top 5 - Meilleure assiduité</h3>
@@ -108,12 +116,13 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
-      <!-- Détail par joueur -->
+    </div>
+    <!-- Détail par joueur -->
       <div class="stat-card details-card">
         <div class="card-header">
-          <h3>Détail par Joueur</h3>
+          <h3>Détail par Joueur ({{ dashboardStat.joueurs.length }})</h3>
           <input 
             v-model="playerSearch" 
             placeholder="Rechercher un joueur..." 
@@ -125,114 +134,224 @@
             <thead>
               <tr>
                 <th>Joueur</th>
-                <th>Présences</th>
-                <th>Taux</th>
-                <th>Statut</th>
+                <th>Entrainement</th>
+                <th>Match</th>
+                <th>General</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="player in filteredPlayers" :key="player.id">
+              <tr v-for="player in dashboardStat.joueurs" :key="player.id">
                 <td class="player-cell">
-                  <div class="player-avatar">{{ getInitials(player.name) }}</div>
+                  <!-- <div class="player-avatar">{{ getInitials(player.nom) }}</div> -->
                   <div class="player-details">
-                    <div class="player-name">{{ player.name }}</div>
-                    <div class="player-position">{{ player.position }}</div>
+                    <div class="player-name">{{ player.nom }} {{ player.prenom }}</div>
                   </div>
                 </td>
-                <td>{{ player.present }}/{{ player.total }}</td>
                 <td>
-                  <div class="rate-display">
-                    {{ player.presenceRate }}%
+                    <div class="rate-display">
+                    {{ player.tauxEntrainement }}%
                     <div class="progress-bar small">
                       <div 
                         class="progress-fill" 
-                        :style="{ width: player.presenceRate + '%' }"
+                        :style="{ width: player.tauxEntrainement + '%' }"
                       ></div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <span 
-                    class="status-badge"
-                    :class="getStatusClass(player.presenceRate)"
-                  >
-                    {{ getStatusText(player.presenceRate) }}
-                  </span>
+                    <div class="rate-display">
+                    {{ player.tauxMatch }}%
+                    <div class="progress-bar small">
+                      <div 
+                        class="progress-fill" 
+                        :style="{ width: player.tauxMatch + '%' }"
+                      ></div>
+                    </div>
+                  </div>
+                </td>
+                <td> 
+                    <div class="rate-display">
+                    {{ player.tauxGeneral }}%
+                    <div class="progress-bar small">
+                      <div 
+                        class="progress-fill" 
+                        :style="{ width: player.tauxGeneral + '%' }"
+                      ></div>
+                    </div>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PlayerPresenceStats',
-  data() {
-    return {
-      selectedSeason: '2024',
-      selectedType: 'all',
-      selectedPeriod: 'all',
-      playerSearch: '',
-      overallStats: {
-        presenceRate: 85,
-        totalSessions: 48,
-        present: 41,
-        absent: 7
-      },
-      weeklyTrend: [
-        { week: 'Sem 1', presenceRate: 78, current: false },
-        { week: 'Sem 2', presenceRate: 82, current: false },
-        { week: 'Sem 3', presenceRate: 88, current: false },
-        { week: 'Sem 4', presenceRate: 85, current: false },
-        { week: 'Sem 5', presenceRate: 90, current: true }
-      ],
-      topPlayers: [
-        { id: 1, name: 'RAKOTO', present: 45, total: 48, presenceRate: 94 },
-        { id: 2, name: 'RANDRIA', present: 44, total: 48, presenceRate: 92 },
-        { id: 3, name: 'MIA', present: 43, total: 48, presenceRate: 90 },
-        { id: 4, name: 'KELY', present: 42, total: 48, presenceRate: 88 },
-        { id: 5, name: 'RAJAONA', present: 41, total: 48, presenceRate: 85 }
-      ],
-      allPlayers: [
-        { id: 1, name: 'RAKOTO', position: 'Attaquant', present: 45, total: 48, presenceRate: 94 },
-        { id: 2, name: 'RANDRIA', position: 'Milieu', present: 44, total: 48, presenceRate: 92 },
-        { id: 3, name: 'MIA', position: 'Défenseur', present: 43, total: 48, presenceRate: 90 },
-        { id: 4, name: 'KELY', position: 'Gardien', present: 42, total: 48, presenceRate: 88 },
-        { id: 5, name: 'RAJAONA', position: 'Attaquant', present: 41, total: 48, presenceRate: 85 },
-        { id: 6, name: 'ANDRIAMI', position: 'Milieu', present: 38, total: 48, presenceRate: 79 },
-        { id: 7, name: 'FENO', position: 'Défenseur', present: 36, total: 48, presenceRate: 75 }
-      ]
-    }
-  },
-  computed: {
-    filteredPlayers() {
-      return this.allPlayers.filter(player =>
-        player.name.toLowerCase().includes(this.playerSearch.toLowerCase())
-      )
-    }
-  },
-  methods: {
-    getInitials(name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase()
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { getDashboardStats } from '@/services/statPresence' 
+
+// Reactive data
+const selectedSeason = ref('2024')
+const selectedType = ref('all')
+const selectedPeriod = ref('all')
+const playerSearch = ref('')
+const stats = ref({
+  playerPresenceStats: [],
+  globalSessionStats: [
+    {
+      "idtypeseance": 1,
+      "typeseance": "Entrainement",
+      "nbseance": 0
     },
-    getStatusClass(rate) {
-      if (rate >= 90) return 'status-excellent'
-      if (rate >= 80) return 'status-good'
-      if (rate >= 70) return 'status-average'
-      return 'status-poor'
-    },
-    getStatusText(rate) {
-      if (rate >= 90) return 'Excellent'
-      if (rate >= 80) return 'Bon'
-      if (rate >= 70) return 'Moyen'
-      return 'À améliorer'
+    {
+      "idtypeseance": 2,
+      "typeseance": "Match",
+      "nbseance": 0
     }
-  }
+  ]
+})
+
+// Mock data (you can remove this once your API is working)
+const overallStats = ref({
+  presenceRate: 85,
+  totalSessions: 48,
+  present: 41,
+  absent: 7
+})
+
+const weeklyTrend = ref([
+  { week: 'Sem 1', presenceRate: 78, current: false },
+  { week: 'Sem 2', presenceRate: 82, current: false },
+  { week: 'Sem 3', presenceRate: 88, current: false },
+  { week: 'Sem 4', presenceRate: 85, current: false },
+  { week: 'Sem 5', presenceRate: 90, current: true }
+])
+
+const topPlayers = ref([
+  { id: 1, name: 'RAKOTO', present: 45, total: 48, presenceRate: 94 },
+  { id: 2, name: 'RANDRIA', present: 44, total: 48, presenceRate: 92 },
+  { id: 3, name: 'MIA', present: 43, total: 48, presenceRate: 90 },
+  { id: 4, name: 'KELY', present: 42, total: 48, presenceRate: 88 },
+  { id: 5, name: 'RAJAONA', present: 41, total: 48, presenceRate: 85 }
+])
+
+const allPlayers = ref([
+  { id: 1, name: 'RAKOTO', position: 'Attaquant', present: 45, total: 48, presenceRate: 94 },
+  { id: 2, name: 'RANDRIA', position: 'Milieu', present: 44, total: 48, presenceRate: 92 },
+  { id: 3, name: 'MIA', position: 'Défenseur', present: 43, total: 48, presenceRate: 90 },
+  { id: 4, name: 'KELY', position: 'Gardien', present: 42, total: 48, presenceRate: 88 },
+  { id: 5, name: 'RAJAONA', position: 'Attaquant', present: 41, total: 48, presenceRate: 85 },
+  { id: 6, name: 'ANDRIAMI', position: 'Milieu', present: 38, total: 48, presenceRate: 79 },
+  { id: 7, name: 'FENO', position: 'Défenseur', present: 36, total: 48, presenceRate: 75 }
+])
+
+// Computed properties
+const filteredPlayers = computed(() => {
+  return allPlayers.value.filter(player =>
+    player.name.toLowerCase().includes(playerSearch.value.toLowerCase())
+  )
+})
+
+// If you want to compute these from your API data once it's loaded:
+const playerPresenceData = computed(() => {
+  return stats.value.playerPresenceStats?.content || []
+})
+
+const globalSessionData = computed(() => {
+  return stats.value.globalSessionStats?.content || []
+})
+
+// Methods
+const getInitials = (name) => {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase()
 }
+
+const getStatusClass = (rate) => {
+  if (rate >= 90) return 'status-excellent'
+  if (rate >= 80) return 'status-good'
+  if (rate >= 70) return 'status-average'
+  return 'status-poor'
+}
+
+const getStatusText = (rate) => {
+  if (rate >= 90) return 'Excellent'
+  if (rate >= 80) return 'Bon'
+  if (rate >= 70) return 'Moyen'
+  return 'À améliorer'
+}
+
+
+const dashboardStat = computed(() => {
+  const presenceStat = {
+    global : {
+      totalSeance : stats.value.globalSessionStats[0].nbseance + stats.value.globalSessionStats[1].nbseance,
+      totalEntrainement: stats.value.globalSessionStats[0].nbseance,
+      totalMatch: stats.value.globalSessionStats[1].nbseance, 
+      tauxEntrainement: 0,
+      tauxMatch: 0,
+      tauxGeneral: 0,
+    },
+    joueurs:[],
+    sommeEntrainement:0,
+    sommeMatch:0,
+    sommeGeneral:0,
+  }
+
+  stats.value.playerPresenceStats.forEach((playerPresence) => {
+    const playerStat = {
+      tauxEntrainement : 0,
+      tauxMatch: 0,
+      tauxGeneral: 0
+    }
+    if (presenceStat.global.totalEntrainement > 0) {
+      playerStat.tauxEntrainement = (playerPresence.entpresences / presenceStat.global.totalEntrainement) * 100
+    }
+
+    if (presenceStat.global.totalMatch > 0) {
+      playerStat.tauxEntrainement = (playerPresence.matpresences / presenceStat.global.totalMatch) * 100
+    }
+
+    if(presenceStat.global.totalSeance > 0){
+      playerStat.tauxGeneral = (playerPresence.totalpresences / presenceStat.global.totalSeance) * 100
+    }
+
+    presenceStat.joueurs.push({
+      id:playerPresence.idjoueur,
+      nom:playerPresence.nom,
+      prenom:playerPresence.prenom,
+      ...playerStat
+    })
+    presenceStat.sommeEntrainement = presenceStat.sommeEntrainement + playerStat.tauxEntrainement
+
+    presenceStat.sommeMatch = presenceStat.sommeMatch + playerStat.tauxMatch
+    
+    presenceStat.sommeGeneral = presenceStat.sommeGeneral + playerStat.tauxGeneral
+  })
+
+  presenceStat.global.tauxEntrainement = presenceStat.sommeEntrainement / presenceStat.joueurs.length
+  
+  presenceStat.global.tauxMatch = presenceStat.sommeMatch / presenceStat.joueurs.length
+  
+  presenceStat.global.tauxGeneral = presenceStat.sommeGeneral / presenceStat.joueurs.length  
+  
+  return presenceStat;
+}); 
+
+// Lifecycle hook
+onMounted(async () => {
+  console.log("Fetch dashboard")
+  try {
+    const dashboardData = await getDashboardStats()
+    stats.value = dashboardData
+    console.log(stats.value);
+    
+  } catch (error) {
+    console.error("Failed to load dashboard data:", error)
+    // You might want to show an error message to the user
+  }
+})
 </script>
 
 <style scoped>
