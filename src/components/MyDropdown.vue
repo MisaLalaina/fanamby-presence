@@ -44,6 +44,11 @@ export default {
   color: #fff;
   transition: all 0.2s ease;
   border-radius: 4px;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+ 
+  
 }
 
 li:hover {

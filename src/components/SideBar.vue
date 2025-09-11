@@ -19,7 +19,7 @@ import MyDropdown from './MyDropdown.vue';
           <li>
             <router-link to="/" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Liste Joueurs</span>
+              <span>Registre Joueurs</span>
             </router-link>
           </li>
           <li>
@@ -291,12 +291,13 @@ import MyDropdown from './MyDropdown.vue';
 
 
 
-.nav-menu {
+/* .nav-menu {
   flex: 1;
   padding: 20px 0;
   overflow-y: auto;
   justify-content: center;
   align-items: center;
+  color: #ffff;
 }
 
 .nav-item {
@@ -330,7 +331,7 @@ import MyDropdown from './MyDropdown.vue';
 
 .nav-item.active i {
   color: white;
-}
+} */
 
 
 </style>

@@ -94,17 +94,17 @@
     padding-bottom: 0.5rem;
   }
   
-  h2::after {
-    content: '';
+  /* h2::after { */
+    /* content: '';
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
-    height: 3px;
-    background: linear-gradient(to right, #42b883, #2c8f6e);
-    border-radius: 3px;
-  }
+    height: 3px; */
+    /* background: linear-gradient(to right, #42b883, #2c8f6e); */
+    /* border-radius: 3px; */
+  /* } */
   
   form div {
     margin-bottom: 1.5rem;
@@ -130,11 +130,11 @@
     font-family: inherit;
   }
   
-  input:focus, textarea:focus {
+  /* input:focus, textarea:focus {
     outline: none;
     border-color: #42b883;
     box-shadow: 0 0 0 3px rgba(66, 184, 131, 0.2);
-  }
+  } */
   
   textarea {
     min-height: 120px;
@@ -142,7 +142,7 @@
   }
   
   button {
-    background: linear-gradient(to right, #42b883, #2c8f6e);
+    background: #2A88C8;
     color: white;
     padding: 0.85rem 1.5rem;
     border: none;
