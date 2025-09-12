@@ -261,6 +261,9 @@ import MyDropdown from './MyDropdown.vue';
 </template>
 
 <style scoped>
+*{
+  font-family: CormorantGaramond-Italic,sans-serif;
+}
 .sidebar {
   width: 250px;
   height: 100vh;

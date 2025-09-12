@@ -130,6 +130,9 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+*{
+  font-family: CormorantGaramond-Italic,sans-serif;
+}
   :root {
             --primary-color: #3498db;
             --secondary-color: #2c3e50;

@@ -74,6 +74,9 @@
   </script>
 
 <style scoped>
+*{
+  font-family: CormorantGaramond-Italic,sans-serif;
+}
   .container {
     max-width: 500px;
     margin: 2rem auto;

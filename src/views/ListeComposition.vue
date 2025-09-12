@@ -379,6 +379,9 @@
 
 
 <style scoped>
+*{
+  font-family: CormorantGaramond-Italic,sans-serif;
+}
 .composition-container {
   padding: 20px;
   max-width: 1200px;

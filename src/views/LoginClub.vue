@@ -46,6 +46,9 @@ export default {
 </script>
 
 <style scoped>
+*{
+  font-family: CormorantGaramond-Italic,sans-serif;
+}
 .login-club {
   max-width: 400px;
   margin: 80px auto;

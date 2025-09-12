@@ -2,7 +2,7 @@
   <div class="stats-container">
     <div class="header-section">
       <h1>Statistiques de Présence</h1>
-      <p>Suivi des présences des joueurs pour la saison 2024</p>
+      <!-- <p>Suivi des présences des joueurs pour la saison 2024</p> -->
     </div>
 
     <div class="filters-section">
@@ -51,15 +51,18 @@
           <div class="summary-value">{{ dashboardStat.global.tauxGeneral }}%</div>
           <div class="summary-label">Taux de présence global</div>
         </div>
+
         <div class="summary-stats">
           <div class="stat-item">
             <span class="stat-number">{{ dashboardStat.global.totalSeance }}</span>
             <span class="stat-text">Séances totales</span>
           </div>
+
           <div class="stat-item">
             <span class="stat-number">{{ dashboardStat.global.totalEntrainement }}</span>
             <span class="stat-text">Entrainement totales</span>
           </div>
+          
           <div class="stat-item">
             <span class="stat-number">{{ dashboardStat.global.totalMatch }}</span>
             <span class="stat-text">Matches totales</span>
@@ -69,65 +72,13 @@
     </div>
     <div class="stats-grid">
 
-      <!-- Graphique de tendance -->
-      <!-- <div class="stat-card chart-card">
-        <div class="card-header">
-          <h3>Évolution des présences</h3>
-        </div>
-        <div class="chart-container">
-          <div class="trend-chart">
-            <div 
-              v-for="(week, index) in weeklyTrend" 
-              :key="index" 
-              class="chart-bar"
-              :style="{ height: week.presenceRate + '%' }"
-              :class="{ 'current-week': week.current }"
-            >
-              <div class="bar-value">{{ week.presenceRate }}%</div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- Top joueurs
-      <div class="stat-card players-card">
-        <div class="card-header">
-          <h3>Top 5 - Meilleure assiduité</h3>
-        </div>
-        <div class="players-list">
-          <div 
-            v-for="(player, index) in topPlayers" 
-            :key="player.id" 
-            class="player-item"
-          >
-            <div class="player-rank">{{ index + 1 }}</div>
-            <div class="player-info">
-              <div class="player-name">{{ player.name }}</div>
-              <div class="player-stats">
-                <span class="presence-rate">{{ player.presenceRate }}%</span>
-                <span class="sessions-count">({{ player.present }}/{{ player.total }})</span>
-              </div>
-            </div>
-            <div class="progress-bar">
-              <div 
-                class="progress-fill" 
-                :style="{ width: player.presenceRate + '%' }"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-
+  
     </div>
     <!-- Détail par joueur -->
       <div class="stat-card details-card">
         <div class="card-header">
           <h3>Détail par Joueur ({{ dashboardStat.joueurs.length }})</h3>
-          <input 
-            v-model="playerSearch" 
-            placeholder="Rechercher un joueur..." 
-            class="search-input"
-          >
+          <input v-model="playerSearch" placeholder="Rechercher un joueur..." class="search-input">
         </div>
         <div class="table-container">
           <table class="players-table">
@@ -355,6 +306,9 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+*{
+  font-family: CormorantGaramond-Italic,sans-serif;
+}
 .stats-container {
   max-width: 1400px;
   margin: 0 auto;
