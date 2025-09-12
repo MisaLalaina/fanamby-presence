@@ -144,10 +144,10 @@ import MyDropdown from './MyDropdown.vue';
             </router-link>
           </li>
           <li>
-            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
+            <!-- <router-link to="/insertion-match" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
               <span>Statistique individuel</span>
-            </router-link>
+            </router-link> -->
           </li>
         </template>
       </MyDropdown>

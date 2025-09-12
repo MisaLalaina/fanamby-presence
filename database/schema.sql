@@ -111,6 +111,8 @@ CREATE TABLE Joueur (
     dateValiditeCertificat DATE,
     numeroLicence VARCHAR(50) UNIQUE,
     dateInscription DATE NOT NULL,
+    dateQuitter DATE NOT NULL,        
+    --   //daty nialany    
     FOREIGN KEY (idClub) REFERENCES Club(idClub),
     FOREIGN KEY (idPoste) REFERENCES Poste(idPoste),
     FOREIGN KEY (idStatutJoueur) REFERENCES StatutJoueur(idStatutJoueur),
