@@ -72,7 +72,6 @@
     </div>
     <div class="stats-grid">
 
-  
     </div>
     <!-- Détail par joueur -->
       <div class="stat-card details-card">
@@ -136,12 +135,118 @@
           </table>
         </div>
       </div>
+
+    <!-- Filtre Seance -->
+    <div class="filter-group">
+      <label>Séance :</label>
+      <select v-model="selectedSession" class="filter-select">
+        <option value="">Toutes les séances</option>
+        <option 
+          v-for="session in sessions" 
+          :key="session.idSeance" 
+          :value="session.idSeance">
+          {{ session.type }} - {{ session.dateSeance }}
+        </option>
+      </select>
+      <button 
+        v-if="selectedSession" 
+        @click="openPresencePopup" 
+        class="btn-popup">
+        Voir les présences
+      </button>
+    </div>
+
+    <!-- Popup Présences -->
+    <div v-if="showPopup" class="modal-overlay">
+      <div class="modal">
+        <h3>Présences pour la séance sélectionnée</h3>
+        <div class="popup-stats">
+  <div class="stat-item">
+    <span class="stat-number">{{ popupStats.total }}</span>
+    <span class="stat-text">Joueurs</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">{{ popupStats.presents }}</span>
+    <span class="stat-text">Présents</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">{{ popupStats.absents }}</span>
+    <span class="stat-text">Absents</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-number">{{ popupStats.tauxPresence }}%</span>
+    <span class="stat-text">Taux de présence</span>
+  </div>
+</div>
+
+        <table class="players-table">
+          <thead>
+            <tr>
+              <th>Joueur</th>
+              <th>Présent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="p in presenceList" :key="p.idPresence">
+              <td>{{ p.nom }} {{ p.prenom }}</td>
+              <td>{{ p.presenceStatus }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <button @click="closePresencePopup" class="btn-close">Fermer</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getDashboardStats } from '@/services/statPresence' 
+import { getDashboardStats } from '@/services/statPresence'
+
+import SeanceService from '@/services/SeanceService'
+import { Seance } from '@/models/seance'
+
+import {getPresencesByIdSeance} from '@/services/PresenceService'
+
+const showPopup = ref(false)
+const presenceList = ref([])
+
+const popupStats = ref({
+  total: 0,
+  presents: 0,
+  absents: 0,
+  tauxPresence: 0
+})
+
+const openPresencePopup = async () => {
+  if (!selectedSession.value) return
+  try {
+    const data = await getPresencesByIdSeance(selectedSession.value)
+    presenceList.value = data
+
+    // Calcul des chiffres
+    popupStats.value.total = data.length
+    popupStats.value.presents = data.filter(p => p.presenceStatus === 'Present').length
+    popupStats.value.absents = popupStats.value.total - popupStats.value.presents
+    popupStats.value.tauxPresence = popupStats.value.total > 0 
+      ? Math.round((popupStats.value.presents / popupStats.value.total) * 100) 
+      : 0
+
+    showPopup.value = true
+  } catch (err) {
+    console.error("Erreur chargement présences:", err)
+  }
+}
+
+
+const closePresencePopup = () => {
+  showPopup.value = false
+  presenceList.value = []
+}
+
+
+const selectedSession = ref('')
+const sessions = ref([])
 
 // Reactive data
 const selectedSeason = ref('2024')
@@ -163,77 +268,29 @@ const stats = ref({
     }
   ]
 })
+// -------
 
-// Mock data (you can remove this once your API is working)
-const overallStats = ref({
-  presenceRate: 85,
-  totalSessions: 48,
-  present: 41,
-  absent: 7
-})
-
-const weeklyTrend = ref([
-  { week: 'Sem 1', presenceRate: 78, current: false },
-  { week: 'Sem 2', presenceRate: 82, current: false },
-  { week: 'Sem 3', presenceRate: 88, current: false },
-  { week: 'Sem 4', presenceRate: 85, current: false },
-  { week: 'Sem 5', presenceRate: 90, current: true }
-])
-
-const topPlayers = ref([
-  { id: 1, name: 'RAKOTO', present: 45, total: 48, presenceRate: 94 },
-  { id: 2, name: 'RANDRIA', present: 44, total: 48, presenceRate: 92 },
-  { id: 3, name: 'MIA', present: 43, total: 48, presenceRate: 90 },
-  { id: 4, name: 'KELY', present: 42, total: 48, presenceRate: 88 },
-  { id: 5, name: 'RAJAONA', present: 41, total: 48, presenceRate: 85 }
-])
-
-const allPlayers = ref([
-  { id: 1, name: 'RAKOTO', position: 'Attaquant', present: 45, total: 48, presenceRate: 94 },
-  { id: 2, name: 'RANDRIA', position: 'Milieu', present: 44, total: 48, presenceRate: 92 },
-  { id: 3, name: 'MIA', position: 'Défenseur', present: 43, total: 48, presenceRate: 90 },
-  { id: 4, name: 'KELY', position: 'Gardien', present: 42, total: 48, presenceRate: 88 },
-  { id: 5, name: 'RAJAONA', position: 'Attaquant', present: 41, total: 48, presenceRate: 85 },
-  { id: 6, name: 'ANDRIAMI', position: 'Milieu', present: 38, total: 48, presenceRate: 79 },
-  { id: 7, name: 'FENO', position: 'Défenseur', present: 36, total: 48, presenceRate: 75 }
-])
-
-// Computed properties
-const filteredPlayers = computed(() => {
-  return allPlayers.value.filter(player =>
-    player.name.toLowerCase().includes(playerSearch.value.toLowerCase())
-  )
-})
-
-// If you want to compute these from your API data once it's loaded:
-const playerPresenceData = computed(() => {
-  return stats.value.playerPresenceStats?.content || []
-})
-
-const globalSessionData = computed(() => {
-  return stats.value.globalSessionStats?.content || []
-})
-
-// Methods
-const getInitials = (name) => {
-  return name.split(' ').map(n => n[0]).join('').toUpperCase()
+// Charger la liste des séances
+const fetchSessions = async () => {
+  const response = await SeanceService.getAllSeances()
+  sessions.value = Seance.formatSeances(response)
 }
 
-const getStatusClass = (rate) => {
-  if (rate >= 90) return 'status-excellent'
-  if (rate >= 80) return 'status-good'
-  if (rate >= 70) return 'status-average'
-  return 'status-poor'
+// Adapter la récupération des stats
+const fetchStats = async () => {
+  // try {
+  //   const dashboardData = await getDashboardStats({
+  //     season: selectedSeason.value,
+  //     type: selectedType.value,
+  //     period: selectedPeriod.value,
+  //     idSeance: selectedSession.value || null   // ✅ On passe le filtre séance
+  //   })
+  //   stats.value = dashboardData
+  // } catch (error) {
+  //   console.error("Erreur chargement stats:", error)
+  // }
 }
-
-const getStatusText = (rate) => {
-  if (rate >= 90) return 'Excellent'
-  if (rate >= 80) return 'Bon'
-  if (rate >= 70) return 'Moyen'
-  return 'À améliorer'
-}
-
-
+// -------
 const dashboardStat = computed(() => {
   const presenceStat = {
     global : {
@@ -297,6 +354,9 @@ onMounted(async () => {
     const dashboardData = await getDashboardStats()
     stats.value = dashboardData
     console.log(stats.value);
+
+    await fetchSessions()
+    await fetchStats()
     
   } catch (error) {
     console.error("Failed to load dashboard data:", error)
@@ -645,5 +705,36 @@ onMounted(async () => {
   .summary-stats {
     grid-template-columns: 1fr;
   }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.btn-popup, .btn-close {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #1B578C;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.btn-popup:hover, .btn-close:hover {
+  background: #2493BF;
 }
 </style>

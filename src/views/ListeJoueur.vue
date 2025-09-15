@@ -87,7 +87,7 @@ const filterByPoste = (poste) => {
 
 <style scoped>
 *{
-  font-family: CormorantGaramond-Italic,sans-serif;
+  font-family: CormorantGaramond-Medium,sans-serif;
 }
 .joueurs-container {
   max-width: 1200px;

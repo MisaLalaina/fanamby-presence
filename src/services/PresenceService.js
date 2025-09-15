@@ -1,4 +1,5 @@
 import { BASE_URL } from './config.js';
+import { fetchUnpagined } from './api.js';
 
 export async function createPresence(presenceData) {
   try {
@@ -41,24 +42,34 @@ export async function createPresence(presenceData) {
   }
 }
 
-export async function getPresencesByIdSeance(idSeance) {
-  try {
-    const response = await fetch(`${BASE_URL}/presences`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const json = await response.json();
-    if (json.returnCode !== 1) {
+export async function searchPresence(payload){
+    const response = await fetchUnpagined(`${BASE_URL}/presences/search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (response.returnCode !== 1) {
       throw new Error(`API error: ${json.message || 'Unknown error'}`);
     }
-    console.log("Données des présences :", json.data);
+    const data = response.data.content;
+    return data;
+}
 
+export async function getPresencesByIdSeance(idSeance) {
+  try {
+    const payload = {
+      idseanceSeance: {
+        idseance: idSeance,
+      },
+    }
+    const response = await searchPresence(payload)
+    console.log("Données des présences :", response);
     // Extract all presences
-    const allPresences = json.data.content;
-
+    const allPresences = response;
     // Filter by idSeance
-    const filtered = allPresences.filter(p => p.idseanceSeance.idseance === idSeance);
+    const filtered = allPresences;
 
     // Map to optimized form for UI display
     const simplified = filtered.map(p => ({
@@ -67,7 +78,7 @@ export async function getPresencesByIdSeance(idSeance) {
       nom: p.idjoueurJoueur.nom,
       prenom: p.idjoueurJoueur.prenom,
       poste: p.idjoueurJoueur.idpostePoste?.libelle || '',
-      presenceStatus: p.idstatutpresenceStatutpresence?.idstatutpresence || null,
+      presenceStatus: p.idstatutpresenceStatutpresence?.libelle || null,
       commentaire: p.commentaires || '',
       heureArrivee: p.heurearrivee || null,
       motifAbsence: p.motifabsence || null,

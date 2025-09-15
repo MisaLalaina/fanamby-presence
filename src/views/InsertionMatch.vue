@@ -4,10 +4,14 @@ import { createMatch } from '@/services/MatchFootService.js';
 import SeanceService from '@/services/SeanceService';
 import TypeSeanceService from '@/services/TypeSeanceService';
 import { TypeSeance } from '@/models/typeSeance';
+import { getAllTypeMathce } from '@/services/TypeMatchService';
+import { TypeMatch } from '@/models/typeMatch';
 
 const typesSeance = ref([]);
+const typesMatch = ref([]);
 const form = ref({
   // Données du match
+  idTypeMatch: '1',
   competition: 'CAN 2025',
   adversaire: 'Tanzanie',
   domicile: true,
@@ -34,6 +38,9 @@ const fetchTypes = async () => {
   try {
     const typeSeancesData = await TypeSeanceService.getAllTypeSeances();
     typesSeance.value = TypeSeance.formatTypeSeances(typeSeancesData);
+
+    const typeMatchesData = await getAllTypeMathce();
+    typesMatch.value = TypeMatch.formatTypeMatch(typeMatchesData)
   } catch (err) {
     error.value = err.message || 'Erreur chargement types séance';
   }
@@ -57,13 +64,11 @@ const submitForm = async () => {
     };
     
     const createdSeance = await SeanceService.createSeance(seanceData);
-    if (createdSeance) {
-      console.log(createdSeance);
-    }
     
     // Ensuite créer le match avec l'ID de la séance créée
     const matchData = {
       idSeance: createdSeance.idseance,
+      idTypeMatch: form.value.idTypeMatch,
       competition: form.value.competition,
       adversaire: form.value.adversaire,
       domicile: form.value.domicile,
@@ -73,11 +78,7 @@ const submitForm = async () => {
       observations: form.value.observations
     };
 
-    console.log(matchData);
-    
-    
     await createMatch(matchData);
-    
     successMessage.value = "Match et séance ajoutés avec succès !";
     resetForm();
     setTimeout(() => { successMessage.value = ''; }, 2500);
@@ -128,8 +129,17 @@ fetchTypes();
           <label>Adversaire :</label>
           <input type="text" v-model="form.adversaire" required placeholder="Nom de l'adversaire">
         </div>
+        <div class="form-group">
+          <label>Type de Match :</label>
+          <select v-model="form.idTypeMatch" required>
+            <option value="">-- Choisir un type --</option>
+            <option v-for="type in typesMatch" :key="type.idTypeMatch" :value="type.idTypeMatch">
+              {{ type.libelle }}
+            </option>
+          </select>
+        </div>
       </div>
-      
+
       <div class="form-row">
         <div class="form-group">
           <label>Lieu :</label>
@@ -152,7 +162,7 @@ fetchTypes();
       <div class="form-row">
         <div class="form-group">
           <label>Type de séance :</label>
-          <select v-model="form.idTypeSeance" required>
+          <select v-model="form.idTypeSeance" required disabled>
             <option value="">-- Choisir un type --</option>
             <option v-for="type in typesSeance" :key="type.idTypeSeance" :value="type.idTypeSeance">
               {{ type.libelle }}

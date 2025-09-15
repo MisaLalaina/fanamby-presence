@@ -16,7 +16,7 @@ import MyDropdown from './MyDropdown.vue';
           <span>Joueurs</span>
         </template>
         <template #list>
-          <li>
+          <li class="">
             <router-link to="/" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
               <span>Registre Joueurs</span>
@@ -37,16 +37,16 @@ import MyDropdown from './MyDropdown.vue';
           <span>Séance</span>
         </template>
         <template #list>
-          <li>
+          <li >
             <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Liste séance</span>
+              <span>Liste des séances</span>
             </router-link>
           </li>
           <li>
             <router-link to="/insertion-seance" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
-              <span>Insertion séance</span>
+              <span>Insertion entrainement</span>
             </router-link>
           </li>
         </template>
@@ -96,7 +96,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img >
+          <img src="@/assets/match.svg" alt="matchicon">
           <span>Composition</span>
         </template>
         <template #list>
@@ -292,16 +292,19 @@ import MyDropdown from './MyDropdown.vue';
   
 }
 
-
-
-/* .nav-menu {
+.nav-menu {
   flex: 1;
   padding: 20px 0;
   overflow-y: auto;
   justify-content: center;
   align-items: center;
   color: #ffff;
+  scrollbar-width: 2px;
 }
+
+
+
+/* 
 
 .nav-item {
   display: flex;

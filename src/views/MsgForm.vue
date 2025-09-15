@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <h2>Envoi SMS – Akademia Fanamby</h2>
+      <h2>Envoi de SMS Fanamby Akademia</h2>
       
       <p v-if="status">{{ status }}</p>
 
@@ -75,7 +75,7 @@
 
 <style scoped>
 *{
-  font-family: CormorantGaramond-Italic,sans-serif;
+  font-family: CormorantGaramond-Medium,sans-serif;
 }
   .container {
     max-width: 500px;
@@ -83,13 +83,12 @@
     padding: 2rem;
     background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 10px 25px rgba(178, 185, 185, 0.1);
   }
   
   h2 {
     text-align: center;
-    color: #2c3e50;
+    color: #3498db;
     margin-bottom: 1.8rem;
     font-weight: 600;
     font-size: 1.8rem;
@@ -118,7 +117,7 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #34495e;
+    color: #878787;
     font-size: 0.95rem;
   }
   
@@ -155,13 +154,13 @@
     font-weight: 600;
     width: 100%;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(44, 143, 110, 0.2);
+    /* box-shadow: 0 4px 6px rgba(44, 143, 110, 0.2); */
   }
   
   button:hover {
-    background: linear-gradient(to right, #3aa876, #267a5d);
+    /* background: linear-gradient(to right, #3aa876, #267a5d); */
     transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(44, 143, 110, 0.3);
+    /* box-shadow: 0 6px 8px rgba(44, 143, 110, 0.3); */
   }
   
   button:active {
@@ -177,39 +176,40 @@
   }
   
   /* Style pour le statut de succès */
-  p[v-if="status"] {
+  /* p[v-if="status"] {
     background-color: #e8f5e9;
     color: #2e7d32;
     border: 1px solid #a5d6a7;
-  }
+  } */
   
   /* Style pour le statut d'erreur */
-  p[v-if="status"]:contains("Erreur") {
+  /* p[v-if="status"]:contains("Erreur") {
     background-color: #ffebee;
     color: #c62828;
     border: 1px solid #ef9a9a;
-  }
+  } */
   
   /* Animation pour le statut */
-  p[v-if="status"] {
+  /* p[v-if="status"] {
     animation: fadeIn 0.5s ease;
-  }
+  } */
   
-  @keyframes fadeIn {
+  /* @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
-  }
+  } */
   
   /* Responsive design */
   @media (max-width: 576px) {
     .container {
       margin: 1rem;
       padding: 1.5rem;
+    
     }
     
-    h2 {
+    /* h2 {
       font-size: 1.5rem;
-    }
+    } */
     
     input, textarea, button {
       padding: 0.75rem;
