@@ -35,11 +35,17 @@ a,
 }
 
 
-@font-face {
+/* @font-face {
   font-family: 'MaPolice';
-  src: url('@/assets/fonts/CormorantGaramond-Bold.woff2') format('woff2'),
-       url('@/assets/fonts/CormorantGaramond-BoldItalic.ttf') format('truetype');
+  src: url('@/assets/fonts/InterTight-Regular.ttf') format('ttf'),
+       url('@/assets/fonts/InterTight-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-}
+} */
 
+@font-face {
+  font-family: 'InterTight';
+  src: url('../assets/fonts/InterTight-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}

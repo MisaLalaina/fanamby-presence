@@ -133,9 +133,7 @@ const savePresence = async () => {
 </template>
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+
 .presence-container {
   max-width: 1000px;
   margin: 2rem auto;

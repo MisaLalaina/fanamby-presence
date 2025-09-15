@@ -366,9 +366,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+/* Application à tous les éléments */
 .stats-container {
   max-width: 1400px;
   margin: 0 auto;

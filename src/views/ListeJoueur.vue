@@ -49,7 +49,7 @@ const filterByPoste = (poste) => {
 
 <template>
   <div class="joueurs-container">
-    <h1>LISTE DES JOUEURS</h1>
+    <h1>Liste de joueurs</h1>
     
     <div class="filter-buttons">
       <button 
@@ -79,6 +79,7 @@ const filterByPoste = (poste) => {
           <div class="joueur-poste">{{ joueur.poste }}</div>
           <div class="joueur-info">Né le {{ joueur.dateNaissance }}</div>
           <div class="joueur-nationalite">Nat. {{ joueur.nationalite }}</div>
+          <div class="joueur-activite">{{ joueur.dateInscription }} - {{ joueur.dateQuitter }}</div>
         </div>
       </div>
     </div>
@@ -86,9 +87,7 @@ const filterByPoste = (poste) => {
 </template>
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Medium,sans-serif;
-}
+
 .joueurs-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -99,10 +98,9 @@ h1 {
   text-align: center;
   color: #2A88C8;
   margin-bottom: 15px;
-  text-transform: uppercase;
   font-size: 28px;
   letter-spacing: 2px;
-  font-family:CormorantGaramond-BoldItalic,sans-serif;
+  font-family:'MaPolice' ,sans-serif;
 }
 
 .filter-buttons {
@@ -168,7 +166,7 @@ h1 {
   font-weight: bold;
   color: #2A88C8;
   margin-bottom: 10px;
-  font-family: CormorantGaramond-VariableFont_wght,sans-serif;
+  font-family:'MaPolice' ,sans-serif;
 }
 
 .joueur-nom {
@@ -177,7 +175,7 @@ h1 {
   color: #2A88C8;
   margin-bottom: 5px;
   text-transform: uppercase;
-  font-family: CormorantGaramond-VariableFont_wght,sans-serif;
+  font-family:'MaPolice' ,sans-serif;
 }
 
 .joueur-poste {

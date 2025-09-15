@@ -293,9 +293,7 @@ export default {
 
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+
 .form-container {
   max-width: 800px;
   margin: 0 auto;

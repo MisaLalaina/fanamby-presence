@@ -195,9 +195,7 @@ onMounted(() => {
 
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+
 .feuille-match-container {
   max-width: 1200px;
   margin: 0 auto;

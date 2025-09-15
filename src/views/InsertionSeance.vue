@@ -113,9 +113,7 @@ onMounted(() => {
 
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+
 .seance-insert-container {
   padding: 20px;
   max-width: 600px;

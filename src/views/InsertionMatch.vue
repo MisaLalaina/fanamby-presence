@@ -211,9 +211,7 @@ fetchTypes();
 </template>
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+
 .match-insert-container {
   padding: 20px;
   max-width: 800px;

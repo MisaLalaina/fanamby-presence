@@ -140,9 +140,7 @@
 </template>
 
 <style scoped>
-*{
-  font-family: CormorantGaramond-Italic,sans-serif;
-}
+
 .presence-container {
   padding: 20px;
   max-width: 1200px;
