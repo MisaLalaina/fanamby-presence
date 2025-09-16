@@ -5,6 +5,7 @@ import { getAllPostes } from '@/services/PosteService';
 import { Joueur } from '@/models/joueur';
 import { Poste } from '@/models/poste';
 
+
 const postes = ref(['TOUS']);
 const joueurs = ref([]);
 const currentFilter = ref('TOUS');
@@ -87,7 +88,9 @@ const filterByPoste = (poste) => {
 </template>
 
 <style scoped>
-
+*{
+  font-family:'InterTight' ,sans-serif;
+}
 .joueurs-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -100,7 +103,7 @@ h1 {
   margin-bottom: 15px;
   font-size: 28px;
   letter-spacing: 2px;
-  font-family:'MaPolice' ,sans-serif;
+
 }
 
 .filter-buttons {
@@ -166,7 +169,7 @@ h1 {
   font-weight: bold;
   color: #2A88C8;
   margin-bottom: 10px;
-  font-family:'MaPolice' ,sans-serif;
+
 }
 
 .joueur-nom {
@@ -175,7 +178,7 @@ h1 {
   color: #2A88C8;
   margin-bottom: 5px;
   text-transform: uppercase;
-  font-family:'MaPolice' ,sans-serif;
+
 }
 
 .joueur-poste {

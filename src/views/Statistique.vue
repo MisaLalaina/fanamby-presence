@@ -366,237 +366,219 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Application à tous les éléments */
+/* Appliquer la police InterTight à tout le conteneur */
 .stats-container {
-  max-width: 1400px;
+  font-family: 'InterTight', sans-serif;
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #2c3e50;
 }
 
+/* En-tête */
 .header-section {
-  text-align: center;
-  margin-bottom: 2.5rem;
+  /* text-align: center; */
+  /* margin-bottom: 30px; */
+  color:  #2A88C8;
 }
 
 .header-section h1 {
-  color: #1B578C;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-size: 32px;
+  color:#2A88C8;
+  margin-bottom: 10px;
+  /* font-weight: 700; */
 }
 
 .header-section p {
-  color: #2A86BF;
-  font-size: 1.1rem;
+  color: #7f8c8d;
+  font-size: 16px;
 }
 
+/* Filtres */
 .filters-section {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 20px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .filter-group label {
   font-weight: 600;
-  color: #164773;
-  font-size: 0.9rem;
+  font-size: 14px;
+  color: #2c3e50;
 }
 
 .filter-select {
-  padding: 0.75rem 1rem;
-  border: 1px solid #D1D1D1;
-  border-radius: 8px;
-  background-color: #F2F2F2;
-  font-size: 0.95rem;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
   min-width: 180px;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
+/* Cartes de statistiques */
 .stat-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #E0E0E0;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  overflow: hidden;
 }
 
 .card-header {
+  background-color: #2493BF;
+  color: white;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #F0F0F0;
 }
 
 .card-header h3 {
-  color: #164773;
-  font-size: 1.2rem;
+  margin: 0;
+  font-size: 18px;
   font-weight: 600;
 }
 
 .search-input {
-  padding: 0.5rem 1rem;
-  border: 1px solid #D1D1D1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 0.9rem;
-  width: 200px;
+  font-size: 14px;
+  min-width: 250px;
 }
 
+.card-content {
+  padding: 20px;
+}
+
+/* Résumé global */
 .summary-card .card-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.summary-item {
   text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
 }
 
 .summary-value {
-  font-size: 3rem;
+  font-size: 28px;
   font-weight: 700;
   color: #2493BF;
-  margin-bottom: 0.5rem;
+  margin-bottom: 5px;
 }
 
 .summary-label {
-  color: #718096;
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
+  font-size: 14px;
+  color: #7f8c8d;
 }
 
 .summary-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-column: span 3;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
 }
 
 .stat-item {
   text-align: center;
-  padding: 1rem;
-  background-color: #F8FBFD;
-  border-radius: 8px;
 }
 
 .stat-number {
   display: block;
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 700;
-  color: #1B578C;
+  color: #2c3e50;
 }
 
 .stat-text {
-  font-size: 0.85rem;
-  color: #718096;
+  font-size: 14px;
+  color: #7f8c8d;
 }
 
-.chart-container {
-  height: 200px;
-  display: flex;
-  align-items: flex-end;
+/* Tableau des joueurs */
+.table-container {
+  overflow-x: auto;
 }
 
-.trend-chart {
-  display: flex;
-  align-items: flex-end;
-  gap: 1rem;
+.players-table {
   width: 100%;
-  height: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
 }
 
-.chart-bar {
-  flex: 1;
-  background-color: #2A86BF;
-  border-radius: 6px 6px 0 0;
-  position: relative;
-  transition: height 0.3s ease;
-  min-height: 20px;
-}
-
-.chart-bar.current-week {
-  background-color: #2493BF;
-}
-
-.bar-value {
-  position: absolute;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.8rem;
+.players-table th {
+  background-color: #f8f9fa;
+  padding: 12px 15px;
+  text-align: left;
   font-weight: 600;
-  color: #164773;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
 }
 
-.players-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.players-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
 }
 
-.player-item {
+.players-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.player-cell {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background-color: #F8FBFD;
-  border-radius: 8px;
+  gap: 12px;
 }
 
-.player-rank {
-  width: 30px;
-  height: 30px;
-  background-color: #1B578C;
-  color: white;
+.player-avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  background-color: #2493BF;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.player-info {
-  flex: 1;
+  font-weight: 600;
 }
 
 .player-name {
   font-weight: 600;
-  color: #164773;
-  margin-bottom: 0.25rem;
 }
 
-.player-stats {
-  font-size: 0.85rem;
-  color: #718096;
-}
-
-.presence-rate {
-  font-weight: 600;
-  color: #2493BF;
-  margin-right: 0.5rem;
+/* Barres de progression */
+.rate-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .progress-bar {
-  width: 100px;
+  flex-grow: 1;
   height: 8px;
-  background-color: #E0E0E0;
+  background-color: #ecf0f1;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-bar.small {
-  width: 60px;
-  height: 6px;
-  margin-top: 0.25rem;
+  max-width: 100px;
 }
 
 .progress-fill {
@@ -606,133 +588,149 @@ onMounted(async () => {
   transition: width 0.3s ease;
 }
 
-.table-container {
-  overflow-x: auto;
-}
-
-.players-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.players-table th {
-  background-color: #1B578C;
+/* Boutons */
+.btn-popup {
+  padding: 8px 15px;
+  background-color: #2493BF;
   color: white;
-  padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background-color 0.3s;
 }
 
-.players-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #F0F0F0;
+.btn-popup:hover {
+  background-color: #1d7ea3;
 }
 
-.player-cell {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.player-avatar {
-  width: 40px;
-  height: 40px;
-  background-color: #2A86BF;
+.btn-close {
+  padding: 10px 20px;
+  background-color: #e74c3c;
   color: white;
-  border-radius: 50%;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.btn-close:hover {
+  background-color: #c0392b;
+}
+
+/* Popup de présences */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.9rem;
+  z-index: 1000;
 }
 
-.player-details {
+.modal {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #2493BF;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.popup-stats {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
 }
 
-.player-position {
-  font-size: 0.8rem;
-  color: #718096;
-}
-
-.rate-display {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-badge {
-  padding: 0.35rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.status-excellent {
-  background-color: #E8F5E8;
-  color: #2E7D32;
-}
-
-.status-good {
-  background-color: #E3F2FD;
-  color: #1565C0;
-}
-
-.status-average {
-  background-color: #FFF3E0;
-  color: #EF6C00;
-}
-
-.status-poor {
-  background-color: #FFEBEE;
-  color: #C62828;
-}
-
+/* Responsive */
 @media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .filters-section {
     flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-select {
+    min-width: 100%;
+  }
+  
+  .summary-card .card-content {
+    grid-template-columns: 1fr;
   }
   
   .summary-stats {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .search-input {
+    min-width: 100%;
+  }
+  
+  .popup-stats {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .stat-item {
+    flex: 1;
+    min-width: 45%;
   }
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
+/* Animation pour les barres de progression */
+@keyframes progressFill {
+  from { width: 0; }
 }
-.modal {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 800px;
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
+
+.progress-fill {
+  animation: progressFill 1s ease-out;
 }
-.btn-popup, .btn-close {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: #1B578C;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+
+/* Amélioration visuelle pour les taux élevés/moyens/faibles */
+.rate-display .progress-fill[style*="width: 7"],
+.rate-display .progress-fill[style*="width: 8"],
+.rate-display .progress-fill[style*="width: 9"],
+.rate-display .progress-fill[style*="width: 100"] {
+  background-color: #27ae60; /* Vert pour les bons taux */
 }
-.btn-popup:hover, .btn-close:hover {
-  background: #2493BF;
+
+.rate-display .progress-fill[style*="width: 5"],
+.rate-display .progress-fill[style*="width: 6"] {
+  background-color: #f39c12; /* Orange pour les taux moyens */
+}
+
+.rate-display .progress-fill[style*="width: 0"],
+.rate-display .progress-fill[style*="width: 1"],
+.rate-display .progress-fill[style*="width: 2"],
+.rate-display .progress-fill[style*="width: 3"],
+.rate-display .progress-fill[style*="width: 4"] {
+  background-color: #e74c3c; /* Rouge pour les faibles taux */
 }
 </style>

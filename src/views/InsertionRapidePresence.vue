@@ -126,7 +126,7 @@ const savePresence = async () => {
           </table>
         </div>
 
-        <button type="submit" class="btn-save">Enregistrer les présences</button>
+        <button type="submit" class="btn-save">Enregistrer</button>
       </form>
     </div>
   </div>
@@ -206,7 +206,7 @@ label {
 }
 
 .presence-table thead {
-  background: linear-gradient(135deg, #1B578C 0%, #2493BF 100%);
+  background: #2A88C8;
 }
 
 .presence-table th {

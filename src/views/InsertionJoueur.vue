@@ -121,7 +121,7 @@ export default {
 <SideBar/>
 
   <div class="form-container">
-    <h1>NOUVEAU JOUEUR</h1>
+    <h1>Nouveau joueurt</h1>
     
     <form @submit.prevent="submitForm" class="player-form">
       <div class="form-row">
@@ -308,7 +308,7 @@ h1 {
   color: #2c3e50;
   margin-bottom: 30px;
   font-size: 28px;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
 }
 
 .player-form {
