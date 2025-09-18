@@ -114,7 +114,6 @@ import MyDropdown from './MyDropdown.vue';
           </li>
         </template>
       </MyDropdown>
-
       <MyDropdown>
         <template #title>
           <img src="@/assets/message.svg" alt="matchicon">
@@ -122,9 +121,9 @@ import MyDropdown from './MyDropdown.vue';
         </template>
         <template #list>
           <li>
-            <router-link to="/message" class="dropdown-item" active-class="active" exact>
+            <router-link to="/messages" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>message</span>
+              <span>Send message</span>
             </router-link>
           </li>
         </template>

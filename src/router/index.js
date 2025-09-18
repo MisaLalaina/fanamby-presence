@@ -14,8 +14,7 @@ import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
 import LoginClub from '@/views/LoginClub.vue'
 import Statistique from '@/views/Statistique.vue'
-import Dashboard from '@/views/Dashboard.vue'
-import MsgForm from '@/views/MsgForm.vue'
+import MessageGroupView from '@/views/MessageGroupView.vue'
 
 const routes = [
    {
@@ -99,9 +98,9 @@ const routes = [
   // },
   
   {
-    path:'/message',
-    name:'msgForm',
-    component: MsgForm
+    path:'/messages',
+    name:'messages',
+    component: MessageGroupView
   }  
 ]
 

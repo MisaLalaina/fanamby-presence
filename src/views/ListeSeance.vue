@@ -91,7 +91,6 @@
   });
 </script>
 
-
 <template>
   <div class="seance-list-container">
     <h1>Liste des séances</h1>
@@ -135,9 +134,13 @@
 <style scoped>
 
 .seance-list-container {
-  padding: 20px;
-  max-width: 1200px;
+  /* padding: 0px; */
+  max-width: 1500px;
   margin: 0 auto;
+
+}
+h1 {
+  color: #3498db;
 }
 
 .filter-controls {

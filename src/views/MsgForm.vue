@@ -1,6 +1,40 @@
+<script>
+  import { sendSMS } from "../services/msg-sender.js";
+  
+  export default {
+    name: "MsgForm",
+    data() {
+      return {
+        phone: "",
+        presenceDate: "",
+        content: "",
+        status: "",
+      };
+    },
+    methods: {
+      async onSubmit() {
+        this.status = "Envoi en cours...";
+        try {
+          const res = await sendSMS(
+            this.phone,
+            this.presenceDate,
+            this.content
+          );
+          console.log("API Response:", res);
+          this.status = "SMS envoyé avec succès !";
+        } catch (err) {
+          console.error(err);
+          this.status = "Erreur: " + err.message;
+        }
+      },
+    },
+  };
+  </script>
+
+
 <template>
     <div class="container">
-      <h2>Envoi de SMS Fanamby Akademia</h2>
+      <h2>Envoi de SMS et publication Fanamby-Akademia</h2>
       
       <p v-if="status">{{ status }}</p>
 
@@ -40,39 +74,7 @@
     </div>
   </template>
   
-  <script>
-  import { sendSMS } from "../services/msg-sender.js";
   
-  export default {
-    name: "MsgForm",
-    data() {
-      return {
-        phone: "",
-        presenceDate: "",
-        content: "",
-        status: "",
-      };
-    },
-    methods: {
-      async onSubmit() {
-        this.status = "Envoi en cours...";
-        try {
-          const res = await sendSMS(
-            this.phone,
-            this.presenceDate,
-            this.content
-          );
-          console.log("API Response:", res);
-          this.status = "SMS envoyé avec succès !";
-        } catch (err) {
-          console.error(err);
-          this.status = "Erreur: " + err.message;
-        }
-      },
-    },
-  };
-  </script>
-
 <style scoped>
 
   .container {
