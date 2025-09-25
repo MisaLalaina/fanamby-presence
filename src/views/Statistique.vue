@@ -4,7 +4,24 @@
       <h1>Statistiques de Présence</h1>
       <!-- <p>Suivi des présences des joueurs pour la saison 2024</p> -->
     </div>
-
+<div class="filter-group">
+      <label>Séance :</label>
+      <select v-model="selectedSession" class="filter-select">
+        <option value="">Toutes les séances</option>
+        <option 
+          v-for="session in sessions" 
+          :key="session.idSeance" 
+          :value="session.idSeance">
+          {{ session.type }} - {{ session.dateSeance }}
+        </option>
+      </select>
+      <button 
+        v-if="selectedSession" 
+        @click="openPresencePopup" 
+        class="btn-popup">
+        Voir les présences
+      </button>
+    </div>
     <div class="filters-section">
       <div class="filter-group">
         <label>Saison :</label>
@@ -137,24 +154,7 @@
       </div>
 
     <!-- Filtre Seance -->
-    <div class="filter-group">
-      <label>Séance :</label>
-      <select v-model="selectedSession" class="filter-select">
-        <option value="">Toutes les séances</option>
-        <option 
-          v-for="session in sessions" 
-          :key="session.idSeance" 
-          :value="session.idSeance">
-          {{ session.type }} - {{ session.dateSeance }}
-        </option>
-      </select>
-      <button 
-        v-if="selectedSession" 
-        @click="openPresencePopup" 
-        class="btn-popup">
-        Voir les présences
-      </button>
-    </div>
+    
 
     <!-- Popup Présences -->
     <div v-if="showPopup" class="modal-overlay">

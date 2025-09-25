@@ -49,7 +49,7 @@ export default {
 
 <template>
   <div class="container">
-    <h2>Envoi de message</h2>
+    <h2>Envoi de message et publication</h2>
 
     <p v-if="status">{{ status }}</p>
 

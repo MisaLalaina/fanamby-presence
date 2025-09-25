@@ -40,13 +40,13 @@ import MyDropdown from './MyDropdown.vue';
           <li >
             <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Liste des séances</span>
+              <span>Registre séances</span>
             </router-link>
           </li>
           <li>
             <router-link to="/insertion-seance" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
-              <span>Insertion entrainement</span>
+              <span>Insertion séances</span>
             </router-link>
           </li>
         </template>
