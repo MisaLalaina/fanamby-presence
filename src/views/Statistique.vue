@@ -25,10 +25,10 @@
     <div class="filters-section">
       <div class="filter-group">
         <label>Saison :</label>
-        <select v-model="selectedSeason" class="filter-select">
+        <!-- <select v-model="selectedSeason" class="filter-select">
           <option value="2024">Saison 2024</option>
           <option value="2023">Saison 2023</option>
-        </select>
+        </select> -->
       </div>
       
       <div class="filter-group">
@@ -296,6 +296,7 @@ const dashboardStat = computed(() => {
     global : {
       totalSeance : stats.value.globalSessionStats[0].nbseance + stats.value.globalSessionStats[1].nbseance,
       totalEntrainement: stats.value.globalSessionStats[0].nbseance,
+      // totalEntrainement: 5,
       totalMatch: stats.value.globalSessionStats[1].nbseance, 
       tauxEntrainement: 0,
       tauxMatch: 0,
@@ -313,12 +314,13 @@ const dashboardStat = computed(() => {
       tauxMatch: 0,
       tauxGeneral: 0
     }
+    
     if (presenceStat.global.totalEntrainement > 0) {
-      playerStat.tauxEntrainement = (playerPresence.entpresences / presenceStat.global.totalEntrainement) * 100
+      playerStat.tauxEntrainement = parseInt((playerPresence.entpresences / presenceStat.global.totalEntrainement) * 100)
     }
 
     if (presenceStat.global.totalMatch > 0) {
-      playerStat.tauxEntrainement = (playerPresence.matpresences / presenceStat.global.totalMatch) * 100
+      playerStat.tauxMatch = (playerPresence.matpresences / presenceStat.global.totalMatch) * 100
     }
 
     if(presenceStat.global.totalSeance > 0){
@@ -337,7 +339,10 @@ const dashboardStat = computed(() => {
     
     presenceStat.sommeGeneral = presenceStat.sommeGeneral + playerStat.tauxGeneral
   })
-
+  console.log(presenceStat.sommeEntrainement);
+  console.log(presenceStat.joueurs.length);
+  
+  
   presenceStat.global.tauxEntrainement = presenceStat.sommeEntrainement / presenceStat.joueurs.length
   
   presenceStat.global.tauxMatch = presenceStat.sommeMatch / presenceStat.joueurs.length
@@ -349,7 +354,6 @@ const dashboardStat = computed(() => {
 
 // Lifecycle hook
 onMounted(async () => {
-  console.log("Fetch dashboard")
   try {
     const dashboardData = await getDashboardStats()
     stats.value = dashboardData
