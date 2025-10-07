@@ -15,7 +15,7 @@ import FeuilleMatch from '@/views/FeuilleMatch.vue'
 import LoginClub from '@/views/LoginClub.vue'
 import Statistique from '@/views/Statistique.vue'
 import MessageGroupView from '@/views/MessageGroupView.vue'
-
+import PublicationFacebook from '@/views/PublicationFacebook.vue'
 const routes = [
    {
     path:'/login-club',
@@ -101,7 +101,13 @@ const routes = [
     path:'/messages',
     name:'messages',
     component: MessageGroupView
-  }  
+  }, 
+
+  {
+    path:'/publication',
+    name:'publicationFacebook',
+    component:PublicationFacebook
+  }
 ]
 
 const router = createRouter({

@@ -56,12 +56,14 @@ export default {
     <form @submit.prevent="submitForm">
       <!-- Champ message -->
       <div>
-        <label for="message">Message :</label>
+        <label for="message"> Message :</label>
         <textarea
           id="message"
           v-model="message"
           placeholder="Votre message ici..."
           required
+          minlength="0"
+          maxlength="20"
         ></textarea>
       </div>
 

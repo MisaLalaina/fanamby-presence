@@ -5,8 +5,7 @@ import MyDropdown from './MyDropdown.vue';
 <template>
   <aside class="sidebar">
     <div class="logo-container">
-      <img 
-        src="@/assets/logo.jpg" alt="Logo" class="sidebar-logo"/>
+      <img src="@/assets/logo.jpg" alt="Logo" class="sidebar-logo"/>
     </div>
 
     <nav class="nav-menu">
@@ -114,21 +113,6 @@ import MyDropdown from './MyDropdown.vue';
           </li>
         </template>
       </MyDropdown>
-      <MyDropdown>
-        <template #title>
-          <img src="@/assets/message.svg" alt="matchicon">
-          <span>Message</span>
-        </template>
-        <template #list>
-          <li>
-            <router-link to="/messages" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Send message</span>
-            </router-link>
-          </li>
-        </template>
-
-      </MyDropdown>
 
       <MyDropdown>
         <template #title>
@@ -147,6 +131,39 @@ import MyDropdown from './MyDropdown.vue';
               <i class="fas fa-user-plus"></i>
               <span>Statistique individuel</span>
             </router-link> -->
+          </li>
+        </template>
+      </MyDropdown>
+        <MyDropdown>
+        <template #title>
+          <img src="@/assets/message.svg" alt="matchicon">
+          <span>Message</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/messages" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Send message</span>
+            </router-link>
+          </li>
+        </template>
+
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/seance.svg" alt="Joueurs icon">
+          <span>publication</span>
+        </template>
+        <template #list>
+          <li >
+            <router-link to="/publication" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Facebook</span>
+            </router-link>
+          </li>
+          <li>
+            
           </li>
         </template>
       </MyDropdown>
