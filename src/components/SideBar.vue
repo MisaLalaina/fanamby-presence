@@ -11,7 +11,7 @@ import MyDropdown from './MyDropdown.vue';
     <nav class="nav-menu">
       <MyDropdown>
         <template #title>
-          <img src="@/assets/joueur.svg" alt="Joueurs icon">
+          <img src="@/assets/joueur.svg" class="list-icon" alt="Joueurs icon">
           <span>Joueurs</span>
         </template>
         <template #list>
@@ -32,7 +32,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/seance.svg" alt="Joueurs icon">
+          <img src="@/assets/seance.svg" class="list-icon" alt="Joueurs icon">
           <span>Séance</span>
         </template>
         <template #list>
@@ -53,7 +53,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/presence.svg" alt="presence icon">
+          <img src="@/assets/presence.svg" class="list-icon" alt="presence icon">
           <span>Presence</span>
         </template>
         <template #list>
@@ -74,7 +74,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/match.svg" alt="matchicon">
+          <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
           <span>Match</span>
         </template>
         <template #list>
@@ -95,7 +95,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/match.svg" alt="matchicon">
+          <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
           <span>Composition</span>
         </template>
         <template #list>
@@ -116,7 +116,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/dashboard.svg" alt="dashboardicon">
+          <img src="@/assets/dashboard.svg" class="list-icon" alt="dashboardicon">
           <span>Dashboard</span>
         </template>
         <template #list>
@@ -136,7 +136,7 @@ import MyDropdown from './MyDropdown.vue';
       </MyDropdown>
         <MyDropdown>
         <template #title>
-          <img src="@/assets/message.svg" alt="matchicon">
+          <img src="@/assets/message.svg" class="list-icon" alt="matchicon">
           <span>Message</span>
         </template>
         <template #list>
@@ -152,7 +152,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/seance.svg" alt="Joueurs icon">
+          <img src="@/assets/publication.svg" class="list-icon" alt="Joueurs icon">
           <span>publication</span>
         </template>
         <template #list>
@@ -160,6 +160,15 @@ import MyDropdown from './MyDropdown.vue';
             <router-link to="/publication" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
               <span>Facebook</span>
+            </router-link>
+          </li>
+          <li>
+            
+          </li>
+          <li >
+            <router-link to="/suivi-facebook" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Suivi Facebook</span>
             </router-link>
           </li>
           <li>
@@ -215,42 +224,7 @@ import MyDropdown from './MyDropdown.vue';
   scrollbar-width: 2px;
 }
 
-
-
-/* 
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 20px;
-  color: #2c3e50;
-  text-decoration: none;
-  transition: all 0.3s ease;
+.list-icon{
+  width: 16px;
 }
-
-.nav-item i {
-  margin-right: 10px;
-  font-size: 1.1rem;
-  width: 2px;
-  text-align: center;
-  color: #2493BF;
-}
-
-.nav-item:hover {
-  background-color: #f3f5f6;
-  color: #2493BF;
-}
-
-.dropdownTitle {
-  display: flex;
-  gap: 0.5rem;
-}
-
-
-
-.nav-item.active i {
-  color: white;
-} */
-
-
 </style>

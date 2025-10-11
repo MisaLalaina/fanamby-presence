@@ -13,17 +13,16 @@ const ID_STATUT_ABSENT = 2;
 const seances = ref([])
 const joueurs = ref([])
 const selectedSeance = ref(null)
-const selectedJoueur = ref([])
 const presences = ref({})
 const searchTerm = ref('')
+const chekcAll = ref(false)
 
 // Chargement des données
 const fetchData = async () => {
   try {
     const seanceData = await SeanceService.getAllSeances()
     seances.value = Seance.formatSeances(seanceData)
-    console.log(seances.value);
-    
+
     selectedSeance.value = seances.value.length ? seances.value[0].idSeance : null
 
     const joueurData = await JoueurService.getAllJoueurs()
@@ -49,22 +48,19 @@ const savePresence = async () => {
   try {
     const seanceId = selectedSeance.value;
     const requests = [];
-
-    for (const joueurId in presences.value) {
-      const isPresent = presences.value[joueurId];
-      if (!isPresent) continue; // Skip if not set
+     joueurs.value.forEach( (joueur) => {
+      let isPresent = presences.value[joueur.id];
+      if (!isPresent) isPresent = false ;
       const payload = {
         idSeance: seanceId,
-        idJoueur: joueurId,
+        idJoueur: joueur.id,
         idStatutPresence: isPresent ? ID_STATUT_PRESENT : ID_STATUT_ABSENT,
         commentaire: ''
       };
-
       requests.push(createPresence(payload));
-    }
+    })
 
     await Promise.all(requests);
-
     alert("Toutes les présences ont été enregistrées !");
   } catch (error) {
     console.error("Erreur lors de l'enregistrement des présences :", error);
@@ -72,6 +68,18 @@ const savePresence = async () => {
   }
 };
 
+const updateCheckAll = (event) => {
+  const targetValue = event.target._modelValue;
+  if (chekcAll.value && !targetValue) {
+    chekcAll.value = false
+  }
+}
+
+const handleCheckAll = () => {
+  joueurs.value.forEach((joueur) => {
+    presences.value[joueur.id] = chekcAll.value
+  })
+}
 </script>
 
 
@@ -88,7 +96,6 @@ const savePresence = async () => {
                 {{ seance.type }} - {{ seance.dateSeance }} ({{ seance.heureDebut }}) - {{ seance.lieu }}
               </option>
             </select>
-
             <!-- filtre recherche joueur -->
              <input 
               id="player-search" 
@@ -106,7 +113,7 @@ const savePresence = async () => {
             <thead>
               <tr>
                 <th>Joueur</th>
-                <th>Présent</th>
+                <th><label class="checkbox-container" for="checkAll"><input id="checkAll" type="checkbox" v-model="chekcAll" @change="handleCheckAll"  /><span class="checkmark"></span></label></th>
               </tr>
             </thead>
             <tbody>
@@ -117,6 +124,7 @@ const savePresence = async () => {
                     <input
                       type="checkbox"
                       v-model="presences[joueur.id]"
+                      @change="updateCheckAll"
                     />
                     <span class="checkmark"></span>
                   </label>

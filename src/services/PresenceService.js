@@ -4,7 +4,6 @@ import { fetchUnpagined } from './api.js';
 export async function createPresence(presenceData) {
   try {
     const payload = {
-      idpresence: 0,
       idseanceSeance: {
         idseance: presenceData.idSeance,
       },

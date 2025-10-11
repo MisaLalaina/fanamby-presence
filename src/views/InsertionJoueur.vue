@@ -16,17 +16,17 @@ export default {
       idpostePoste: { idposte: 1 },
       idstatutjoueurStatutjoueur: { idstatutjoueur: 1 },
       idpiedfortPiedfort: { idpiedfort: 1 },
-      nom: '',
-      prenom: '',
-      datenaissance: '',
+      nom: 'JCA',
+      prenom: 'TSN',
+      datenaissance: '2004-03-13',
       dateinscription: new Date().toISOString().slice(0, 10),
-      nationalite: '',
-      taille: '',
-      poids: '',
-      numeroMaillot:'',
-      adresse: '',
-      contact: '',
-      email: ''
+      nationalite: 'Malagasy',
+      taille: '178',
+      poids: '100',
+      numeromaillot:'10',
+      adresse: 'Antrano',
+      telephone: '+261 38 81 559 70',
+      email: 'jacquesalex771@gmail.com'
     });
 
     const postes = ref([]);
@@ -73,7 +73,7 @@ export default {
 
     const submitForm = async () => {
       try {
-         console.log(joueur.value);
+        console.log(joueur.value);
         const result = await createJoueur(joueur.value);
         alert('Joueur enregistré avec succès !');
         console.log('Réponse API :', result);
@@ -149,6 +149,17 @@ export default {
       </div>
 
       <div class="form-group">
+          <label for="age">Date Inscription</label>
+          <input 
+            type="date" 
+            id="inscription" 
+            v-model="joueur.dateinscription" 
+            required
+            placeholder="Entrez la date d'inscription"
+          >
+        </div>
+
+      <div class="form-group">
         <label for="poste">Poste*</label>
         <select 
           id="poste" 
@@ -187,17 +198,6 @@ export default {
             @change="calculerAge"
           >
         </div>
-        
-        <!-- <div class="form-group">
-          <label for="age">Âge</label>
-          <input 
-            type="number" 
-            id="age" 
-            v-model="joueur.age" 
-            disabled
-            placeholder="Calculé automatiquement"
-          >
-        </div> -->
       </div>
 
       <div class="form-group full-width">
@@ -227,7 +227,7 @@ export default {
     <input 
       type="number" 
       id="numeroMaillot" 
-      v-model="joueur.numeroMaillot" 
+      v-model="joueur.numeromaillot" 
       required
       placeholder="Ex: 10"
     >
@@ -264,7 +264,7 @@ export default {
           <input 
             type="tel" 
             id="contact" 
-            v-model="joueur.contact" 
+            v-model="joueur.telephone" 
             required
             placeholder="+261 32 12 345 67"
             pattern="[+]{1}[0-9]{3} [0-9]{2} [0-9]{2} [0-9]{3} [0-9]{2}"

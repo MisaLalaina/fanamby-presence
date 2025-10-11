@@ -16,6 +16,7 @@ import LoginClub from '@/views/LoginClub.vue'
 import Statistique from '@/views/Statistique.vue'
 import MessageGroupView from '@/views/MessageGroupView.vue'
 import PublicationFacebook from '@/views/PublicationFacebook.vue'
+import SuiviFacebook from '@/views/SuiviFacebook.vue'
 const routes = [
    {
     path:'/login-club',
@@ -107,6 +108,11 @@ const routes = [
     path:'/publication',
     name:'publicationFacebook',
     component:PublicationFacebook
+  },
+ {
+    path: '/suivi-facebook', 
+    name: 'suiviFacebook',
+    component: SuiviFacebook
   }
 ]
 

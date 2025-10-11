@@ -1,586 +1,628 @@
 <template>
-  <div class="facebook-analytics-container">
-    <!-- En-tête -->
-    <div class="analytics-header">
-      <h1>📊 Analyse des Publications Facebook</h1>
-      <p>Suivez les performances de vos publications sur Facebook</p>
+  <div class="posts-container">
+    <div class="header">
+      <h1>Mes Publications Facebook</h1>
+      <p>Gérez et visualisez toutes vos publications</p>
     </div>
 
-    <!-- Filtres et contrôles -->
-    <div class="controls-section">
-      <div class="filter-group">
-        <div class="filter-item">
-          <label for="date-range">Période :</label>
-          <select id="date-range" v-model="selectedDateRange" @change="fetchPosts">
-            <option value="7">7 derniers jours</option>
-            <option value="30">30 derniers jours</option>
-            <option value="90">3 derniers mois</option>
-            <option value="all">Toutes les publications</option>
-          </select>
-        </div>
-        
-        <div class="filter-item">
-          <label for="post-type">Type de contenu :</label>
-          <select id="post-type" v-model="selectedPostType" @change="filterPosts">
+    <!-- Contrôles et filtres -->
+    <div class="controls">
+      <div class="filters">
+        <div class="filter-group">
+          <label>Type de publication :</label>
+          <select v-model="filters.type" @change="applyFilters">
             <option value="all">Tous les types</option>
             <option value="photo">Photos</option>
             <option value="video">Vidéos</option>
             <option value="status">Statuts</option>
           </select>
         </div>
+
+        <div class="filter-group">
+          <label>Tri par :</label>
+          <select v-model="sortBy" @change="applySorting">
+            <option value="created_time">Date de publication</option>
+            <option value="engagement">Taux d'engagement</option>
+            <option value="reactions">Réactions</option>
+            <option value="comments">Commentaires</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Nombre :</label>
+          <select v-model="postsLimit" @change="fetchPosts">
+            <option value="10">10 publications</option>
+            <option value="25">25 publications</option>
+            <option value="50">50 publications</option>
+            <option value="100">100 publications</option>
+          </select>
+        </div>
       </div>
-      
-      <div class="refresh-section">
-        <button @click="fetchPosts" class="refresh-btn" :disabled="loading">
-          <span v-if="loading" class="spinner">⟳</span>
-          {{ loading ? 'Actualisation...' : 'Actualiser' }}
+
+      <div class="actions">
+        <button class="refresh-btn" @click="fetchPosts" :disabled="loading">
+          {{ loading ? 'Chargement...' : 'Actualiser' }}
         </button>
-        <span class="last-update">Dernière mise à jour : {{ lastUpdateTime }}</span>
+        <button class="new-post-btn" @click="createNewPost">
+          ➕ Nouvelle publication
+        </button>
       </div>
     </div>
 
-    <!-- Statistiques globales -->
-    <div class="stats-overview">
-      <div class="stat-card">
-        <div class="stat-icon">📝</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ totalPosts }}</div>
-          <div class="stat-label">Publications</div>
-        </div>
+    <!-- Statistiques rapides -->
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">{{ totalPosts }}</div>
+        <div class="stat-label">Publications totales</div>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">👁️</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ formatNumber(totalReach) }}</div>
-          <div class="stat-label">Portée totale</div>
-        </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ formatNumber(totalReactions) }}</div>
+        <div class="stat-label">Réactions totales</div>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">❤️</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ formatNumber(totalEngagements) }}</div>
-          <div class="stat-label">Engagements</div>
-        </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ formatNumber(totalComments) }}</div>
+        <div class="stat-label">Commentaires</div>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">📈</div>
-        <div class="stat-content">
-          <div class="stat-value">{{ engagementRate }}%</div>
-          <div class="stat-label">Taux d'engagement</div>
-        </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ formatNumber(totalShares) }}</div>
+        <div class="stat-label">Partages</div>
       </div>
     </div>
 
     <!-- Liste des publications -->
-    <div class="posts-section">
-      <h2>Publications récentes</h2>
-      
-      <div v-if="loading" class="loading-container">
-        <div class="loading-spinner">⏳</div>
-        <p>Chargement des publications...</p>
+    <div class="posts-list">
+      <div v-if="loading" class="loading-state">
+        <div class="spinner">⏳</div>
+        <p>Chargement de vos publications...</p>
       </div>
-      
+
+      <div v-else-if="error" class="error-state">
+        <div class="error-icon">❌</div>
+        <h3>Erreur lors du chargement</h3>
+        <p>{{ error }}</p>
+        <button class="retry-btn" @click="fetchPosts">Réessayer</button>
+      </div>
+
       <div v-else-if="filteredPosts.length === 0" class="empty-state">
         <div class="empty-icon">📭</div>
         <h3>Aucune publication trouvée</h3>
         <p>Aucune publication ne correspond à vos critères de recherche.</p>
+        <button class="new-post-btn" @click="createNewPost">
+          Créer votre première publication
+        </button>
       </div>
-      
-      <div v-else class="posts-list">
+
+      <div v-else class="posts-grid">
         <div 
           v-for="post in filteredPosts" 
           :key="post.id" 
           class="post-card"
-          :class="{ expanded: expandedPostId === post.id }"
+          :class="getPostTypeClass(post.media_type)"
         >
           <!-- En-tête de la publication -->
-          <div class="post-header" @click="togglePostDetails(post.id)">
-            <div class="post-type-indicator">
-              <span v-if="post.type === 'photo'">📷</span>
-              <span v-else-if="post.type === 'video'">🎥</span>
-              <span v-else>📝</span>
+          <div class="post-header">
+            <div class="post-type">
+              <span class="type-icon">{{ getTypeIcon(post.media_type) }}</span>
+              <span class="type-label">{{ getTypeLabel(post.media_type) }}</span>
             </div>
-            
-            <div class="post-info">
-              <div class="post-message" :title="post.message">
-                {{ truncateText(post.message, 80) }}
-              </div>
-              <div class="post-date">{{ formatDate(post.created_time) }}</div>
-            </div>
-            
-            <div class="post-engagement">
-              <div class="engagement-item">
-                <span class="engagement-icon">👁️</span>
-                <span class="engagement-count">{{ formatNumber(post.reach || 0) }}</span>
-              </div>
-              <div class="engagement-item">
-                <span class="engagement-icon">❤️</span>
-                <span class="engagement-count">{{ formatNumber(post.total_reactions || 0) }}</span>
-              </div>
-              <div class="engagement-item">
-                <span class="engagement-icon">💬</span>
-                <span class="engagement-count">{{ formatNumber(post.comments_count || 0) }}</span>
-              </div>
-              <div class="engagement-item">
-                <span class="engagement-icon">🔄</span>
-                <span class="engagement-count">{{ formatNumber(post.shares_count || 0) }}</span>
-              </div>
-            </div>
-            
-            <div class="expand-icon">
-              {{ expandedPostId === post.id ? '▼' : '►' }}
+            <div class="post-date">
+              {{ formatDate(post.created_time) }}
             </div>
           </div>
-          
-          <!-- Détails étendus de la publication -->
-          <div v-if="expandedPostId === post.id" class="post-details">
-            <!-- Message complet -->
-            <div v-if="post.message" class="full-message">
-              <h4>Message :</h4>
-              <p>{{ post.message }}</p>
-            </div>
-            
+
+          <!-- Contenu de la publication -->
+          <div class="post-content">
             <!-- Média -->
-            <div v-if="post.media_url" class="post-media">
-              <h4>Média :</h4>
+            <div v-if="post.media_type !== 'text'" class="post-media">
               <img 
-                v-if="post.type === 'photo'" 
-                :src="post.media_url" 
-                :alt="post.message || 'Image de la publication'"
-                class="media-preview"
-                @click="openMediaModal(post.media_url)"
+                v-if="post.media_type === 'photo'" 
+                :src="getMediaUrl(post)" 
+                :alt="post.message"
+                @error="handleImageError"
               />
-              <video 
-                v-else-if="post.type === 'video'" 
-                :src="post.media_url" 
-                controls
-                class="media-preview"
-              ></video>
-            </div>
-            
-            <!-- Statistiques détaillées -->
-            <div class="detailed-stats">
-              <h4>Statistiques détaillées :</h4>
-              <div class="stats-grid">
-                <div class="stat-detail">
-                  <div class="stat-detail-value">{{ formatNumber(post.reach || 0) }}</div>
-                  <div class="stat-detail-label">Portée</div>
-                </div>
-                <div class="stat-detail">
-                  <div class="stat-detail-value">{{ formatNumber(post.impressions || 0) }}</div>
-                  <div class="stat-detail-label">Impressions</div>
-                </div>
-                <div class="stat-detail">
-                  <div class="stat-detail-value">{{ formatNumber(post.engaged_users || 0) }}</div>
-                  <div class="stat-detail-label">Personnes engagées</div>
-                </div>
-                <div class="stat-detail">
-                  <div class="stat-detail-value">{{ post.engagement_rate || 0 }}%</div>
-                  <div class="stat-detail-label">Taux d'engagement</div>
-                </div>
+              <div v-else-if="post.media_type === 'video'" class="video-placeholder">
+                <span class="video-icon">🎥</span>
+                <p>Vidéo</p>
+              </div>
+              <div v-else-if="post.media_type === 'album'" class="album-placeholder">
+                <span class="album-icon">🖼️</span>
+                <p>Album photo</p>
               </div>
             </div>
-            
-            <!-- Réactions détaillées -->
-            <div class="reactions-breakdown">
-              <h4>Réactions :</h4>
-              <div class="reactions-list">
-                <div class="reaction-item">
-                  <span class="reaction-emoji">❤️</span>
-                  <span class="reaction-count">{{ formatNumber(post.reactions_like || 0) }}</span>
-                </div>
-                <div class="reaction-item">
-                  <span class="reaction-emoji">😍</span>
-                  <span class="reaction-count">{{ formatNumber(post.reactions_love || 0) }}</span>
-                </div>
-                <div class="reaction-item">
-                  <span class="reaction-emoji">😂</span>
-                  <span class="reaction-count">{{ formatNumber(post.reactions_haha || 0) }}</span>
-                </div>
-                <div class="reaction-item">
-                  <span class="reaction-emoji">😮</span>
-                  <span class="reaction-count">{{ formatNumber(post.reactions_wow || 0) }}</span>
-                </div>
-                <div class="reaction-item">
-                  <span class="reaction-emoji">😢</span>
-                  <span class="reaction-count">{{ formatNumber(post.reactions_sad || 0) }}</span>
-                </div>
-                <div class="reaction-item">
-                  <span class="reaction-emoji">😠</span>
-                  <span class="reaction-count">{{ formatNumber(post.reactions_angry || 0) }}</span>
-                </div>
-              </div>
+
+            <!-- Texte -->
+            <div class="post-text" :class="{ 'has-media': post.media_type !== 'text' }">
+              <p>{{ truncateText(post.message, 150) || 'Publication sans texte' }}</p>
             </div>
-            
-            <!-- Commentaires récents -->
-            <div v-if="post.comments && post.comments.length > 0" class="recent-comments">
-              <h4>Commentaires récents :</h4>
-              <div class="comments-list">
-                <div 
-                  v-for="comment in post.comments.slice(0, 3)" 
-                  :key="comment.id" 
-                  class="comment-item"
-                >
-                  <div class="comment-author">{{ comment.from?.name || 'Utilisateur' }}</div>
-                  <div class="comment-message">{{ comment.message }}</div>
-                  <div class="comment-date">{{ formatDate(comment.created_time) }}</div>
-                </div>
-                <div v-if="post.comments_count > 3" class="more-comments">
-                  + {{ post.comments_count - 3 }} autres commentaires
-                </div>
-              </div>
+          </div>
+
+          <!-- Statistiques -->
+          <div class="post-stats">
+            <div class="stat">
+              <span class="stat-icon"></span>
+              <span class="stat-value">{{ formatNumber(getTotalReactions(post)) }}</span>
             </div>
+            <div class="stat">
+              <span class="stat-icon"></span>
+              <span class="stat-value">{{ formatNumber(post.stats?.comments || 0) }}</span>
+            </div>
+            <div class="stat">
+              <span class="stat-icon"></span>
+              <span class="stat-value">{{ formatNumber(post.stats?.shares || 0) }}</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="post-actions">
+            <button 
+              class="action-btn view-btn"
+              @click="viewOnFacebook(post.permalink_url)"
+              title="Voir sur Facebook"
+            >
+              👁️ Voir
+            </button>
+            <button 
+              class="action-btn stats-btn"
+              @click="showPostDetails(post)"
+              title="Voir les détails"
+            >
+              📊 Détails
+            </button>
+            <button 
+              class="action-btn delete-btn"
+              @click="confirmDeletePost(post)"
+              title="Supprimer"
+              v-if="false"
+            >
+              🗑️
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal pour afficher l'image en grand -->
-    <div v-if="showMediaModal" class="modal-overlay" @click="closeMediaModal">
-      <div class="modal-content" @click.stop>
-        <button class="modal-close" @click="closeMediaModal">×</button>
-        <img :src="modalImageUrl" alt="Image de la publication" class="modal-image" />
-      </div>
+    <!-- Chargement plus -->
+    <div v-if="hasMorePosts && !loading" class="load-more">
+      <button class="load-more-btn" @click="loadMorePosts">
+        📥 Charger plus de publications
+      </button>
     </div>
+
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from 'vue'
+import { getAllPostsWithStats, getPagePosts } from '@/services/facebookService'
 
 export default {
-  name: 'FacebookAnalytics',
+  name: 'FacebookPostsList',
   setup() {
-    // Variables réactives
+    // États réactifs
     const posts = ref([])
     const loading = ref(false)
-    const selectedDateRange = ref('7')
-    const selectedPostType = ref('all')
-    const expandedPostId = ref(null)
-    const showMediaModal = ref(false)
-    const modalImageUrl = ref('')
-    const lastUpdateTime = ref('')
+    const error = ref(null)
+    const selectedPost = ref(null)
+    const postsLimit = ref(25)
+    const hasMorePosts = ref(false)
 
-    // Configuration Facebook
-    const FB_PAGE_ID = import.meta.env.VITE_FB_PAGE_ID
-    const FB_TOKEN = import.meta.env.VITE_FB_TOKEN
-    const BASE_URL = import.meta.env.VITE_FB_GRAPH_URL || 'https://graph.facebook.com/v18.0'
+    // Filtres et tri
+    const filters = ref({
+      type: 'all'
+    })
+    const sortBy = ref('created_time')
 
-    // Fonction pour récupérer les publications
+    // Computed properties
+    const filteredPosts = computed(() => {
+      let filtered = [...posts.value]
+
+      // Filtrage par type
+      if (filters.value.type !== 'all') {
+        filtered = filtered.filter(post => post.media_type === filters.value.type)
+      }
+
+      // Tri
+      filtered.sort((a, b) => {
+        switch (sortBy.value) {
+          case 'engagement':
+            const aEngagement = a.stats?.engagement_rate || 0
+            const bEngagement = b.stats?.engagement_rate || 0
+            return bEngagement - aEngagement
+
+          case 'reactions':
+            const aReactions = getTotalReactions(a)
+            const bReactions = getTotalReactions(b)
+            return bReactions - aReactions
+
+          case 'comments':
+            const aComments = a.stats?.comments || 0
+            const bComments = b.stats?.comments || 0
+            return bComments - aComments
+
+          case 'created_time':
+          default:
+            return new Date(b.created_time) - new Date(a.created_time)
+        }
+      })
+
+      return filtered
+    })
+
+    const totalPosts = computed(() => filteredPosts.value.length)
+    const totalReactions = computed(() => 
+      filteredPosts.value.reduce((sum, post) => sum + getTotalReactions(post), 0)
+    )
+    const totalComments = computed(() => 
+      filteredPosts.value.reduce((sum, post) => sum + (post.stats?.comments || 0), 0)
+    )
+    const totalShares = computed(() => 
+      filteredPosts.value.reduce((sum, post) => sum + (post.stats?.shares || 0), 0)
+    )
+
+    // Méthodes
     const fetchPosts = async () => {
       loading.value = true
+      error.value = null
       
       try {
-        // Calculer la date de début en fonction de la période sélectionnée
-        let sinceDate = ''
-        if (selectedDateRange.value !== 'all') {
-          const days = parseInt(selectedDateRange.value)
-          const date = new Date()
-          date.setDate(date.getDate() - days)
-          sinceDate = `&since=${Math.floor(date.getTime() / 1000)}`
+        // Essayer d'abord la méthode complète
+        const response = await getAllPostsWithStats(postsLimit.value)
+        posts.value = response.data
+        hasMorePosts.value = !!response.paging?.next
+        
+        console.log('Publications chargées avec stats:', posts.value.length)
+        console.log('Publications :', posts.value)
+      } catch (err) {
+        console.error('Erreur avec la méthode complète, tentative avec méthode simple:', err)
+        
+        // Fallback vers la méthode simple
+        try {
+          const simpleResponse = await getSimplePosts(postsLimit.value)
+          posts.value = simpleResponse.data.map(post => ({
+            ...post,
+            stats: null // Pas de stats disponibles
+          }))
+          hasMorePosts.value = !!simpleResponse.paging?.next
+          
+          console.log('Publications chargées (sans stats):', posts.value.length)
+          error.value = 'Statistiques non disponibles, mais publications chargées'
+        } catch (simpleErr) {
+          console.error('Erreur même avec méthode simple:', simpleErr)
+          error.value = simpleErr.message || 'Erreur lors du chargement des publications'
+          
+          // Données de démonstration en dernier recours
+          posts.value = generateDemoPosts()
         }
-        
-        // Récupérer les posts avec leurs statistiques de base
-        const postsResponse = await fetch(
-          `${BASE_URL}/${FB_PAGE_ID}/posts?` +
-          `fields=id,message,created_time,full_picture,attachments{media,subattachments},` +
-          `reactions.type(LIKE).limit(0).summary(total_count).as(reactions_like),` +
-          `reactions.type(LOVE).limit(0).summary(total_count).as(reactions_love),` +
-          `reactions.type(HAHA).limit(0).summary(total_count).as(reactions_haha),` +
-          `reactions.type(WOW).limit(0).summary(total_count).as(reactions_wow),` +
-          `reactions.type(SAD).limit(0).summary(total_count).as(reactions_sad),` +
-          `reactions.type(ANGRY).limit(0).summary(total_count).as(reactions_angry),` +
-          `comments.limit(5){from,message,created_time},shares,` +
-          `insights.metric(post_impressions,post_impressions_unique,post_engaged_users,post_engagement_rate)` +
-          `${sinceDate}&access_token=${FB_TOKEN}`
-        )
-        
-        const postsData = await postsResponse.json()
-        
-        if (postsData.error) {
-          console.error('Erreur Facebook:', postsData.error)
-          throw new Error(postsData.error.message)
-        }
-        
-        // Traiter les données des posts
-        posts.value = await Promise.all(
-          postsData.data.map(async (post) => {
-            // Déterminer le type de post
-            let postType = 'status'
-            let mediaUrl = post.full_picture || null
-            
-            if (post.attachments && post.attachments.data.length > 0) {
-              const attachment = post.attachments.data[0]
-              if (attachment.media && attachment.media.image) {
-                postType = 'photo'
-                mediaUrl = attachment.media.image.src
-              } else if (attachment.subattachments) {
-                postType = 'photo'
-                mediaUrl = attachment.subattachments.data[0].media.image.src
-              } else if (attachment.type === 'video') {
-                postType = 'video'
-                mediaUrl = attachment.media.source
-              }
-            }
-            
-            // Calculer les totaux
-            const totalReactions = 
-              (post.reactions_like?.summary?.total_count || 0) +
-              (post.reactions_love?.summary?.total_count || 0) +
-              (post.reactions_haha?.summary?.total_count || 0) +
-              (post.reactions_wow?.summary?.total_count || 0) +
-              (post.reactions_sad?.summary?.total_count || 0) +
-              (post.reactions_angry?.summary?.total_count || 0)
-            
-            // Extraire les insights
-            let reach = 0
-            let impressions = 0
-            let engagedUsers = 0
-            let engagementRate = 0
-            
-            if (post.insights && post.insights.data.length > 0) {
-              post.insights.data.forEach(insight => {
-                if (insight.name === 'post_impressions_unique') {
-                  reach = insight.values[0].value
-                } else if (insight.name === 'post_impressions') {
-                  impressions = insight.values[0].value
-                } else if (insight.name === 'post_engaged_users') {
-                  engagedUsers = insight.values[0].value
-                } else if (insight.name === 'post_engagement_rate') {
-                  engagementRate = insight.values[0].value
-                }
-              })
-            }
-            
-            return {
-              id: post.id,
-              message: post.message || '',
-              created_time: post.created_time,
-              type: postType,
-              media_url: mediaUrl,
-              reach: reach,
-              impressions: impressions,
-              engaged_users: engagedUsers,
-              engagement_rate: engagementRate,
-              total_reactions: totalReactions,
-              reactions_like: post.reactions_like?.summary?.total_count || 0,
-              reactions_love: post.reactions_love?.summary?.total_count || 0,
-              reactions_haha: post.reactions_haha?.summary?.total_count || 0,
-              reactions_wow: post.reactions_wow?.summary?.total_count || 0,
-              reactions_sad: post.reactions_sad?.summary?.total_count || 0,
-              reactions_angry: post.reactions_angry?.summary?.total_count || 0,
-              comments_count: post.comments?.data?.length || 0,
-              comments: post.comments?.data || [],
-              shares_count: post.shares?.count || 0
-            }
-          })
-        )
-        
-        // Mettre à jour l'heure de dernière mise à jour
-        lastUpdateTime.value = new Date().toLocaleTimeString('fr-FR')
-        
-      } catch (error) {
-        console.error('Erreur lors de la récupération des publications:', error)
-        alert(`Erreur: ${error.message}`)
       } finally {
         loading.value = false
       }
     }
 
-    // Filtrer les posts par type
-    const filteredPosts = computed(() => {
-      if (selectedPostType.value === 'all') {
-        return posts.value
+    const loadMorePosts = async () => {
+      // Implémentation pour charger plus de posts
+      console.log('Chargement de publications supplémentaires...')
+    }
+
+    const applyFilters = () => {
+      // Les computed properties se mettent à jour automatiquement
+    }
+
+    const applySorting = () => {
+      // Les computed properties se mettent à jour automatiquement
+    }
+
+    const getTotalReactions = (post) => {
+      if (!post.stats) return 0
+      
+      if (post.stats.reactions_breakdown) {
+        return Object.values(post.stats.reactions_breakdown).reduce((sum, count) => sum + count, 0)
       }
-      return posts.value.filter(post => post.type === selectedPostType.value)
-    })
+      
+      return post.stats.total_reactions || 0
+    }
 
-    // Calculer les statistiques globales
-    const totalPosts = computed(() => filteredPosts.value.length)
-    
-    const totalReach = computed(() => 
-      filteredPosts.value.reduce((sum, post) => sum + (post.reach || 0), 0)
-    )
-    
-    const totalEngagements = computed(() => 
-      filteredPosts.value.reduce((sum, post) => 
-        sum + (post.total_reactions || 0) + (post.comments_count || 0) + (post.shares_count || 0), 0)
-    )
-    
-    const engagementRate = computed(() => {
-      if (totalReach.value === 0) return 0
-      return ((totalEngagements.value / totalReach.value) * 100).toFixed(2)
-    })
+    const getMediaUrl = (post) => {
+      if (post.attachments?.data?.[0]?.media?.image?.src) {
+        return post.attachments.data[0].media.image.src
+      }
+      return '/placeholder-image.jpg'
+    }
 
-    // Fonctions utilitaires
+    const handleImageError = (event) => {
+      event.target.src = '/placeholder-image.jpg'
+    }
+
+    const viewOnFacebook = (url) => {
+      if (url) {
+        window.open(url, '_blank')
+      } else {
+        alert('URL non disponible pour cette publication')
+      }
+    }
+
+    const showPostDetails = (post) => {
+      selectedPost.value = post
+    }
+
+    const createNewPost = () => {
+      // Rediriger vers le composant de création de publication
+      // ou ouvrir un modal de création
+      alert('Fonctionnalité de création de publication à implémenter')
+    }
+
+    const confirmDeletePost = (post) => {
+      if (confirm(`Êtes-vous sûr de vouloir supprimer cette publication ?`)) {
+        deletePost(post.id)
+      }
+    }
+
+    const deletePost = async (postId) => {
+      try {
+        // Implémentation de la suppression
+        console.log('Suppression de la publication:', postId)
+      } catch (err) {
+        console.error('Erreur lors de la suppression:', err)
+        alert('Erreur lors de la suppression de la publication')
+      }
+    }
+
+    // Utilitaires
     const formatNumber = (num) => {
       if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M'
       } else if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'k'
+        return (num / 1000).toFixed(1) + 'K'
       }
       return num.toString()
     }
 
     const formatDate = (dateString) => {
-      const date = new Date(dateString)
-      return date.toLocaleDateString('fr-FR', {
-        day: 'numeric',
-        month: 'short',
+      return new Date(dateString).toLocaleDateString('fr-FR', {
         year: 'numeric',
+        month: 'short',
+        day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       })
     }
 
-    const truncateText = (text, maxLength) => {
-      if (!text) return 'Aucun message'
-      if (text.length <= maxLength) return text
-      return text.substring(0, maxLength) + '...'
+    const truncateText = (text, length) => {
+      if (!text) return ''
+      return text.length > length ? text.substring(0, length) + '...' : text
     }
 
-    const togglePostDetails = (postId) => {
-      expandedPostId.value = expandedPostId.value === postId ? null : postId
+    const getTypeIcon = (type) => {
+      const icons = {
+        photo: '📷',
+        video: '🎥',
+        album: '🖼️',
+        text: '📝'
+      }
+      return icons[type] || '📝'
     }
 
-    const openMediaModal = (imageUrl) => {
-      modalImageUrl.value = imageUrl
-      showMediaModal.value = true
+    const getTypeLabel = (type) => {
+      const labels = {
+        photo: 'Photo',
+        video: 'Vidéo',
+        album: 'Album',
+        text: 'Statut'
+      }
+      return labels[type] || 'Publication'
     }
 
-    const closeMediaModal = () => {
-      showMediaModal.value = false
-      modalImageUrl.value = ''
+    const getPostTypeClass = (type) => {
+      return `post-type-${type}`
     }
 
-    // Charger les données au montage du composant
+    // Données de démonstration
+    const generateDemoPosts = () => {
+      const types = ['photo', 'video', 'text', 'album']
+      const demoPosts = []
+      
+      for (let i = 0; i < 15; i++) {
+        const type = types[Math.floor(Math.random() * types.length)]
+        const hasStats = Math.random() > 0.2 // 80% ont des stats
+        
+        demoPosts.push({
+          id: `demo_${i}`,
+          message: `Ceci est une publication de démonstration ${i + 1}. Elle montre comment le contenu sera affiché dans la liste.`,
+          created_time: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+          permalink_url: `https://facebook.com/demo_post_${i}`,
+          media_type: type,
+          attachments: type !== 'text' ? {
+            data: [{
+              media: {
+                image: {
+                  src: `https://picsum.photos/400/300?random=${i}`
+                }
+              }
+            }]
+          } : null,
+          stats: hasStats ? {
+            impressions: Math.floor(Math.random() * 5000),
+            comments: Math.floor(Math.random() * 50),
+            shares: Math.floor(Math.random() * 20),
+            engagement_rate: (Math.random() * 15).toFixed(1),
+            reactions_breakdown: {
+              like: Math.floor(Math.random() * 100),
+              love: Math.floor(Math.random() * 20),
+              wow: Math.floor(Math.random() * 10),
+              haha: Math.floor(Math.random() * 15),
+              sorry: Math.floor(Math.random() * 5),
+              anger: Math.floor(Math.random() * 3)
+            }
+          } : null
+        })
+      }
+      
+      return demoPosts
+    }
+
+    // Lifecycle
     onMounted(() => {
       fetchPosts()
     })
 
     return {
       // Data
-      posts,
+      filteredPosts,
       loading,
-      selectedDateRange,
-      selectedPostType,
-      expandedPostId,
-      showMediaModal,
-      modalImageUrl,
-      lastUpdateTime,
+      error,
+      selectedPost,
+      filters,
+      sortBy,
+      postsLimit,
+      hasMorePosts,
       
       // Computed
-      filteredPosts,
       totalPosts,
-      totalReach,
-      totalEngagements,
-      engagementRate,
+      totalReactions,
+      totalComments,
+      totalShares,
       
       // Methods
       fetchPosts,
-      filterPosts: () => {}, // Utilisé uniquement pour l'événement @change
+      loadMorePosts,
+      applyFilters,
+      applySorting,
+      getTotalReactions,
+      getMediaUrl,
+      handleImageError,
+      viewOnFacebook,
+      showPostDetails,
+      createNewPost,
+      confirmDeletePost,
+      
+      // Utils
       formatNumber,
       formatDate,
       truncateText,
-      togglePostDetails,
-      openMediaModal,
-      closeMediaModal
+      getTypeIcon,
+      getTypeLabel,
+      getPostTypeClass
     }
   }
+}
+
+// Composant pour les détails de publication (simplifié)
+const PostDetails = {
+  props: ['post'],
+  template: `
+    <div class="post-details">
+      <div class="detail-section">
+        <h4>Contenu</h4>
+        <p class="post-message">{{ post.message || 'Aucun texte' }}</p>
+      </div>
+      
+      <div class="detail-section">
+        <h4>Statistiques détaillées</h4>
+        <div v-if="post.stats" class="detailed-stats">
+          <div class="stat-row">
+            <span>Portée :</span>
+            <strong>{{ post.stats.impressions || 0 }}</strong>
+          </div>
+          <div class="stat-row">
+            <span>Utilisateurs engagés :</span>
+            <strong>{{ post.stats.engaged_users || 0 }}</strong>
+          </div>
+          <div class="stat-row">
+            <span>Taux d'engagement :</span>
+            <strong>{{ post.stats.engagement_rate || 0 }}%</strong>
+          </div>
+        </div>
+        <p v-else class="no-stats">Aucune statistique disponible</p>
+      </div>
+      
+      <div class="detail-actions">
+        <button class="btn-primary" @click="$emit('view-on-facebook')">
+          👁️ Voir sur Facebook
+        </button>
+      </div>
+    </div>
+  `
 }
 </script>
 
 <style scoped>
-.facebook-analytics-container {
+.posts-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  background: #f8f9fa;
+  min-height: 100vh;
 }
 
-.analytics-header {
+.header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.analytics-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+.header h1 {
   color: #1877f2;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
 }
 
-.analytics-header p {
+.header p {
+  color: #65676b;
   font-size: 1.1rem;
-  color: #666;
 }
 
-/* Section des contrôles */
-.controls-section {
+.controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  background: white;
   padding: 1.5rem;
-  background: #f7f9fc;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.filters {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
 }
 
 .filter-group {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.filter-item {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.filter-item label {
+.filter-group label {
   font-weight: 600;
   color: #555;
   font-size: 0.9rem;
 }
 
-.filter-item select {
+.filter-group select {
   padding: 0.5rem 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: white;
-  font-size: 1rem;
   cursor: pointer;
-  transition: border-color 0.3s;
 }
 
-.filter-item select:focus {
-  outline: none;
-  border-color: #1877f2;
-}
-
-.refresh-section {
+.actions {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
-.refresh-btn {
-  padding: 0.5rem 1.5rem;
-  background: #1877f2;
-  color: white;
+.refresh-btn, .new-post-btn {
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  transition: all 0.3s;
+}
+
+.refresh-btn {
+  background: #1877f2;
+  color: white;
 }
 
 .refresh-btn:hover:not(:disabled) {
@@ -592,6 +634,55 @@ export default {
   cursor: not-allowed;
 }
 
+.new-post-btn {
+  background: #42b883;
+  color: white;
+}
+
+.new-post-btn:hover {
+  background: #3aa876;
+}
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1877f2;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #65676b;
+  font-size: 0.9rem;
+}
+
+.loading-state, .error-state, .empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.spinner, .error-icon, .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
 .spinner {
   animation: spin 1s linear infinite;
 }
@@ -601,313 +692,195 @@ export default {
   to { transform: rotate(360deg); }
 }
 
-.last-update {
-  font-size: 0.85rem;
-  color: #777;
+.retry-btn {
+  background: #1877f2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
 }
 
-/* Statistiques globales */
-.stats-overview {
+.posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-}
-
-.stat-icon {
-  font-size: 2.5rem;
-  margin-right: 1rem;
-}
-
-.stat-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1877f2;
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 0.25rem;
-}
-
-/* Section des publications */
-.posts-section h2 {
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 1.8rem;
-}
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 3rem;
-  color: #666;
-}
-
-.loading-spinner {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  animation: spin 2s linear infinite;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  color: #666;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
-.empty-state h3 {
-  margin-bottom: 0.5rem;
-  color: #555;
-}
-
-/* Liste des publications */
-.posts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .post-card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   overflow: hidden;
-  transition: box-shadow 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .post-card:hover {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-}
-
-.post-card.expanded {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
 .post-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: background 0.2s;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.post-header:hover {
-  background: #f8f9fa;
+.post-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.post-type-indicator {
-  font-size: 1.5rem;
-  margin-right: 1rem;
+.type-icon {
+  font-size: 1.2rem;
 }
 
-.post-info {
-  flex: 1;
-  margin-right: 1rem;
-}
-
-.post-message {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
+.type-label {
+  font-weight: 600;
+  color: #555;
 }
 
 .post-date {
+  color: #666;
   font-size: 0.85rem;
-  color: #777;
 }
 
-.post-engagement {
+.post-content {
+  padding: 1.5rem;
+}
+
+.post-media {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.post-media img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.video-placeholder, .album-placeholder {
+  height: 200px;
+  background: #f8f9fa;
   display: flex;
-  gap: 1.5rem;
-  margin-right: 1rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  border: 2px dashed #ddd;
 }
 
-.engagement-item {
+.video-icon, .album-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-text p {
+  margin: 0;
+  line-height: 1.5;
+  color: #333;
+}
+
+.post-text.has-media p {
+  font-size: 0.9rem;
+}
+
+.post-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  background: #f8f9fa;
+}
+
+.stat {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.engagement-icon {
-  font-size: 1.2rem;
-}
-
-.engagement-count {
-  font-weight: 600;
-  color: #555;
-}
-
-.expand-icon {
-  font-size: 1.2rem;
-  color: #777;
-  transition: transform 0.3s;
-}
-
-.post-card.expanded .expand-icon {
-  transform: rotate(180deg);
-}
-
-/* Détails de la publication */
-.post-details {
-  padding: 1.5rem;
-  border-top: 1px solid #eee;
-  background: #fafbfc;
-}
-
-.full-message, .post-media, .detailed-stats, .reactions-breakdown, .recent-comments {
-  margin-bottom: 1.5rem;
-}
-
-.full-message h4, .post-media h4, .detailed-stats h4, .reactions-breakdown h4, .recent-comments h4 {
-  margin-bottom: 0.75rem;
-  color: #444;
+.stat-icon {
   font-size: 1.1rem;
 }
 
-.full-message p {
-  line-height: 1.5;
-  color: #555;
+.stat-value {
+  font-weight: 600;
+  color: #333;
 }
 
-.media-preview {
-  max-width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.media-preview:hover {
-  transform: scale(1.02);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-}
-
-.stat-detail {
-  text-align: center;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.stat-detail-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1877f2;
-  margin-bottom: 0.25rem;
-}
-
-.stat-detail-label {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.reactions-list {
+.post-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.reaction-item {
-  display: flex;
-  align-items: center;
+  padding: 1rem 1.5rem;
   gap: 0.5rem;
+}
+
+.action-btn {
+  flex: 1;
   padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
-.reaction-emoji {
-  font-size: 1.2rem;
-}
-
-.reaction-count {
-  font-weight: 600;
-  color: #555;
-}
-
-.comments-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.comment-item {
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
-.comment-author {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #1877f2;
-}
-
-.comment-message {
-  line-height: 1.4;
-  margin-bottom: 0.5rem;
-}
-
-.comment-date {
-  font-size: 0.8rem;
-  color: #777;
-}
-
-.more-comments {
-  text-align: center;
-  padding: 0.75rem;
-  color: #1877f2;
-  font-weight: 500;
   cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.3s;
 }
 
-.more-comments:hover {
-  text-decoration: underline;
+.action-btn:hover {
+  background: #f8f9fa;
+  transform: translateY(-1px);
 }
 
-/* Modal */
+.view-btn {
+  color: #1877f2;
+  border-color: #1877f2;
+}
+
+.stats-btn {
+  color: #42b883;
+  border-color: #42b883;
+}
+
+.delete-btn {
+  color: #f02849;
+  border-color: #f02849;
+  flex: 0.5;
+}
+
+.load-more {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.load-more-btn {
+  background: #1877f2;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.load-more-btn:hover {
+  background: #166fe5;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -915,74 +888,56 @@ export default {
 }
 
 .modal-content {
-  position: relative;
-  max-width: 90%;
-  max-height: 90%;
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
 }
 
-.modal-close {
-  position: absolute;
-  top: -40px;
-  right: 0;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.close-btn {
   background: none;
   border: none;
-  color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: #666;
 }
 
-.modal-image {
-  max-width: 100%;
-  max-height: 80vh;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+.modal-body {
+  padding: 1.5rem;
 }
 
-/* Responsive */
+/* Styles responsives */
 @media (max-width: 768px) {
-  .facebook-analytics-container {
+  .posts-container {
     padding: 1rem;
   }
   
-  .controls-section {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
-  
-  .filter-group {
+  .controls {
     flex-direction: column;
     gap: 1rem;
   }
   
-  .refresh-section {
-    align-items: center;
-  }
-  
-  .stats-overview {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .post-header {
+  .filters {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .post-engagement {
     width: 100%;
-    justify-content: space-between;
   }
   
-  .engagement-item {
-    flex-direction: column;
-    gap: 0.25rem;
-    text-align: center;
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .quick-stats {
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>
