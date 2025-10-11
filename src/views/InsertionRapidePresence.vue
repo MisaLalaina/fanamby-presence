@@ -74,7 +74,6 @@ const updateCheckAll = (event) => {
     chekcAll.value = false
   }
 }
-
 const handleCheckAll = () => {
   joueurs.value.forEach((joueur) => {
     presences.value[joueur.id] = chekcAll.value
