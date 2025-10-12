@@ -14,8 +14,10 @@ import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
 import LoginClub from '@/views/LoginClub.vue'
 import Statistique from '@/views/Statistique.vue'
-import Dashboard from '@/views/Dashboard.vue'
-
+import MessageGroupView from '@/views/MessageGroupView.vue'
+import PublicationFacebook from '@/views/PublicationFacebook.vue'
+import SuiviFacebook from '@/views/SuiviFacebook.vue'
+import ModificationSeance from '@/views/ModificationSeance.vue'
 const routes = [
    {
     path:'/login-club',
@@ -32,11 +34,7 @@ const routes = [
     name: 'insertionJoueur',
     component: InsertionJoueur
   },
-  {
-    path: '/insertion-composition',
-    name: 'insertionComposition',
-    component: InsertionComposition
-  },
+ 
   {
     path: '/liste-seance',
     name: 'listeSeance',
@@ -57,6 +55,11 @@ const routes = [
     name:'InsertionPresence',
     component:InsertionPresence
   },
+   {
+    path: '/insertion-rapide',
+    name:'insertionRapidePresence',
+    component:InsertionRapidePresence
+  },
   {
     path:'/match',
     name:'listeMatch',
@@ -72,12 +75,13 @@ const routes = [
     name:'listeComposition',
     component:ListeComposition
   },
-  
    {
-    path: '/insertion-rapide',
-    name:'insertionRapidePresence',
-    component:InsertionRapidePresence
+    path: '/insertion-composition',
+    name: 'insertionComposition',
+    component: InsertionComposition
   },
+  
+  
   {
     path: '/feuille-match/:id',
     name:'feuilleMatch',
@@ -89,15 +93,33 @@ const routes = [
     component: Statistique
   },
 
-  {
-    path: '/statistique',
-    name:'dashboard',
-    component: Dashboard
-  }
-
-
- 
+  // {
+  //   path: '/statistique',
+  //   name:'dashboard',
+  //   component: Dashboard
+  // },
   
+  {
+    path:'/messages',
+    name:'messages',
+    component: MessageGroupView
+  }, 
+
+  {
+    path:'/publication',
+    name:'publicationFacebook',
+    component:PublicationFacebook
+  },
+ {
+    path: '/suivi-facebook', 
+    name: 'suiviFacebook',
+    component: SuiviFacebook
+  },
+  {
+    path:'/modification-Seance',
+    name:'modificationSeance',
+    component:ModificationSeance
+  }
 ]
 
 const router = createRouter({

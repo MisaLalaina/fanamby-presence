@@ -61,7 +61,7 @@ onMounted(() => {
       <div class="form-row">
         <div class="form-group">
           <label>Type:</label>
-          <select v-model="currentSeance.idTypeSeance" required>
+          <select v-model="currentSeance.idTypeSeance" required disabled>
             <option value="">Sélectionner un type</option>
             <option v-for="type in typesSeance" :key="type.idTypeSeance" :value="type.idTypeSeance">
               {{ type.libelle }}
@@ -113,6 +113,7 @@ onMounted(() => {
 
 
 <style scoped>
+
 .seance-insert-container {
   padding: 20px;
   max-width: 600px;

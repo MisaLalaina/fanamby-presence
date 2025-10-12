@@ -379,6 +379,7 @@
 
 
 <style scoped>
+
 .composition-container {
   padding: 20px;
   max-width: 1200px;

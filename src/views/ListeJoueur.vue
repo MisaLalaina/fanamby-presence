@@ -5,6 +5,7 @@ import { getAllPostes } from '@/services/PosteService';
 import { Joueur } from '@/models/joueur';
 import { Poste } from '@/models/poste';
 
+
 const postes = ref(['TOUS']);
 const joueurs = ref([]);
 const currentFilter = ref('TOUS');
@@ -49,7 +50,7 @@ const filterByPoste = (poste) => {
 
 <template>
   <div class="joueurs-container">
-    <h1>LISTE DE JOUEURS</h1>
+    <h1>Liste de joueurs</h1>
     
     <div class="filter-buttons">
       <button 
@@ -73,12 +74,13 @@ const filterByPoste = (poste) => {
           :key="joueur.id" 
           class="joueur-card"
         >
-          <img src="https://placehold.co/150x100" alt="Avatar" class="joueur-avatar">
+          <img :src="'joueurs/'+joueur.id+'.jpg'" style="width: 180px; height: 140px;" alt="Avatar" class="joueur-avatar">
           <div class="joueur-numero">{{ joueur.numero }}</div>
           <div class="joueur-nom">{{ joueur.nom }}</div>
           <div class="joueur-poste">{{ joueur.poste }}</div>
           <div class="joueur-info">Né le {{ joueur.dateNaissance }}</div>
           <div class="joueur-nationalite">Nat. {{ joueur.nationalite }}</div>
+          <div class="joueur-activite">{{ joueur.dateInscription }} - {{ joueur.dateQuitter }}</div>
         </div>
       </div>
     </div>
@@ -86,6 +88,9 @@ const filterByPoste = (poste) => {
 </template>
 
 <style scoped>
+*{
+  font-family:'InterTight' ,sans-serif;
+}
 .joueurs-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -94,11 +99,11 @@ const filterByPoste = (poste) => {
 
 h1 {
   text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
-  text-transform: uppercase;
+  color: #2A88C8;
+  margin-bottom: 15px;
   font-size: 28px;
   letter-spacing: 2px;
+
 }
 
 .filter-buttons {
@@ -107,6 +112,7 @@ h1 {
   gap: 15px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+ 
 }
 
 .filter-buttons button {
@@ -122,7 +128,7 @@ h1 {
 }
 
 .filter-buttons button.active {
-  background-color: #3498db;
+  background-color: #2A88C8;
   color: white;
 }
 
@@ -145,11 +151,11 @@ h1 {
 
 .joueur-card {
   background-color: white;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   padding: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  border-top: 4px solid #3498db;
+  /* border-top: 4px solid #2A88C8; */
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -161,16 +167,18 @@ h1 {
 .joueur-numero {
   font-size: 24px;
   font-weight: bold;
-  color: #2c3e50;
+  color: #2A88C8;
   margin-bottom: 10px;
+
 }
 
 .joueur-nom {
   font-size: 18px;
   font-weight: bold;
-  color: #2c3e50;
+  color: #2A88C8;
   margin-bottom: 5px;
   text-transform: uppercase;
+
 }
 
 .joueur-poste {

@@ -34,6 +34,7 @@ export default {
   display: inline-block;
   cursor: pointer;
   width: 100%;
+  padding-left: 1rem;
 }
 
 .dropdownTitle {
@@ -44,6 +45,7 @@ export default {
   color: #fff;
   transition: all 0.2s ease;
   border-radius: 4px;
+  justify-content: left;
 }
 
 li:hover {
@@ -51,17 +53,15 @@ li:hover {
 }
 
 .dropdown-menu {
-  padding: 0.5rem 0;
-  margin-left: 1rem;
+  padding: 0.5rem;
+  margin: 0 2rem;
   font-size: 1rem;
-  color: #212529;
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   list-style: none;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  background-color: transparent;
 }
 
 /* Animation for dropdown */
@@ -74,5 +74,33 @@ li:hover {
 .dropdown-open .dropdown-menu {
   opacity: 1;
   transform: translateY(0);
+}
+
+</style>
+
+<style >
+.dropdown-menu .dropdown-item,
+.dropdown-menu li {
+  display: block;
+  width: 100%;
+}
+.dropdown-item {
+  /* background-color: #fff; */
+  padding: 6px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.dropdown-item:hover {
+  background-color: #fff;
+  color: black;
+}
+
+.dropdown-item.active {
+  background-color: #fff;
+  color: black;
+}
+.dropdown-menu:has(.dropdown-item.active) {
+  visibility: visible;
 }
 </style>

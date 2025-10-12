@@ -5,21 +5,20 @@ import MyDropdown from './MyDropdown.vue';
 <template>
   <aside class="sidebar">
     <div class="logo-container">
-      <img 
-        src="@/assets/logo.jpg" alt="Logo" class="sidebar-logo"/>
+      <img src="@/assets/logo.jpg" alt="Logo" class="sidebar-logo"/>
     </div>
 
     <nav class="nav-menu">
       <MyDropdown>
         <template #title>
-          <img src="@/assets/joueur.svg" alt="Joueurs icon">
+          <img src="@/assets/joueur.svg" class="list-icon" alt="Joueurs icon">
           <span>Joueurs</span>
         </template>
         <template #list>
-          <li>
+          <li class="">
             <router-link to="/" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Liste Joueurs</span>
+              <span>Registre Joueurs</span>
             </router-link>
           </li>
           <li>
@@ -33,20 +32,20 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/seance.svg" alt="Joueurs icon">
+          <img src="@/assets/seance.svg" class="list-icon" alt="Joueurs icon">
           <span>Séance</span>
         </template>
         <template #list>
-          <li>
+          <li >
             <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Liste séance</span>
+              <span>Registre séances</span>
             </router-link>
           </li>
           <li>
             <router-link to="/insertion-seance" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
-              <span>Insertion séance</span>
+              <span>Insertion séances</span>
             </router-link>
           </li>
         </template>
@@ -54,7 +53,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/presence.svg" alt="presence icon">
+          <img src="@/assets/presence.svg" class="list-icon" alt="presence icon">
           <span>Presence</span>
         </template>
         <template #list>
@@ -75,7 +74,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/match.svg" alt="matchicon">
+          <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
           <span>Match</span>
         </template>
         <template #list>
@@ -96,7 +95,7 @@ import MyDropdown from './MyDropdown.vue';
 
       <MyDropdown>
         <template #title>
-          <img >
+          <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
           <span>Composition</span>
         </template>
         <template #list>
@@ -106,34 +105,18 @@ import MyDropdown from './MyDropdown.vue';
               <span>Liste composition</span>
             </router-link>
           </li>
-          <!-- <li>
-            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
-              <span>Insertion match</span>
-            </router-link>
-          </li> -->
-        </template>
-      </MyDropdown>
-
-      <MyDropdown>
-        <template #title>
-          <img src="@/assets/message.svg" alt="matchicon">
-          <span>Message</span>
-        </template>
-        <template #list>
           <li>
-            <router-link to="/formulaire-message" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>message</span>
+            <router-link to="/insertion-composition" class="dropdown-item" active-class="active">
+              <i class="fas fa-user-plus"></i>
+              <span>Insertion composition</span>
             </router-link>
           </li>
         </template>
-
       </MyDropdown>
 
       <MyDropdown>
         <template #title>
-          <img src="@/assets/dashboard.svg" alt="dashboardicon">
+          <img src="@/assets/dashboard.svg" class="list-icon" alt="dashboardicon">
           <span>Dashboard</span>
         </template>
         <template #list>
@@ -144,118 +127,65 @@ import MyDropdown from './MyDropdown.vue';
             </router-link>
           </li>
           <li>
-            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
+            <!-- <router-link to="/insertion-match" class="dropdown-item" active-class="active">
               <i class="fas fa-user-plus"></i>
               <span>Statistique individuel</span>
-            </router-link>
+            </router-link> -->
           </li>
         </template>
       </MyDropdown>
+        <MyDropdown>
+        <template #title>
+          <img src="@/assets/message.svg" class="list-icon" alt="matchicon">
+          <span>Message</span>
+        </template>
+        <template #list>
+          <li>
+            <router-link to="/messages" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Send message</span>
+            </router-link>
+          </li>
+        </template>
+
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/publication.svg" class="list-icon" alt="Joueurs icon">
+          <span>publication</span>
+        </template>
+        <template #list>
+          <li >
+            <router-link to="/publication" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Facebook</span>
+            </router-link>
+          </li>
+          <li>
+            
+          </li>
+          <li >
+            <router-link to="/suivi-facebook" class="dropdown-item" active-class="active" exact>
+              <i class="fas fa-list"></i>
+              <span>Suivi Facebook</span>
+            </router-link>
+          </li>
+          <li>
+            
+          </li>
+        </template>
+      </MyDropdown>
+
       
-
-      <!-- <router-link  to="/" class="nav-item"active-class="active"exact>
-        <i class="fas fa-list"></i>
-        <span>Joueurs</span>
-      </router-link>
-
-      <router-link 
-        to="/insertion-joueur" class="nav-item"active-class="active">
-        <i class="fas fa-user-plus"></i>
-        <span>Insertion Joueur</span>
-      </router-link>
-      <hr>
-        <router-link 
-          to="/liste-seance" 
-          class="nav-item"
-          active-class="active"
-        >
-          <i class="fas fa-calendar-check"></i>
-          <span>Liste des Séances</span>
-        </router-link>
-
-        <router-link 
-          to="/insertion-seance" 
-          class="nav-item"
-          active-class="active"
-        >
-          <i class="fas fa-plus-circle"></i>
-          <span>Insertion Séance</span>
-        </router-link>  
-      <hr>
-      <router-link 
-        to="/presence" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-clipboard-check"></i>
-        <span>Liste Présence</span>
-      </router-link>
-
-      <router-link 
-        to="/insertion-presence" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-clipboard-check"></i>
-        <span>Insertion Présence</span>
-      </router-link>
-      <router-link 
-        to="/insertion-rapide" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-clipboard-check"></i>
-        <span>Insertion Rapide Présence</span>
-      </router-link>
-      <hr>
-      <router-link 
-        to="/match" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-futbol"></i>
-        <span>Liste Match</span>
-      </router-link>
-      <router-link 
-        to="/insertion-match" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-futbol"></i>
-        <span>Insertion Match</span>
-      </router-link>
-      <hr>
-      <router-link 
-        to="/composition" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-chess"></i>
-        <span>Liste Composition</span>
-      </router-link>
-      <router-link 
-        to="/insertion-composition" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-chess"></i>
-        <span>Insertion Composition</span>
-      </router-link>
-
-      <router-link 
-        to="/dashboard" 
-        class="nav-item"
-        active-class="active"
-      >
-        <i class="fas fa-tachometer-alt"></i>
-        <span>Dashboard</span>
-      </router-link>
-       -->
     </nav>
   </aside>
 </template>
 
 <style scoped>
+/* *{
+  font-family:InterTight-Regular,sans-serif;
+} */
 .sidebar {
   width: 250px;
   height: 100vh;
@@ -284,48 +214,17 @@ import MyDropdown from './MyDropdown.vue';
   
 }
 
-
-
 .nav-menu {
   flex: 1;
   padding: 20px 0;
   overflow-y: auto;
   justify-content: center;
   align-items: center;
+  color: #ffff;
+  scrollbar-width: 2px;
 }
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 20px;
-  color: #2c3e50;
-  text-decoration: none;
-  transition: all 0.3s ease;
+.list-icon{
+  width: 16px;
 }
-
-.nav-item i {
-  margin-right: 10px;
-  font-size: 1.1rem;
-  width: 2px;
-  text-align: center;
-  color: #2493BF;
-}
-
-.nav-item:hover {
-  background-color: #f3f5f6;
-  color: #2493BF;
-}
-
-.dropdownTitle {
-  display: flex;
-  gap: 0.5rem;
-}
-
-
-
-.nav-item.active i {
-  color: white;
-}
-
-
 </style>

@@ -6,7 +6,9 @@ export class Joueur {
       datenaissance,
       nationalite,
       numeromaillot,
-      idpostePoste
+      idpostePoste,
+      dateinscription,
+      datequitter
     }) {
       this.id = idjoueur;
       this.idJoueur = idjoueur;
@@ -17,6 +19,8 @@ export class Joueur {
         : 'Inconnue';
       this.nationalite = nationalite || 'Inconnue';
       this.numero = numeromaillot || '-';
+      this.dateInscription = dateinscription;
+      this.dateQuitter = datequitter;
     }
   
     static fromApiData(data) {

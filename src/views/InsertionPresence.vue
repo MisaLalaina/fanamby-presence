@@ -111,6 +111,7 @@
 </template>
 
 <style scoped>
+
 .presence-insert-container {
   padding: 20px;
   max-width: 500px;

@@ -37,6 +37,9 @@ export async function createMatch(matchData) {
       idseanceSeance: {
         idseance: matchData.idSeance,
       },
+      idtypematchTypematch:{
+        idtypematch: matchData.idTypeMatch,
+      },
       competition: matchData.competition || '',
       adversaire: matchData.adversaire || '',
       domicile: Boolean(matchData.domicile),
