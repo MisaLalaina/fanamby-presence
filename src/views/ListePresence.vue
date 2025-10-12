@@ -12,6 +12,7 @@
   const selectedSession = ref('');
   const currentSession = ref({});
   const presenceStatuses = ref([]);
+  const isEditing = ref(false);
 
   // Fetch presence statuses (async inside onMounted or a separate async fn)
   const loadPresenceStatuses = async () => {
@@ -31,12 +32,27 @@
     currentSession.value = sessions.value.find(s => s.idSeance === selectedSession.value) || {};
     try {
       players.value = await getPresencesByIdSeance(selectedSession.value);
+      console.log(players);
     } catch (error) {
       alert("Erreur lors du chargement des présences : " + error.message);
       players.value = [];
     }
   };
 
+  // Fonction pour basculer le mode d'édition
+  const toggleEditMode = () => {
+      isEditing.value = !isEditing.value;
+      // Si on quitte le mode édition, on peut choisir de sauvegarder
+      // ou de recharger les données originales.
+      if (!isEditing.value) {
+          // Option 1: Recharger les données pour annuler les changements non sauvegardés
+          // loadPresences();
+          
+          // Option 2: Laisser les changements locaux et forcer la sauvegarde (ou demander confirmation)
+          // Pour l'instant, nous allons laisser les changements locaux, mais on va
+          // encourager l'utilisation du bouton "Enregistrer".
+      }
+  };
 
   // Simulate updating presence status in database
   const updatePresence = async (player) => {
@@ -64,6 +80,12 @@
   const formatDate = (dateStr) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateStr).toLocaleDateString('fr-FR', options);
+  };
+
+  // Helper to get status label from ID
+  const getStatusLabel = (idStatut) => {
+      const status = presenceStatuses.value.find(s => s.idstatutpresence === idStatut);
+      return status ? status.libelle : 'Inconnu';
   };
 
   // Initialization on mount
@@ -111,25 +133,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="player in players" :key="player.idJoueur">
+          <tr v-for="player in players" :key="player.idJoueur" :class="'presence-status-'+player.idStatutPresence">
             <td>{{ player.nom }} {{ player.prenom }}</td>
             <td>{{ player.poste }}</td>
             <td>
-              <select v-model="player.presenceStatus" @change="updatePresence(player)">
+              <select v-if="isEditing" v-model="player.idStatutPresence" @change="updatePresence(player)">
                 <option v-for="status in presenceStatuses" :key="status.idstatutpresence" :value="status.idstatutpresence">
                   {{ status.libelle }}
                 </option>
               </select>
+              <span v-else>
+                {{ getStatusLabel(player.idStatutPresence) }}
+              </span>
             </td>
             <td>
-              <input type="text" v-model="player.commentaire" @blur="updatePresence(player)" placeholder="Commentaire">
+              <input v-if="isEditing" type="text" v-model="player.commentaire" @blur="updatePresence(player)" placeholder="Commentaire">
+              <span v-else class="comment-text">
+                {{ player.commentaire || '—' }}
+              </span>
             </td>
           </tr>
         </tbody>
       </table>
 
       <div class="actions">
-        <button @click="saveAllPresences" class="btn-save">Enregistrer toutes les modifications</button>
+        <button @click="toggleEditMode" :class="['btn-edit', { 'btn-cancel': isEditing }]">
+            {{ isEditing ? 'Annuler l\'édition' : 'Mode Modification' }}
+        </button>
+
+        <button v-if="isEditing" @click="saveAllPresences" class="btn-save">
+            Enregistrer les modifications ({{ players.length }} lignes)
+        </button>
       </div>
     </div>
 
@@ -213,6 +247,9 @@ select, input[type="text"] {
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
+}
+.presence-status-2 {
+  background-color: rgb(241, 241, 193);
 }
 
 .actions {

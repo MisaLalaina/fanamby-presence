@@ -17,6 +17,7 @@ import Statistique from '@/views/Statistique.vue'
 import MessageGroupView from '@/views/MessageGroupView.vue'
 import PublicationFacebook from '@/views/PublicationFacebook.vue'
 import SuiviFacebook from '@/views/SuiviFacebook.vue'
+import ModificationSeance from '@/views/ModificationSeance.vue'
 const routes = [
    {
     path:'/login-club',
@@ -113,6 +114,11 @@ const routes = [
     path: '/suivi-facebook', 
     name: 'suiviFacebook',
     component: SuiviFacebook
+  },
+  {
+    path:'/modification-Seance',
+    name:'modificationSeance',
+    component:ModificationSeance
   }
 ]
 

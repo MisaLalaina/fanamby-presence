@@ -1,5 +1,5 @@
 import { BASE_URL } from './config.js';
-import { fetchUnpagined } from './api.js';
+import { fetchAllPages } from './api.js';
 
 export async function createPresence(presenceData) {
   try {
@@ -42,7 +42,7 @@ export async function createPresence(presenceData) {
 }
 
 export async function searchPresence(payload){
-    const response = await fetchUnpagined(`${BASE_URL}/presences/search`, {
+    const response = await fetchAllPages(`${BASE_URL}/presences/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,17 +67,14 @@ export async function getPresencesByIdSeance(idSeance) {
     console.log("Données des présences :", response);
     // Extract all presences
     const allPresences = response;
-    // Filter by idSeance
-    const filtered = allPresences;
-
-    // Map to optimized form for UI display
-    const simplified = filtered.map(p => ({
+    const simplified = allPresences.map(p => ({
       idPresence: p.idpresence,
       idJoueur: p.idjoueurJoueur.idjoueur,
       nom: p.idjoueurJoueur.nom,
       prenom: p.idjoueurJoueur.prenom,
       poste: p.idjoueurJoueur.idpostePoste?.libelle || '',
       presenceStatus: p.idstatutpresenceStatutpresence?.libelle || null,
+      idStatutPresence: p.idstatutpresenceStatutpresence?.idstatutpresence || null,
       commentaire: p.commentaires || '',
       heureArrivee: p.heurearrivee || null,
       motifAbsence: p.motifabsence || null,
