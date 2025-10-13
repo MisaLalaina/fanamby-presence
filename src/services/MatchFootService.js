@@ -1,145 +1,108 @@
 import { BASE_URL } from './config.js';
 import MatchFoot from '../models/matchFoot.js';
+// 💡 Import des fonctions génériques depuis l'API
+import {
+    genericCreate,
+    genericUpdate,
+    genericDelete,
+    genericGet,
+    fetchAllPages 
+} from './api'; 
 
+// Chemin de base pour cette ressource
+const MATCHFOOT_URL = `${BASE_URL}/matchfoots`;
+
+/**
+ * Construit le corps de la requête (payload) pour une création ou mise à jour de match.
+ * Cette fonction contient toute la logique métier de mapping des champs.
+ */
+const createMatchPayload = (matchData) => {
+    // Note: L'ID est géré par l'URL (pour l'update) ou par l'absence d'ID (pour la création)
+    return {
+        idseanceSeance: {
+            idseance: matchData.idSeance,
+        },
+        idtypematchTypematch:{
+            idtypematch: matchData.idTypeMatch,
+        },
+        competition: matchData.competition || '',
+        adversaire: matchData.adversaire || '',
+        domicile: Boolean(matchData.domicile),
+        scoreequipe: matchData.scoreEquipe || 0,
+        scoreadversaire: matchData.scoreAdversaire || 0,
+        // Ces champs sont définis par défaut à 0 dans le payload de la fonction originale
+        tempsadditionnel1: matchData.tempsAdditionnel1 || 0, 
+        tempsadditionnel2: matchData.tempsAdditionnel2 || 0,
+        incidents: matchData.incidents || '',
+        observations: matchData.observations || '',
+    };
+};
+
+/**
+ * Récupère tous les matchs. Utilise fetchAllPages pour gérer la pagination.
+ * 💡 Remplacement de la logique fetch manuelle par `fetchAllPages`.
+ */
 export async function getAllMatches() {
-  try {
-    const response = await fetch(`${BASE_URL}/matchfoots`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const json = await response.json();
-
-    // Check for returnCode or status for success
-    if (json.returnCode !== 1) {
-      throw new Error(`API error: ${json.message || 'Unknown error'}`);
-    }
-
-    // Extract the raw matches array
-    const rawMatches = json.data.content || [];
-
-    // Map raw matches to frontend model format
-    const formattedMatches = rawMatches.map(rawMatch => {
-      return MatchFoot.fromApi(rawMatch);
-    });
-
-    return formattedMatches;
-
-  } catch (error) {
-    console.error('Error fetching matches:', error);
-    throw error;
-  }
+    // fetchAllPages gère la boucle, les erreurs HTTP/API, et retourne le résultat complet.
+    const response = await fetchAllPages(MATCHFOOT_URL);
+    
+    // Le mapping vers le modèle métier reste ici (bonne pratique).
+    const rawMatches = response.data.content || [];
+    return rawMatches.map(rawMatch => MatchFoot.fromApi(rawMatch));
 }
 
-
+/**
+ * Crée un match. Utilise genericCreate.
+ * 💡 Remplacement de la logique POST manuelle par `genericCreate`.
+ */
 export async function createMatch(matchData) {
-  try {
-    const payload = {
-      idseanceSeance: {
-        idseance: matchData.idSeance,
-      },
-      idtypematchTypematch:{
-        idtypematch: matchData.idTypeMatch,
-      },
-      competition: matchData.competition || '',
-      adversaire: matchData.adversaire || '',
-      domicile: Boolean(matchData.domicile),
-      scoreequipe: matchData.scoreEquipe || 0,
-      scoreadversaire: matchData.scoreAdversaire || 0,
-      tempsadditionnel1: 0,
-      tempsadditionnel2: 0,
-      incidents: matchData.incidents || '',
-      observations: matchData.observations || '',
-    };
-
-    const response = await fetch(`${BASE_URL}/matchfoots`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const json = await response.json();
-
-    if (json.returnCode !== 1) {
-      throw new Error(`API error: ${json.message || 'Unknown error'}`);
-    }
-    return MatchFoot.fromApi(json.data);
-
-  } catch (error) {
-    console.error('Error creating match:', error);
-    throw error;
-  }
+    const payload = createMatchPayload(matchData);
+    
+    // genericCreate gère la requête POST, les headers, le JSON.stringify et la vérification des erreurs.
+    const createdRawMatch = await genericCreate(MATCHFOOT_URL, payload);
+    
+    // Mapping du résultat brut vers le modèle du front-end.
+    return MatchFoot.fromApi(createdRawMatch);
 }
 
+/**
+ * Récupère un match par ID. Utilise genericGet.
+ * 💡 Remplacement de la logique GET manuelle par `genericGet`.
+ */
 export async function getMatchById(id) {
-  try {
-    const response = await fetch(`${BASE_URL}/matchfoots/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const json = await response.json();
-
-    // Check for returnCode or status for success
-    if (json.returnCode !== 1) {
-      throw new Error(`API error: ${json.message || 'Unknown error'}`);
-    }
-
-    // Extract the raw match data
-    const rawMatch = json.data || {};
-
-    // Convert to frontend model format
+    // genericGet gère la requête GET et la vérification des erreurs.
+    const response = await genericGet(`${MATCHFOOT_URL}/${id}`);
+    
+    // genericGet retourne l'objet complet { data: { content: ... } }, donc on accède à .data.
+    const rawMatch = response.data || {};
+    
+    // Mapping du résultat brut vers le modèle du front-end.
     return MatchFoot.fromApi(rawMatch);
-
-  } catch (error) {
-    console.error(`Error fetching match with ID ${id}:`, error);
-    throw error;
-  }
 }
 
+/**
+ * Met à jour un match. Utilise genericUpdate.
+ * 💡 Remplacement de la logique PUT manuelle par `genericUpdate`.
+ */
 export async function updateMatch(id, matchData) {
-  try {
-    const payload = {
-      idseanceSeance: {
-        idseance: matchData.idSeance,
-      },
-      competition: matchData.competition || '',
-      adversaire: matchData.adversaire || '',
-      domicile: Boolean(matchData.domicile),
-      scoreequipe: matchData.scoreEquipe || 0,
-      scoreadversaire: matchData.scoreAdversaire || 0,
-      tempsadditionnel1: matchData.tempsAdditionnel1 || 0,
-      tempsadditionnel2: matchData.tempsAdditionnel2 || 0,
-      incidents: matchData.incidents || '',
-      observations: matchData.observations || '',
-    };
+    const payload = createMatchPayload(matchData);
+    
+    // genericUpdate gère la requête PUT, les headers, le JSON.stringify et la vérification des erreurs.
+    const updatedRawMatch = await genericUpdate(`${MATCHFOOT_URL}/${id}`, payload);
+    
+    // Mapping du résultat brut vers le modèle du front-end.
+    return MatchFoot.fromApi(updatedRawMatch);
+}
 
-    const response = await fetch(`${BASE_URL}/matchfoots/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+// ------------------------------------------------------------------------
+// Fonction de service ajoutée pour la complétude (non présente dans l'original)
+// ------------------------------------------------------------------------
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const json = await response.json();
-
-    if (json.returnCode !== 1) {
-      throw new Error(`API error: ${json.message || 'Unknown error'}`);
-    }
-
-    return MatchFoot.fromApi(json.data);
-
-  } catch (error) {
-    console.error(`Error updating match with ID ${id}:`, error);
-    throw error;
-  }
+/**
+ * Supprime un match par ID. Utilise genericDelete.
+ */
+export async function deleteMatch(id) {
+    // genericDelete gère la requête DELETE et la vérification des erreurs.
+    // L'API ne renvoie généralement pas de données, juste un statut de succès.
+    return genericDelete(`${MATCHFOOT_URL}/${id}`);
 }

@@ -1,7 +1,7 @@
-import { fetchUnpagined } from "./api"
+import { fetchAllPages } from "./api"
 import { BASE_URL } from "./config";
 export async function  getAllTypeMathce(){
-    const response = await fetchUnpagined(`${BASE_URL}/typematchs`)
+    const response = await fetchAllPages(`${BASE_URL}/typematchs`)
     if(response.returnCode != 1){
         throw Error("Failed fetching type Match")
     }

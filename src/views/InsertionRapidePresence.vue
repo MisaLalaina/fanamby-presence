@@ -111,7 +111,7 @@ const handleCheckAll = () => {
           <table class="presence-table">
             <thead>
               <tr>
-                <th>Joueur</th>
+                <th>Joueur ( {{ filteredJoueurs.length }} )</th>
                 <th><label class="checkbox-container" for="checkAll"><input id="checkAll" type="checkbox" v-model="chekcAll" @change="handleCheckAll"  /><span class="checkmark"></span></label></th>
               </tr>
             </thead>
@@ -147,14 +147,6 @@ const handleCheckAll = () => {
   padding: 0 1rem;
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
-
-/* .card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(23, 71, 115, 0.1);
-  padding: 2rem;
-  border: none;
-} */
 
 h2 {
   color: #164773;
@@ -295,7 +287,6 @@ label {
 }
 
 .btn-save {
-  display: inline-block;
   width: auto;
   padding: 0.9rem 2.5rem;
   background: linear-gradient(to right, #1B578C, #2A86BF);

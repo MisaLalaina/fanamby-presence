@@ -8,7 +8,8 @@ export class Joueur {
       numeromaillot,
       idpostePoste,
       dateinscription,
-      datequitter
+      datequitter,
+      idstatutjoueurStatutjoueur,
     }) {
       this.id = idjoueur;
       this.idJoueur = idjoueur;
@@ -21,6 +22,7 @@ export class Joueur {
       this.numero = numeromaillot || '-';
       this.dateInscription = dateinscription;
       this.dateQuitter = datequitter;
+      this.status = idstatutjoueurStatutjoueur?.libelle
     }
   
     static fromApiData(data) {
@@ -38,3 +40,46 @@ export class Joueur {
     }
   }
   
+export class JoueurSpecification {
+  nom;
+  prenom;
+  dateInscriptionMin;
+  dateInscriptionMax;
+  poste;
+
+  constructor({
+    nom,
+    prenom,
+    dateInscriptionMin,
+    dateInscriptionMax,
+    poste,
+  }){
+    this.nom = nom;
+    this.prenom = prenom;
+    if (dateInscriptionMin && dateInscriptionMin != '') {
+      this.dateInscriptionMin = dateInscriptionMin;
+    }
+    if (dateInscriptionMax && dateInscriptionMax != '') {
+      this.dateInscriptionMax = dateInscriptionMax;
+    }
+    this.poste = ''
+    if (poste && String(poste).toLocaleLowerCase() !== "tous") {
+      this.poste = poste
+    }
+  }
+
+  getSearchPayload(){
+    let payload = {
+      nom : this.nom,
+      prenom : this.prenom,
+      dateInscriptionMin : this.dateInscriptionMin,
+      dateInscriptionMax : this.dateInscriptionMax,
+    }
+    if (this.poste !== '') {
+      payload.idpostePoste = {
+        idposte: this.poste
+      }
+    }
+    return payload
+  }
+}

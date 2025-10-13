@@ -17,7 +17,7 @@
   // Fetch presence statuses (async inside onMounted or a separate async fn)
   const loadPresenceStatuses = async () => {
     const response = await getAllPresenceStatus();
-    presenceStatuses.value = response.data.content;
+    presenceStatuses.value = response;
   };
 
   // Simulated API fetch for sessions
@@ -42,15 +42,8 @@
   // Fonction pour basculer le mode d'édition
   const toggleEditMode = () => {
       isEditing.value = !isEditing.value;
-      // Si on quitte le mode édition, on peut choisir de sauvegarder
-      // ou de recharger les données originales.
       if (!isEditing.value) {
-          // Option 1: Recharger les données pour annuler les changements non sauvegardés
-          // loadPresences();
-          
-          // Option 2: Laisser les changements locaux et forcer la sauvegarde (ou demander confirmation)
-          // Pour l'instant, nous allons laisser les changements locaux, mais on va
-          // encourager l'utilisation du bouton "Enregistrer".
+          loadPresences();
       }
   };
 
@@ -84,7 +77,7 @@
 
   // Helper to get status label from ID
   const getStatusLabel = (idStatut) => {
-      const status = presenceStatuses.value.find(s => s.idstatutpresence === idStatut);
+      const status = presenceStatuses.value.find(s => s.idStatutPresence === idStatut);
       return status ? status.libelle : 'Inconnu';
   };
 
@@ -138,7 +131,7 @@
             <td>{{ player.poste }}</td>
             <td>
               <select v-if="isEditing" v-model="player.idStatutPresence" @change="updatePresence(player)">
-                <option v-for="status in presenceStatuses" :key="status.idstatutpresence" :value="status.idstatutpresence">
+                <option v-for="status in presenceStatuses" :key="status.idStatutPresence" :value="status.idStatutPresence">
                   {{ status.libelle }}
                 </option>
               </select>

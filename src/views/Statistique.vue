@@ -104,10 +104,11 @@
                 <th>Entrainement</th>
                 <th>Match</th>
                 <th>General</th>
+                <th>Détail</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="player in dashboardStat.joueurs" :key="player.id">
+              <tr v-for="player in filteredPlayers" :key="player.id">
                 <td class="player-cell">
                   <!-- <div class="player-avatar">{{ getInitials(player.nom) }}</div> -->
                   <div class="player-details">
@@ -146,6 +147,11 @@
                       ></div>
                     </div>
                   </div>
+                </td>
+                <td>
+                  <button @click="openPlayerDetails(player)" class="btn-detail-player" title="Voir les détails">
+                      <i class="fas fa-eye"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -197,6 +203,12 @@
       </div>
     </div>
   </div>
+
+  <PlayerPresenceDetails
+  v-if="showPlayerDetailsPopup && selectedPlayerForDetails"
+  :player="selectedPlayerForDetails"
+  @close="closePlayerDetails"
+/>
 </template>
 
 <script setup>
@@ -207,6 +219,7 @@ import SeanceService from '@/services/SeanceService'
 import { Seance } from '@/models/seance'
 
 import {getPresencesByIdSeance} from '@/services/PresenceService'
+import PlayerPresenceDetails from './PlayerPresenceDetails.vue'
 
 const showPopup = ref(false)
 const presenceList = ref([])
@@ -217,7 +230,19 @@ const popupStats = ref({
   absents: 0,
   tauxPresence: 0
 })
+// Nouvelles déclarations
+const selectedPlayerForDetails = ref(null) // Le joueur dont on veut voir les détails
+const showPlayerDetailsPopup = ref(false) // État de la popup de détail joueur
 
+// Nouvelle fonction
+const openPlayerDetails = (player) => { // Fonction appelée par le bouton du tableau
+  selectedPlayerForDetails.value = player
+  showPlayerDetailsPopup.value = true
+}
+
+const closePlayerDetails = () => {
+  showPlayerDetailsPopup.value = false
+}
 const openPresencePopup = async () => {
   if (!selectedSession.value) return
   try {
@@ -352,6 +377,17 @@ const dashboardStat = computed(() => {
   return presenceStat;
 }); 
 
+const filteredPlayers = computed(() => {
+  if (!playerSearch.value) {
+    return dashboardStat.value.joueurs;
+  }
+  const search = playerSearch.value.toLowerCase();
+  return dashboardStat.value.joueurs.filter(p => 
+    p.nom.toLowerCase().includes(search) || 
+    p.prenom.toLowerCase().includes(search)
+  );
+});
+
 // Lifecycle hook
 onMounted(async () => {
   try {
@@ -370,6 +406,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.btn-detail-player {
+    background: #5DADE2;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-detail-player:hover {
+    background-color: #3498db;
+}
 /* Appliquer la police InterTight à tout le conteneur */
 .stats-container {
   font-family: 'InterTight', sans-serif;
