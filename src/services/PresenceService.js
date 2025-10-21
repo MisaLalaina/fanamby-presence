@@ -28,8 +28,7 @@ const createPresencePayload = (presenceData) => ({
         idstatutpresence: presenceData.idStatutPresence,
     },
     commentaires: presenceData.commentaire || '',
-    // Ajouter d'autres champs si le service gère l'update ou plus de détails
-    // idpresence: presenceData.idPresence, // Pour l'update
+
     heurearrivee: presenceData.heureArrivee || null,
     motifabsence: presenceData.motifAbsence || null,
     signature: presenceData.signature || null,

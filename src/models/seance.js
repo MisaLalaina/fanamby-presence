@@ -2,7 +2,11 @@ export class Seance {
     constructor(data) {
       this.idSeance = data.idseance;
       this.idTypeSeance = data.idtypeseanceTypeseance?.idtypeseance;
+      this.idtypeseanceTypeseance = data.idtypeseanceTypeseance;
+
       this.typeSeance = data.idtypeseanceTypeseance?.libelle;
+      this.idtypeseanceTypeseance = data.idtypeseanceTypeseance;
+      
       this.type = data.idtypeseanceTypeseance?.libelle;
       this.dateSeance = data.dateseance;
       this.heureDebut = data.heuredebut?.substring(0, 5); // Format to HH:MM
@@ -10,8 +14,12 @@ export class Seance {
       this.lieu = data.lieu;
       this.objectif = data.objectif;
       this.bilan = data.bilan;
+
       this.statut = data.idstatutseanceStatutseance?.libelle;
+      this.idstatutseanceStatutseance = data.idstatutseanceStatutseance;
+
       this.club = data.idclubClub?.nomclub;
+      this.idclubClub = data.idclubClub;
     }
   
     static formatSeances(apiData) {
@@ -30,5 +38,36 @@ export class Seance {
         bilan: ''
       };
     }
+
+    setRealised(){
+      this.idstatutseanceStatutseance.idstatutseance = 2
+    }
     
+    payload(){
+      return {
+        idseance : this.idSeance,
+        idstatutseanceStatutseance: {
+          idstatutseance : this.idstatutseanceStatutseance.idseance
+        }
+      }
+    }
+}
+
+export class SeanceSpecification {
+  status;
+
+  constructor({
+    status,
+  }){
+    this.status = status
+  }
+
+  getSearchPayload(){
+    let payload = {
+      idstatutseanceStatutseance : {
+        idstatutseance: this.status
+      },
+    }
+    return payload
+  }
 }

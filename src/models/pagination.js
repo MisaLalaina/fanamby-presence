@@ -35,4 +35,9 @@ export class PageData {
         }
         return null
     }
+
+    previous(){
+        if(this.number == 0) return null
+        return new PageRequest({page:this.number-1, size:this.size})
+    }
 }

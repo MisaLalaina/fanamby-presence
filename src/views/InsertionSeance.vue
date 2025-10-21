@@ -28,8 +28,8 @@ const submitForm = async () => {
   try {
     await SeanceService.createSeance({
       ...currentSeance.value,
-      clubId: clubId.value,
-      statutId: statutId.value
+      idclubClub: {idclub: clubId.value},
+      idstatutseanceStatutseance: {idstatutseance:statutId.value}
     });
     successMessage.value = "Séance ajoutée avec succès !";
     resetForm();

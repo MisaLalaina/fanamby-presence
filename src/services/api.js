@@ -27,7 +27,6 @@ export async function genericCreate(url, dataToSend, options = {}) {
             body: JSON.stringify(dataToSend),
             ...options // Permet de passer d'autres options comme 'signal' pour AbortController
         });
-
         const data = await handleResponse(response, url);
         // Retourne le 'data' principal de la réponse (souvent l'objet créé)
         return data.data; 
@@ -40,6 +39,8 @@ export async function genericCreate(url, dataToSend, options = {}) {
 
 // Fonction Générique pour l'UPDATE (PUT)
 export async function genericUpdate(url, dataToSend, options = {}) {
+    console.log(url);
+    console.log(dataToSend);
     try {
         const response = await fetch(url, {
             method: 'PUT',

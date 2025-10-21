@@ -42,6 +42,11 @@ const nextPageHandler = () => {
   searchData()
 }
 
+const previousPageHandler = () => {
+  paginationUse.previousPage()
+  searchData()
+}
+
 const searchData = async () => {
   isLoading.value = true;
   // 1. Déterminer les paramètres de recherche
@@ -132,6 +137,9 @@ const resetSearchFilters = () => {
     @close="closePlayerProfile" 
   />
   <div v-else class="joueurs-container">
+    <div @click="previousPageHandler()">
+      Previous
+    </div>
     <div @click="nextPageHandler()">
       Next
     </div>

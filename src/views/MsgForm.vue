@@ -9,6 +9,7 @@
         presenceDate: "",
         content: "",
         status: "",
+        maxlength: 100
       };
     },
     methods: {
@@ -28,6 +29,11 @@
         }
       },
     },
+    computed : {
+      contentLength(){
+        return this.content.length
+      },
+    }
   };
   </script>
 
@@ -65,6 +71,7 @@
             id="content"
             v-model="content"
             placeholder="Exemple : Votre enfant doit être présent à..."
+            :maxlength="maxlength"
             required
           ></textarea>
         </div>

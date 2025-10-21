@@ -1,9 +1,8 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import SeanceService from '@/services/SeanceService'
 import * as JoueurService from '@/services/JoueurService'
 import { Seance } from '@/models/seance'
-import { Joueur } from '@/models/joueur'
 import { createPresence } from '@/services/PresenceService'
 
 const ID_STATUT_PRESENT = 1;
@@ -12,7 +11,7 @@ const ID_STATUT_ABSENT = 2;
 // Références réactives
 const seances = ref([])
 const joueurs = ref([])
-const selectedSeance = ref(null)
+const selectedSeance = ref(Seance.getDefaultSeance())
 const presences = ref({})
 const searchTerm = ref('')
 const chekcAll = ref(false)
@@ -20,16 +19,23 @@ const chekcAll = ref(false)
 // Chargement des données
 const fetchData = async () => {
   try {
-    const seanceData = await SeanceService.getAllSeances()
-    seances.value = Seance.formatSeances(seanceData)
-
-    selectedSeance.value = seances.value.length ? seances.value[0].idSeance : null
-
-    const joueurData = await JoueurService.getAllJoueurs()
-    joueurs.value = Joueur.listFromApiData(joueurData);
+    const seanceData = await SeanceService.getAllPlanifiedSeance()
+    seances.value = seanceData
+    selectedSeance.value = seances.value.length ? seances.value[0] : null
+    await fetchPlayersBySeance()
   } catch (err) {
     console.error("Erreur lors du chargement des données:", err)
   }
+}
+
+const fetchPlayersBySeance = async() => {
+  console.log(selectedSeance.value.idSeance);
+  
+  if (selectedSeance.value.idSeance == null) return
+  const {data: joueurData} = await JoueurService.searchJoueurs({
+    dateInscriptionMax: selectedSeance.value.dateSeance
+  })
+  joueurs.value = joueurData;
 }
 
 onMounted(() => {
@@ -40,13 +46,13 @@ onMounted(() => {
 const filteredJoueurs = computed(() => {
   if (!searchTerm.value) return joueurs.value
   const term = searchTerm.value.toLowerCase()
-  return joueurs.value.filter(joueur => joueur.nom.toLowerCase().includes(term))
+  return joueurs.value.filter(joueur => joueur.fullName.toLowerCase().includes(term))
 })
 
 // Sauvegarde des présences (submit)
 const savePresence = async () => {
   try {
-    const seanceId = selectedSeance.value;
+    const seanceId = selectedSeance.value.idSeance;
     const requests = [];
      joueurs.value.forEach( (joueur) => {
       let isPresent = presences.value[joueur.id];
@@ -61,6 +67,8 @@ const savePresence = async () => {
     })
 
     await Promise.all(requests);
+    selectedSeance.value.setRealised()
+    await SeanceService.updateSeance(seanceId, selectedSeance.value)
     alert("Toutes les présences ont été enregistrées !");
   } catch (error) {
     console.error("Erreur lors de l'enregistrement des présences :", error);
@@ -79,6 +87,17 @@ const handleCheckAll = () => {
     presences.value[joueur.id] = chekcAll.value
   })
 }
+
+watch(() => selectedSeance.value.idSeance, (newId, oldId) => {
+  console.log(newId);
+  console.log(oldId);
+    if (newId !== oldId) {
+      console.log("fetch");
+      
+        fetchPlayersBySeance();
+    }
+}, { immediate: false });
+
 </script>
 
 
@@ -91,7 +110,7 @@ const handleCheckAll = () => {
           <div class="form-group">
             <label for="seance-select">Séance :</label>
             <select id="seance-select" v-model="selectedSeance" class="form-control">
-              <option v-for="seance in seances" :key="seance.idSeance" :value="seance.idSeance">
+              <option v-for="seance in seances" :key="seance.idSeance" :value="seance">
                 {{ seance.type }} - {{ seance.dateSeance }} ({{ seance.heureDebut }}) - {{ seance.lieu }}
               </option>
             </select>
@@ -117,7 +136,7 @@ const handleCheckAll = () => {
             </thead>
             <tbody>
               <tr v-for="joueur in filteredJoueurs" :key="joueur.id">
-                <td>{{ joueur.nom }}</td>
+                <td>{{ joueur.fullName }}</td>
                 <td>
                   <label class="checkbox-container">
                     <input

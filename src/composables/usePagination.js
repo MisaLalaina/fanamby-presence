@@ -19,6 +19,12 @@ export default function usePagination(){
             setPageRequest(nextRequest)
         }
     }
+    function previousPage(){
+        const previousRequest = getPagination().previous()
+        if (previousRequest != null) {
+            setPageRequest(previousRequest)
+        }
+    }
 
     function getPageRequest(){
         return pageRequest.value
@@ -33,5 +39,5 @@ export default function usePagination(){
         pageData.value = new PageData({})
     }
 
-    return {getPagination, setPagination, nextPage, resetPagination, getPageRequest, setPageRequest}
+    return {getPagination, setPagination, nextPage, previousPage, resetPagination, getPageRequest, setPageRequest}
 }

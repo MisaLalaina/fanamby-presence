@@ -35,9 +35,6 @@ export async function createJoueur(joueur) {
 export async function getAllJoueurs() {
     // Utilise fetchAllPages pour récupérer toutes les pages de l'endpoint /joueurs.
     const response = await fetchAllPages(JOUEUR_URL);
-    // On ne retourne que le tableau de contenu.
-    console.log(response);
-    
     return Joueur.listFromApiData(response);
 }
 
@@ -53,7 +50,8 @@ export async function getAllJoueurs() {
 export async function getJoueurById(id) {
     // genericGet retourne la réponse complète, y compris l'objet data (le joueur)
     const response = await genericGet(`${JOUEUR_URL}/${id}`);
-    return response;
+    const joueur = Joueur.fromApiData(response.data)
+    return joueur;
 }
 
 /**
@@ -63,8 +61,7 @@ export async function getJoueurById(id) {
  * @returns {Promise<object>} Le joueur mis à jour.
  */
 export async function updateJoueur(id, joueurData) {
-    // genericUpdate gère la requête PUT et l'envoi du body.
-    return genericUpdate(`${JOUEUR_URL}/${id}`, joueurData);
+    return await genericUpdate(`${JOUEUR_URL}/${id}`, joueurData);
 }
 
 /**

@@ -14,6 +14,7 @@ export default {
         { number: "+261384178406", selected: true },
       ],
       status: "",
+      maxlength:100
     };
   },
   methods: {
@@ -44,6 +45,11 @@ export default {
       }, 1000);
     },
   },
+  computed: {
+    contentLength() {
+      return this.message.length
+    }
+  }
 };
 </script>
 
@@ -63,8 +69,9 @@ export default {
           placeholder="Votre message ici..."
           required
           minlength="0"
-          maxlength="20"
+          :maxlength="maxlength"
         ></textarea>
+        <p>{{ contentLength }} / {{ maxlength }}</p>
       </div>
 
       <!-- Choix canaux -->

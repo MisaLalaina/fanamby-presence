@@ -97,6 +97,7 @@
         </div>
 
     </div>
+    <router-link :to="'/joueurs/update/'+player.id" >Edit</router-link>
   </div>
 </template>
 
@@ -113,7 +114,7 @@ const props = defineProps({
 
 // Fonction pour gérer les erreurs d'image (cohérence visuelle)
 const onImageError = (event) => {
-  event.target.src = '/path/to/default-avatar.jpg'; // Avatar par défaut
+  event.target.src = '/logo/logofotsy.jpg'; // Avatar par défaut
   event.target.classList.add('default-avatar');
 };
 </script>

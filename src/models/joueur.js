@@ -10,19 +10,33 @@ export class Joueur {
       dateinscription,
       datequitter,
       idstatutjoueurStatutjoueur,
+      idpiedfortPiedfort,
+      idclubClub,
+      email,
+      taille,
+      poids,
+      telephone
     }) {
       this.id = idjoueur;
+      this.email = email;
       this.idJoueur = idjoueur;
-      this.nom = `${nom} ${prenom}`;
+      this.fullName = `${nom} ${prenom}`;
+      this.nom = nom ;
+      this.prenom = prenom;
       this.poste = idpostePoste?.libelle?.toUpperCase() || 'INCONNU';
-      this.dateNaissance = datenaissance
-        ? new Date(datenaissance).toLocaleDateString('fr-FR')
-        : 'Inconnue';
+      this.idpostePoste = idpostePoste;
+      this.idpiedfortPiedfort = idpiedfortPiedfort;
+      this.dateNaissance = datenaissance;
       this.nationalite = nationalite || 'Inconnue';
-      this.numero = numeromaillot || '-';
+      this.numero = numeromaillot;
       this.dateInscription = dateinscription;
       this.dateQuitter = datequitter;
       this.status = idstatutjoueurStatutjoueur?.libelle
+      this.idstatutjoueurStatutjoueur = idstatutjoueurStatutjoueur
+      this.idclubClub = idclubClub
+      this.taille = taille
+      this.poids = poids
+      this.telephone = telephone
     }
   
     static fromApiData(data) {
@@ -72,8 +86,8 @@ export class JoueurSpecification {
     let payload = {
       nom : this.nom,
       prenom : this.prenom,
-      dateInscriptionMin : this.dateInscriptionMin,
-      dateInscriptionMax : this.dateInscriptionMax,
+      dateinscriptionMin : this.dateInscriptionMin,
+      dateinscriptionMax : this.dateInscriptionMax,
     }
     if (this.poste !== '') {
       payload.idpostePoste = {

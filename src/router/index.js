@@ -18,6 +18,7 @@ import MessageGroupView from '@/views/MessageGroupView.vue'
 import PublicationFacebook from '@/views/PublicationFacebook.vue'
 import SuiviFacebook from '@/views/SuiviFacebook.vue'
 import ModificationSeance from '@/views/ModificationSeance.vue'
+import UpdateJoueur from '@/views/joueur/UpdateJoueur.vue'
 const routes = [
    {
     path:'/login-club',
@@ -34,7 +35,11 @@ const routes = [
     name: 'insertionJoueur',
     component: InsertionJoueur
   },
- 
+  {
+    path: '/joueurs/update/:id',
+    name: 'modificationJoueur',
+    component: UpdateJoueur
+  },
   {
     path: '/liste-seance',
     name: 'listeSeance',

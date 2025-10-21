@@ -32,7 +32,8 @@
 
   const fetchPlayers = async () => {
     const joueursResp = await getAllJoueurs();
-    players.value = Joueur.listFromApiData(joueursResp);
+    console.log(joueursResp);
+    players.value = joueursResp;
   };
 
   const formatSessionLabel = (session) => {

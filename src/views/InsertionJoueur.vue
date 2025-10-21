@@ -73,10 +73,8 @@ export default {
 
     const submitForm = async () => {
       try {
-        console.log(joueur.value);
         const result = await createJoueur(joueur.value);
         alert('Joueur enregistré avec succès !');
-        console.log('Réponse API :', result);
         resetForm();
       } catch (error) {
         console.error(error)
