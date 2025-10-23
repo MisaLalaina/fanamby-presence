@@ -16,17 +16,17 @@ export default {
       idpostePoste: { idposte: 1 },
       idstatutjoueurStatutjoueur: { idstatutjoueur: 1 },
       idpiedfortPiedfort: { idpiedfort: 1 },
-      nom: 'JCA',
-      prenom: 'TSN',
-      datenaissance: '2004-03-13',
+      nom: '',
+      prenom: '',
+      datenaissance: '',
       dateinscription: new Date().toISOString().slice(0, 10),
       nationalite: 'Malagasy',
-      taille: '178',
-      poids: '100',
-      numeromaillot:'10',
-      adresse: 'Antrano',
-      telephone: '+261 38 81 559 70',
-      email: 'jacquesalex771@gmail.com'
+      taille: '',
+      poids: '',
+      numeromaillot:'',
+      adresse: '',
+      telephone: '',
+      email: ''
     });
 
     const postes = ref([]);
@@ -35,9 +35,7 @@ export default {
     const fetchPostes = async () => {
       try {
         const data = await getAllPostes();
-        const postesList = Poste.listFromApiData(data);
-
-        postes.value = postesList;
+        postes.value = data;
       } catch (error) {
         console.error("Erreur lors du chargement des postes :", error);
       }
@@ -46,9 +44,7 @@ export default {
     const fetchPiedsFort = async () => {
       try {
         const data = await getAllPiedsFort();
-        const piedsFortList = PiedFort.listFromApiData(data);
-
-        piedsFort.value = piedsFortList;
+        piedsFort.value = data;
       } catch (error) {
         console.error("Erreur lors du chargement des pieds fort :", error);
       }
@@ -115,11 +111,13 @@ export default {
 </script>
 
 <template>
-
-<SideBar/>
-
   <div class="form-container">
     <h1>Nouveau joueurt</h1>
+    <div>
+      <router-link to="/">
+        <span>Retour a la liste des joueurs</span>
+      </router-link>
+    </div>
     
     <form @submit.prevent="submitForm" class="player-form">
       <div class="form-row">

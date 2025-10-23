@@ -50,6 +50,8 @@ export default {
         const fetchPostes = async () => {
             try {
                 const data = await getAllPostes();
+                console.log(data);
+                
                 postes.value = data;
             } catch (error) {
                 console.error("Erreur lors du chargement des postes :", error);
@@ -143,7 +145,7 @@ export default {
         onMounted(() => {
             fetchPostes();
             fetchPiedsFort();
-            fetchJoueurData(); // Charger les données spécifiques au joueur après le montage
+            fetchJoueurData();
         });
         
         return {
@@ -161,8 +163,11 @@ export default {
 </script>
 
 <template>
-<SideBar/>
-
+    <div>
+      <router-link to="/">
+        <span>Retour a la liste des joueurs</span>
+      </router-link>
+    </div>
     <div class="form-container">
         <h1>Modification du joueur #{{ joueur.idjoueur }}</h1>
         

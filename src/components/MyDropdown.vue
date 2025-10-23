@@ -20,9 +20,6 @@ export default {
     <span class="dropdownTitle">
       <slot name="title"></slot>
     </span>
-    <ul class="dropdown-menu" v-show="isOpen">
-      <slot name="list"></slot>
-    </ul>
   </div>
 </template>
 
@@ -101,6 +98,6 @@ li:hover {
   color: black;
 }
 .dropdown-menu:has(.dropdown-item.active) {
-  visibility: visible;
+visibility: visible;
 }
 </style>

@@ -11,169 +11,80 @@ import MyDropdown from './MyDropdown.vue';
     <nav class="nav-menu">
       <MyDropdown>
         <template #title>
-          <img src="@/assets/joueur.svg" class="list-icon" alt="Joueurs icon">
-          <span>Joueurs</span>
-        </template>
-        <template #list>
-          <li class="">
-            <router-link to="/" class="dropdown-item" active-class="active" exact>
+          <img src="@/assets/dashboard.svg" class="list-icon" alt="dashboardicon">
+          <router-link to="/dashboard" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>Registre Joueurs</span>
+              <span>dashboard</span>
             </router-link>
-          </li>
-          <li>
-            <router-link to="/insertion-joueur" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
-              <span>Insertion Joueur</span>
+        </template>
+      </MyDropdown>
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/joueur.svg" class="list-icon" alt="Joueurs icon">
+          <router-link to="/" class="dropdown-item" active-class="active" exact>
+              <span>Joueurs</span>
             </router-link>
-          </li>
         </template>
       </MyDropdown>
 
       <MyDropdown>
         <template #title>
           <img src="@/assets/seance.svg" class="list-icon" alt="Joueurs icon">
-          <span>Séance</span>
-        </template>
-        <template #list>
-          <li >
-            <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Registre séances</span>
+          <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
+              <span>Séances</span>
             </router-link>
-          </li>
-          <li>
-            <router-link to="/insertion-seance" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
-              <span>Insertion séances</span>
-            </router-link>
-          </li>
         </template>
       </MyDropdown>
 
       <MyDropdown>
         <template #title>
           <img src="@/assets/presence.svg" class="list-icon" alt="presence icon">
-          <span>Presence</span>
+          <router-link to="/presence" class="dropdown-item" active-class="active" exact>
+              <span>Presences</span>
+            </router-link>
         </template>
-        <template #list>
-          <li>
-            <router-link to="/presence" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Liste presence</span>
+      </MyDropdown>
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
+          <router-link to="/match" class="dropdown-item" active-class="active" exact>
+              <span>Matchs</span>
             </router-link>
-          </li>
-          <li>
-            <router-link to="/insertion-rapide" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
-              <span>Insertion presence</span>
-            </router-link>
-          </li>
         </template>
       </MyDropdown>
 
       <MyDropdown>
         <template #title>
           <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
-          <span>Match</span>
-        </template>
-        <template #list>
-          <li>
-            <router-link to="/match" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Liste match</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/insertion-match" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
-              <span>Insertion match</span>
-            </router-link>
-          </li>
-        </template>
-      </MyDropdown>
-
-      <MyDropdown>
-        <template #title>
-          <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
-          <span>Composition</span>
-        </template>
-        <template #list>
-          <li>
-            <router-link to="/composition" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Liste composition</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/insertion-composition" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
+          <router-link to="/insertion-composition" class="dropdown-item" active-class="active">
               <span>Insertion composition</span>
             </router-link>
-          </li>
-        </template>
-      </MyDropdown>
-
-      <MyDropdown>
-        <template #title>
-          <img src="@/assets/dashboard.svg" class="list-icon" alt="dashboardicon">
-          <span>Dashboard</span>
-        </template>
-        <template #list>
-          <li>
-            <router-link to="/dashboard" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Statistique</span>
-            </router-link>
-          </li>
-          <li>
-            <!-- <router-link to="/insertion-match" class="dropdown-item" active-class="active">
-              <i class="fas fa-user-plus"></i>
-              <span>Statistique individuel</span>
-            </router-link> -->
-          </li>
         </template>
       </MyDropdown>
         <MyDropdown>
         <template #title>
           <img src="@/assets/message.svg" class="list-icon" alt="matchicon">
-          <span>Message</span>
-        </template>
-        <template #list>
-          <li>
-            <router-link to="/messages" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
-              <span>Send message</span>
+          <router-link to="/messages" class="dropdown-item" active-class="active" exact>
+              <span>SMS</span>
             </router-link>
-          </li>
         </template>
-
       </MyDropdown>
 
       <MyDropdown>
         <template #title>
           <img src="@/assets/publication.svg" class="list-icon" alt="Joueurs icon">
-          <span>publication</span>
-        </template>
-        <template #list>
-          <li >
-            <router-link to="/publication" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
+          <router-link to="/publication" class="dropdown-item" active-class="active" exact>
               <span>Facebook</span>
             </router-link>
-          </li>
-          <li>
-            
-          </li>
-          <li >
-            <router-link to="/suivi-facebook" class="dropdown-item" active-class="active" exact>
-              <i class="fas fa-list"></i>
+        </template>
+      </MyDropdown>
+
+      <MyDropdown>
+        <template #title>
+          <img src="@/assets/publication.svg" class="list-icon" alt="Joueurs icon">
+          <router-link to="/suivi-facebook" class="dropdown-item" active-class="active" exact>
               <span>Suivi Facebook</span>
             </router-link>
-          </li>
-          <li>
-            
-          </li>
         </template>
       </MyDropdown>
 

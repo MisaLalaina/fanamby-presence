@@ -137,6 +137,11 @@ const resetSearchFilters = () => {
     @close="closePlayerProfile" 
   />
   <div v-else class="joueurs-container">
+    <div>
+      <router-link to="/insertion-joueur" class="dropdown-item" active-class="active">
+        <span>Insertion Joueur</span>
+      </router-link>
+    </div>
     <div @click="previousPageHandler()">
       Previous
     </div>
