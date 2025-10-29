@@ -206,7 +206,7 @@ const autoFillPlayerDetails = (idJoueur, rowKey) => {
         
         if (player) {
             // Mise à jour des champs
-            row.numeroMaillot = player.numeroMaillot || null; // Utilise la valeur du joueur
+            row.numeroMaillot = player.numeromaillot || null; // Utilise la valeur du joueur
             row.position = player.poste || ''; // Utilise la valeur du joueur
             // Optionnel : Définir un statut par défaut si non défini
             if (!row.idStatutComposition) {

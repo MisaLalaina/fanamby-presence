@@ -25,6 +25,7 @@ export default {
 
         // --- DONNÉES DU JOUEUR (Initialisation vide) ---
         const joueur = ref({
+            idjoueur: '',
             idclubClub: { idclub: 1 },
             idpostePoste: { idposte: 1 },
             idstatutjoueurStatutjoueur: { idstatutjoueur: 1 },
@@ -32,13 +33,14 @@ export default {
             nom: '',
             prenom: '',
             datenaissance: '',
-            dateinscription: '',
-            nationalite: '',
+            dateinscription: new Date().toISOString().slice(0, 10),
+            nationalite: 'Malagasy',
             taille: '',
             poids: '',
-            numeromaillot: '',
+            numeromaillot:'',
+            adresse: '',
             telephone: '',
-            email: '',
+            email: ''
         });
 
         // --- LISTES DE SÉLECTION ---
@@ -81,25 +83,10 @@ export default {
             }
             
             try {
-                // 1. Appel API pour obtenir les données du joueur par ID
-                const data = await getJoueurById(joueurId); 
-                
-                joueur.value = {
-                    idclubClub: { idclub : data.idclubClub.idclub},
-                    idpostePoste: { idposte : data.idpostePoste.idposte},
-                    idstatutjoueurStatutjoueur: { idstatutjoueur: data.idstatutjoueurStatutjoueur.idstatutjoueur},
-                    idpiedfortPiedfort: { idpiedfort: data.idpiedfortPiedfort.idpiedfort },
-                    nom: data.nom,
-                    prenom: data.prenom,
-                    datenaissance: data.dateNaissance,
-                    dateinscription: data.dateInscription,
-                    nationalite: data.nationalite,
-                    taille: data.taille ,
-                    poids: data.poids ,
-                    numeromaillot: data.numero ,
-                    telephone: data.telephone ,
-                    email: data.email,
-                };
+                const data = await getJoueurById(joueurId);
+                if (data) {
+                    joueur.value = data.getDTO()
+                }
 
             } catch (error) {
                 console.error("Erreur lors du chargement des données du joueur :", error);
@@ -124,7 +111,7 @@ export default {
                 
                 // Redirection ou annulation après un court délai
                 setTimeout(() => {
-                    router.push({ name: 'liste' }); // Adaptez le nom de la route de la liste
+                    router.push({ path: '/joueurs' }); // Adaptez le nom de la route de la liste
                 }, 1500);
 
             } catch (error) {
@@ -163,8 +150,9 @@ export default {
 </script>
 
 <template>
-    <div>
-      <router-link to="/">
+    <div class="page-header">
+      <h2>Modification joueur</h2>
+      <router-link to="/joueurs" class="btn-add">
         <span>Retour a la liste des joueurs</span>
       </router-link>
     </div>
@@ -238,9 +226,7 @@ export default {
                         placeholder="Ex: 10"
                     >
                 </div>
-            </div>
 
-            <div class="form-row">
                 <div class="form-group">
                     <label for="poste">Poste*</label>
                     <select 
@@ -301,7 +287,7 @@ export default {
                 </div>
             </div>
 
-            <!-- <div class="form-group full-width">
+            <div class="form-group full-width">
                 <label for="adresse">Adresse*</label>
                 <input 
                     type="text" 
@@ -310,7 +296,7 @@ export default {
                     required
                     placeholder="Entrez l'adresse complète"
                 >
-            </div> -->
+            </div>
             
             <div class="form-row">
                 <div class="form-group">

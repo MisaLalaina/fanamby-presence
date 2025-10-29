@@ -57,11 +57,7 @@ export async function getAllMatches() {
  */
 export async function createMatch(matchData) {
     const payload = createMatchPayload(matchData);
-    
-    // genericCreate gère la requête POST, les headers, le JSON.stringify et la vérification des erreurs.
     const createdRawMatch = await genericCreate(MATCHFOOT_URL, payload);
-    
-    // Mapping du résultat brut vers le modèle du front-end.
     return MatchFoot.fromApi(createdRawMatch);
 }
 
@@ -94,13 +90,6 @@ export async function updateMatch(id, matchData) {
     return MatchFoot.fromApi(updatedRawMatch);
 }
 
-// ------------------------------------------------------------------------
-// Fonction de service ajoutée pour la complétude (non présente dans l'original)
-// ------------------------------------------------------------------------
-
-/**
- * Supprime un match par ID. Utilise genericDelete.
- */
 export async function deleteMatch(id) {
     // genericDelete gère la requête DELETE et la vérification des erreurs.
     // L'API ne renvoie généralement pas de données, juste un statut de succès.

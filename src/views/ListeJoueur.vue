@@ -3,19 +3,16 @@ import { ref, computed, onMounted } from 'vue';
 // Assurez-vous que searchJoueurs peut prendre 'page' et 'limit' en paramètres
 import { searchJoueurs } from '@/services/JoueurService'; 
 import { getAllPostes } from '@/services/PosteService';
-import JoueurProfile from '@/views/joueur/JoueurProfile.vue';
 import usePagination from '@/composables/usePagination';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 // --- Gestion de la Fiche Détaillée ---
 const selectedPlayer = ref(null);
 
-const viewPlayerProfile = (joueur) => {
-    selectedPlayer.value = joueur;
-};
 
-const closePlayerProfile = () => {
-    selectedPlayer.value = null; 
-    applySearch(); // Au retour, on s'assure que la liste est à jour
+const viewPlayerProfile = (joueur) => {
+  router.push({path : `/joueurs/${joueur.id}`})
 };
 
 // --- Données de Base ---
@@ -131,14 +128,16 @@ const resetSearchFilters = () => {
 </script>
 
 <template>
-  <JoueurProfile 
+
+  <!-- <JoueurProfile 
     v-if="selectedPlayer" 
     :player="selectedPlayer" 
     @close="closePlayerProfile" 
-  />
-  <div v-else class="joueurs-container">
-    <div>
-      <router-link to="/insertion-joueur" class="dropdown-item" active-class="active">
+  /> -->
+  <div class="joueurs-container">
+    <div class="page-header">
+      <h2>Liste des joueurs</h2>
+      <router-link to="/joueurs/create" class="btn-add">
         <span>Insertion Joueur</span>
       </router-link>
     </div>
@@ -203,7 +202,7 @@ const resetSearchFilters = () => {
             class="joueur-avatar"
             @error="onImageError"
           >
-          <div class="joueur-numero">{{ joueur.numero }}</div>
+          <div class="joueur-numero">{{ joueur.numeromaillot }}</div>
         </div>
 
         <div class="joueur-details-section">

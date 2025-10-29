@@ -1,122 +1,201 @@
 <template>
-  <div class="player-profile-container">
-    <div class="profile-card">
-
-      <header class="profile-header">
-        <div class="photo-container">
-          <img 
-            :src="'joueurs/'+player.id+'.jpg'" 
-            :alt="'Photo de ' + player.nom" 
-            class="profile-photo"
-            @error="onImageError"
-          >
-          <div class="player-number-badge">{{ player.numero }}</div>
+    <div v-if="player" class="player-profile-container">
+        <div class="top-actions">
+            <router-link to="/joueurs" class="btn-add">
+              <span>Retour a la liste des joueurs</span>
+            </router-link>
+            <router-link :to="'/joueurs/update/'+player.id" class="action-btn edit-btn">
+                Modifier le profil
+            </router-link>
+            <button type="button" @click="toggleQuitForm" class="action-btn quit-btn">
+                {{ showQuitForm ? 'Annuler' : 'Quitter le club' }}
+            </button>
         </div>
-
-        <div class="header-details">
-          <div class="player-full-name">
-            {{ player.prenom }} <span class="last-name">{{ player.nom }}</span>
-          </div>
-          <div class="player-poste-main">
-            {{ player.poste }}
-          </div>
-          
-          <div class="bio-info-line">
-            <span class="info-icon">🌍</span> {{ player.nationalite }}
-          </div>
-          <div class="bio-info-line">
-            <span class="info-icon">🎂</span> Né le {{ player.dateNaissance }}
-          </div>
-        </div>
-      </header>
-
-      <div class="profile-body">
         
-        <section class="stat-section">
-          <h2>Informations Détaillées</h2>
-          <div class="stat-grid">
-            <div class="stat-item">
-              <span class="stat-label">Taille</span>
-              <span class="stat-value">{{ player.taille || 'N/A' }} cm</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Poids</span>
-              <span class="stat-value">{{ player.poids || 'N/A' }} kg</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Pied Fort</span>
-              <span class="stat-value">{{ player.piedFort || 'Droit' }}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Statut</span>
-              <span :class="'stat-value status-'+String(player.status).toLowerCase()">{{ player.status }}</span>
-            </div>
-          </div>
-        </section>
+        <div class="profile-card">
+            <header class="profile-header">
+                <div class="photo-container">
+                    <img 
+                        :src="'/joueurs/'+player.id+'.jpg'" 
+                        :alt="'Photo de ' + player.nom" 
+                        class="profile-photo"
+                        @error="onImageError"
+                    >
+                    <div class="player-number-badge">{{ player.numero }}</div>
+                </div>
 
-        <hr class="section-divider">
+                <div class="header-details">
+                    <div class="player-full-name">
+                        {{ player.prenom }} <span class="last-name">{{ player.nom }}</span>
+                    </div>
+                    <div class="player-poste-main">
+                        {{ player.poste }}
+                    </div>
+                    
+                    <div class="bio-info-line">
+                        <span class="info-icon">🌍</span> {{ player.nationalite }}
+                    </div>
+                    <div class="bio-info-line">
+                        <span class="info-icon">🎂</span> Né le {{ player.dateNaissance }}
+                    </div>
+                </div>
+            </header>
 
-        <section class="career-section">
-          <h2>Parcours Club</h2>
-          <div class="career-info-grid">
-            <div class="info-item">
-              <span class="item-label">Date d'Inscription</span>
-              <span class="item-value">{{ player.dateInscription }}</span>
-            </div>
-            <div class="info-item">
-              <span class="item-label">Date de Départ</span>
-              <span class="item-value item-inactive">{{ player.dateQuitter || 'N/A (Actif)' }}</span>
-            </div>
-          </div>
-          
-          <div v-if="player.note" class="player-note">
-            <span class="note-title">Notes du Coach :</span> {{ player.note }}
-          </div>
-        </section>
+            <div class="profile-body">
+                
+                <section v-if="showQuitForm" class="quit-form-section">
+                    <h2>Enregistrer le Départ du Joueur</h2>
+                    <form @submit.prevent="quitterJoueur">
+                        <div class="form-group">
+                            <label for="date-quitter">Date de Départ</label>
+                            <input 
+                                id="date-quitter" 
+                                type="date" 
+                                v-model="dateQuitterModel" 
+                                required
+                                class="form-input"
+                            >
+                        </div>
+                        <button type="submit" class="submit-quit-btn" :disabled="isQuitting">
+                            {{ isQuitting ? 'Enregistrement...' : 'Confirmer le départ' }}
+                        </button>
+                    </form>
+                </section>
+                
+                <hr v-if="showQuitForm" class="section-divider">
+                <section class="stat-section">
+                    <h2>Informations Détaillées</h2>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Taille</span>
+                            <span class="stat-value">{{ player.taille || 'N/A' }} cm</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Poids</span>
+                            <span class="stat-value">{{ player.poids || 'N/A' }} kg</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Pied Fort</span>
+                            <span class="stat-value">{{ player.piedFort || 'Droit' }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Statut</span>
+                            <span :class="'stat-value status-'+String(player.status).toLowerCase()">{{ player.status }}</span>
+                        </div>
+                    </div>
+                </section>
 
-        <hr class="section-divider">
+                <hr class="section-divider">
 
-        <section class="contact-section">
-          <h2>Contact et Administratif</h2>
-          <div class="contact-grid">
-            <div class="contact-item">
-              <span class="contact-label">Email</span>
-              <span class="contact-value">{{ player.email || 'N/A' }}</span>
-            </div>
-            <div class="contact-item">
-              <span class="contact-label">Téléphone</span>
-              <span class="contact-value">{{ player.telephone || 'N/A' }}</span>
-            </div>
-            <div class="contact-item">
-              <span class="contact-label">Licence FFF</span>
-              <span class="contact-value">{{ player.licence || 'En attente' }}</span>
-            </div>
-          </div>
-        </section>
+                <section class="career-section">
+                    <h2>Parcours Club</h2>
+                    <div class="career-info-grid">
+                        <div class="info-item">
+                            <span class="item-label">Date d'Inscription</span>
+                            <span class="item-value">{{ player.dateInscription }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="item-label">Date de Départ</span>
+                            <span :class="['item-value', { 'item-inactive': !player.dateQuitter }]">
+                                {{ player.dateQuitter || 'N/A (Actif)' }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div v-if="player.note" class="player-note">
+                        <span class="note-title">Notes du Coach :</span> {{ player.note }}
+                    </div>
+                </section>
 
+                <hr class="section-divider">
+
+                <section class="contact-section">
+                    <h2>Contact et Administratif</h2>
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <span class="contact-label">Email</span>
+                            <span class="contact-value">{{ player.email || 'N/A' }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-label">Téléphone</span>
+                            <span class="contact-value">{{ player.telephone || 'N/A' }}</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-label">Licence FFF</span>
+                            <span class="contact-value">{{ player.licence || 'En attente' }}</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
-
     </div>
-    <router-link :to="'/joueurs/update/'+player.id" >Edit</router-link>
-  </div>
+    <div v-else>
+      Joueur introuvable
+    </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
+import { getJoueurById, updateJoueur } from '@/services/JoueurService';
+import { useRoute } from 'vue-router';
 
-const props = defineProps({
-  player: {
-    type: Object,
-    required: true,
-    // On suppose que l'objet joueur a au moins les propriétés utilisées
-  }
-});
+// État du formulaire de départ
+const showQuitForm = ref(false);
+const dateQuitterModel = ref('');
+const isQuitting = ref(false);
+const route = useRoute()
+const idJoueur = ref('')
+const player =  ref()
+
+const toggleQuitForm = () => {
+    showQuitForm.value = !showQuitForm.value;
+    // Réinitialiser la date lorsque le formulaire est fermé
+    if (!showQuitForm.value) {
+        dateQuitterModel.value = '';
+    }
+};
+
+const quitterJoueur = async () => {
+    if (!dateQuitterModel.value) {
+        alert("Veuillez sélectionner la date de départ.");
+        return;
+    }
+
+    isQuitting.value = true;
+    const dto = player.value.getDTO()
+    dto.datequitter = dateQuitterModel.value
+    dto.idstatutjoueurStatutjoueur = {
+      idstatutjoueur : 4
+    }
+    try {
+      const data = await updateJoueur(player.value.id, dto)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      alert(`✅ Le joueur ${player.value.nom} a été marqué comme 'Parti' le ${dateQuitterModel.value}.`);
+    } catch (error) {
+      console.error(error);
+    }
+    finally{
+      isQuitting.value = false;
+      showQuitForm.value = false;
+      dateQuitterModel.value = '';
+    }
+};
 
 // Fonction pour gérer les erreurs d'image (cohérence visuelle)
 const onImageError = (event) => {
-  event.target.src = '/logo/logofotsy.jpg'; // Avatar par défaut
-  event.target.classList.add('default-avatar');
+    event.target.src = '/logo/logofotsy.jpg'; // Avatar par défaut
+    event.target.classList.add('default-avatar');
 };
+
+const fetchJoueur = async () => {
+  if (idJoueur.value == '') return
+  player.value = await getJoueurById(idJoueur.value)
+}
+
+onMounted( async () => {
+  idJoueur.value = route.params.id
+  await fetchJoueur();
+})
 </script>
 
 <style scoped>
@@ -365,5 +444,97 @@ h2 {
   .stat-grid, .career-info-grid, .contact-grid {
     grid-template-columns: 1fr;
   }
+}
+/* --- BOUTONS D'ACTION EN HAUT --- */
+.top-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.action-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s;
+    text-decoration: none; /* Pour router-link */
+    display: inline-block;
+    text-align: center;
+}
+
+.edit-btn {
+    background-color: #3498db; /* Bleu */
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #2980b9;
+}
+
+.quit-btn {
+    background-color: var(--secondary-color); /* Rouge */
+    color: white;
+}
+
+.quit-btn:hover {
+    background-color: #c0392b;
+}
+
+/* --- FORMULAIRE DE DÉPART --- */
+.quit-form-section {
+    padding: 20px;
+    background-color: #fce4e4; /* Arrière-plan subtil d'alerte */
+    border: 1px solid #e74c3c;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.quit-form-section h2 {
+    color: var(--secondary-color);
+    border-bottom-color: #e74c3c;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.submit-quit-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.submit-quit-btn:hover:not(:disabled) {
+    background-color: #c0392b;
+}
+
+.submit-quit-btn:disabled {
+    background-color: #ecf0f1;
+    color: #bdc3c7;
+    cursor: not-allowed;
 }
 </style>

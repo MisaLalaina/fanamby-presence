@@ -1,42 +1,28 @@
 export class Joueur {
-    constructor({
-      idjoueur,
-      nom,
-      prenom,
-      datenaissance,
-      nationalite,
-      numeromaillot,
-      idpostePoste,
-      dateinscription,
-      datequitter,
-      idstatutjoueurStatutjoueur,
-      idpiedfortPiedfort,
-      idclubClub,
-      email,
-      taille,
-      poids,
-      telephone
-    }) {
-      this.id = idjoueur;
-      this.email = email;
-      this.idJoueur = idjoueur;
-      this.fullName = `${nom} ${prenom}`;
-      this.nom = nom ;
-      this.prenom = prenom;
-      this.poste = idpostePoste?.libelle?.toUpperCase() || 'INCONNU';
-      this.idpostePoste = idpostePoste;
-      this.idpiedfortPiedfort = idpiedfortPiedfort;
-      this.dateNaissance = datenaissance;
-      this.nationalite = nationalite || 'Inconnue';
-      this.numero = numeromaillot;
-      this.dateInscription = dateinscription;
-      this.dateQuitter = datequitter;
-      this.status = idstatutjoueurStatutjoueur?.libelle
-      this.idstatutjoueurStatutjoueur = idstatutjoueurStatutjoueur
-      this.idclubClub = idclubClub
-      this.taille = taille
-      this.poids = poids
-      this.telephone = telephone
+    constructor(data) {
+      this.id = data.idjoueur;
+      this.email = data.email;
+      this.idJoueur = data.idjoueur;
+      this.fullName = `${data.nom} ${data.prenom}`;
+      this.nom = data.nom ;
+      this.prenom = data.prenom;
+      this.poste = data.idpostePoste?.libelle?.toUpperCase() || 'INCONNU';
+      this.dateNaissance = data.datenaissance;
+      this.datenaissance = data.datenaissance;
+      this.nationalite = data.nationalite || 'Inconnue';
+      this.numeromaillot = data.numeromaillot;
+      this.dateInscription = data.dateinscription;
+      this.dateinscription = data.dateinscription;
+      this.dateQuitter = data.datequitter;
+      this.datequitter = data.datequitter;
+      this.status = data.idstatutjoueurStatutjoueur?.libelle
+      this.taille = data.taille
+      this.poids = data.poids
+      this.telephone = data.telephone
+      this.idclubClub = data.idclubClub;
+      this.idpostePoste = data.idpostePoste;
+      this.idstatutjoueurStatutjoueur = data.idstatutjoueurStatutjoueur;
+      this.idpiedfortPiedfort = data.idpiedfortPiedfort;
     }
   
     static fromApiData(data) {
@@ -51,6 +37,30 @@ export class Joueur {
         return apiResponse.data.content.map(j => Joueur.fromApiData(j));
       }
       return [];
+    }
+
+    getDTO(){
+      return {
+        idjoueur: this.id,
+        email : this.email,
+        idjoueur : this.idJoueur ,
+        nom : this.nom ,
+        prenom : this.prenom ,
+        datenaissance : this.dateNaissance ,
+        nationalite  : this.nationalite,
+        numeromaillot : this.numeromaillot ,
+        dateinscription : this.dateInscription ,
+        datequitter : this.dateQuitter ,
+        idstatutjoueurStatutjoueur  : this.idstatutjoueurStatutjoueur ,
+        idclubClub  : this.idclubClub ,
+        taille  : this.taille ,
+        poids  : this.poids ,
+        telephone  : this.telephone ,
+        idclubClub : this.idclubClub ,
+        idpostePoste : this.idpostePoste ,
+        idstatutjoueurStatutjoueur : this.idstatutjoueurStatutjoueur ,
+        idpiedfortPiedfort : this.idpiedfortPiedfort ,
+      }
     }
   }
   

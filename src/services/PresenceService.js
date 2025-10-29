@@ -28,7 +28,6 @@ const createPresencePayload = (presenceData) => ({
         idstatutpresence: presenceData.idStatutPresence,
     },
     commentaires: presenceData.commentaire || '',
-
     heurearrivee: presenceData.heureArrivee || null,
     motifabsence: presenceData.motifAbsence || null,
     signature: presenceData.signature || null,
@@ -53,6 +52,7 @@ const mapPresenceFromApi = (p) => ({
     heureArrivee: p.heurearrivee || null,
     motifAbsence: p.motifabsence || null,
     signature: p.signature || null,
+    idSeance: p.idseanceSeance.idseance,
 });
 
 

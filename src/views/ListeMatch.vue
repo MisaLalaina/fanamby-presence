@@ -1,6 +1,10 @@
 <script setup>
   import { ref, computed, onMounted } from 'vue';
-  import { getAllMatches } from '@/services/MatchFootService.js';
+  import { deleteMatch, getAllMatches } from '@/services/MatchFootService.js';
+import SeanceService from '@/services/SeanceService';
+import * as CompositionService from '@/services/CompositionService';
+import { useNotification } from '@/composables/useNotification';
+import NotificationToast from '@/components/NotificationToast.vue';
 
   // Données
   const matches = ref([]);
@@ -12,10 +16,11 @@
   const currentPage = ref(1);
   const itemsPerPage = 10;
 
+  const notif = useNotification()
+
   // Récupération des matchs
   const fetchMatches = async () => {
     matches.value = await getAllMatches();
-    // Extraire les compétitions uniques
     competitions.value = [...new Set(matches.value.map(m => m.competition))];
   };
 
@@ -67,11 +72,38 @@
     if (currentPage.value < totalPages.value) currentPage.value++;
   };
 
-  const confirmDelete = (id) => {
-    if (confirm('Voulez-vous vraiment supprimer ce match ?')) {
-      // Simuler la suppression - remplacer par un appel API
-      matches.value = matches.value.filter(m => m.idMatch !== id);
-    }
+  // Assuming you have a notification function like showNotification(message, type)
+  // from a composable like useNotification()
+
+  const confirmDelete = async (match) => {
+      // A modern UI library modal is better, but confirm() works
+      if (confirm(`Voulez-vous vraiment supprimer le match contre ${match.adversaire} ?`)) {
+          try {
+              const compositions = await CompositionService.getAllCompositionsByMatchId(match.idMatch);
+              if (compositions.length > 0) {
+                  const requests = compositions.map(comp => 
+                    CompositionService.deleteComposition(comp.idComposition)
+                  );
+                  const results = await Promise.allSettled(requests);
+                  const failedDeletions = results.filter(res => res.status === 'rejected');
+                  if (failedDeletions.length > 0) {
+                      throw new Error(`${failedDeletions.length} composition(s) n'ont pas pu être supprimée(s).`);
+                  }
+              }
+              await Promise.all([
+                  deleteMatch(match.idMatch),
+                  SeanceService.deleteSeance(match.idSeance)
+              ]);
+              
+              notif.showNotification('Match supprimé avec succès !', 'success'); // Example success feedback
+          } catch (error) {
+              console.error("Erreur lors de la suppression du match :", error);
+              notif.showNotification(`Erreur : ${error.message}`, 'error'); // Example error feedback
+          } finally {
+              // 5. Always refresh the list
+              await fetchMatches();
+          }
+      }
   };
 
   // Initialisation
@@ -88,10 +120,11 @@
 
 
 <template>
+  <NotificationToast :model-value="notif.notification.value" />
   <div class="match-container">
     <div class="header">
       <h2>Liste des Matchs</h2>
-      <router-link to="/match/ajouter" class="btn-add">
+      <router-link to="/matchs/create" class="btn-add">
         <i class="fas fa-plus"></i> Ajouter un match
       </router-link>
     </div>
@@ -132,7 +165,6 @@
             <th>Adversaire</th>
             <th>Lieu</th>
             <th>Score</th>
-            <th>Public</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -147,15 +179,14 @@
                 {{ match.scoreEquipe }} - {{ match.scoreAdversaire }}
               </span>
             </td>
-            <td>{{ match.public ? match.public.toLocaleString() : '-' }}</td>
             <td class="actions">
-              <router-link :to="'/feuille-match/' + match.idMatch" class="btn-details" title="Détails">
+              <router-link :to="'/matchs/' + match.idMatch" class="btn-details" title="Détails">
                 <i class="fas fa-eye"></i>
               </router-link>
-              <router-link :to="'/match/modifier/' + match.idMatch" class="btn-edit" title="Modifier">
+              <router-link :to="'/matchs/update/' + match.idMatch" class="btn-edit" title="Modifier">
                 <i class="fas fa-edit"></i>
               </router-link>
-              <button @click="confirmDelete(match.idMatch)" class="btn-delete" title="Supprimer">
+              <button @click="confirmDelete(match)" class="btn-delete" title="Supprimer">
                 <i class="fas fa-trash"></i>
               </button>
             </td>

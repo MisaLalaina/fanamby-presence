@@ -2,12 +2,10 @@
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
 import SeanceService from '@/services/SeanceService';
 import TypeSeanceService from '@/services/TypeSeanceService';
+import SeanceStatusService from '@/services/SeanceStatusService';
 import { Seance } from '@/models/seance';
 import { TypeSeance } from '@/models/typeSeance';
-
-// --- PROPS & EMITS ---
 const props = defineProps({
-    // L'ID de la séance à modifier est passé via une prop
     seanceId: {
         type: [Number, String],
         required: true
@@ -22,6 +20,7 @@ const currentSeance = ref(Seance.getDefaultSeance());
 const successMessage = ref('');
 const error = ref(null);
 const isLoading = ref(false);
+const statusSeances = ref([])
 
 // ClubId et StatutId sont gérés ici, mais devraient idéalement être passés ou récupérés
 // Si la séance est en cours de modification, le statut ne devrait pas être hardcodé à 1
@@ -47,20 +46,14 @@ const fetchSeanceData = async () => {
     isLoading.value = true;
     error.value = null;
     try {
-        // Supposons que SeanceService.getSeanceById existe et retourne la séance
         const seanceData = await SeanceService.getSeanceById(props.seanceId);
-        
-        // Mettre à jour currentSeance. On suppose que la fonction formatSeances retourne un tableau, 
-        // ou que nous avons un formatage pour un seul objet.
-        // Si c'est un tableau [seance], on prend le premier élément.
-        const formattedSeance = Seance.formatSeances([seanceData])[0] || seanceData; 
-        
-        // Assurez-vous que l'objet de la séance est bien formaté
+        const formattedSeance = seanceData; 
+
         currentSeance.value = { 
             ...formattedSeance,
-            // Convertir la date de 'YYYY-MM-DDTHH:mm:ss.000Z' à 'YYYY-MM-DD' pour l'input[type=date]
             dateSeance: formattedSeance.dateSeance ? formattedSeance.dateSeance.split('T')[0] : ''
         };
+        console.log(currentSeance.value);
         
     } catch (err) {
         error.value = err.message || `Erreur lors du chargement de la séance ${props.seanceId}`;
@@ -68,6 +61,14 @@ const fetchSeanceData = async () => {
         isLoading.value = false;
     }
 };
+const fetchStatus = async() => {
+    try {
+        const data = await SeanceStatusService.getAllSeanceStatus();
+        statusSeances.value = data
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 // --- FONCTION DE SOUMISSION (MISE À JOUR) ---
 
@@ -105,6 +106,7 @@ const updateForm = async () => {
 
 onMounted(() => {
     fetchTypes();
+    fetchStatus();
     fetchSeanceData();
 });
 </script>
@@ -163,11 +165,8 @@ onMounted(() => {
       
       <div class="form-group">
         <label>Statut:</label>
-        <select v-model="currentSeance.statut" required>
-            <option value="Planifié">Planifié</option>
-            <option value="EnCours">En Cours</option>
-            <option value="Effectué">Effectué</option>
-            <option value="Annulé">Annulé</option>
+        <select v-model="currentSeance.idstatutseanceStatutseance.idstatutseance" required>
+            <option v-for="stat in statusSeances" :value="stat.idStatutSeance">{{ stat.libelle }}</option>
         </select>
       </div>
 

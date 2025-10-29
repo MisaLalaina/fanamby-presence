@@ -30,12 +30,15 @@ export class Seance {
       return {
         idSeance: null,
         idTypeSeance: 1,
-        dateSeance: '',
+        dateSeance: new Date().toISOString().slice(0, 10),
         heureDebut: '',
         heureFin: '',
         lieu: '',
         objectif: '',
-        bilan: ''
+        bilan: '',    
+        idstatutseanceStatutseance: {
+          idstatutseance:''
+        }
       };
     }
 

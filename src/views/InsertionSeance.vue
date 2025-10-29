@@ -4,6 +4,9 @@ import SeanceService from '@/services/SeanceService';
 import TypeSeanceService from '@/services/TypeSeanceService';
 import { Seance } from '@/models/seance';
 import { TypeSeance } from '@/models/typeSeance';
+import router from '@/router';
+import { useNotification } from '@/composables/useNotification';
+import NotificationToast from '@/components/NotificationToast.vue';
 
 const typesSeance = ref([]);
 const currentSeance = ref(Seance.getDefaultSeance());
@@ -12,6 +15,7 @@ const statutId = ref(1);
 const successMessage = ref('');
 const error = ref(null);
 const isLoading = ref(false);
+const notif = useNotification()
 
 const fetchTypes = async () => {
   try {
@@ -33,7 +37,8 @@ const submitForm = async () => {
     });
     successMessage.value = "Séance ajoutée avec succès !";
     resetForm();
-    setTimeout(() => { successMessage.value = ''; }, 2500);
+    notif.showNotification(successMessage.value,'success','','',1500)
+    setTimeout(() => { router.push({path:'/seances'}); }, 1500);
   } catch (err) {
     error.value = err.message || 'Erreur lors de la création';
   } finally {
@@ -51,23 +56,18 @@ onMounted(() => {
 </script>
 
 <template>
+  <NotificationToast :model-value="notif.notification.value" /> 
+  <div class="page-header">
+    <h2>Insertion d'une séance d'entrainement</h2>
+    <router-link to="/seances" class="btn-add">
+      <span>Retour a la liste des seances</span>
+    </router-link>
+  </div>
   <div class="seance-insert-container">
-    <h1>Insertion d'une séance d'entrainement</h1>
 
     <div v-if="error" class="error-message">{{ error }}</div>
-    <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
-
     <form @submit.prevent="submitForm" class="form-container">
       <div class="form-row">
-        <div class="form-group">
-          <label>Type:</label>
-          <select v-model="currentSeance.idTypeSeance" required disabled>
-            <option value="">Sélectionner un type</option>
-            <option v-for="type in typesSeance" :key="type.idTypeSeance" :value="type.idTypeSeance">
-              {{ type.libelle }}
-            </option>
-          </select>
-        </div>
         <div class="form-group">
           <label>Date:</label>
           <input type="date" v-model="currentSeance.dateSeance" required>
@@ -95,10 +95,10 @@ onMounted(() => {
         <textarea v-model="currentSeance.objectif"></textarea>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label>Bilan:</label>
         <textarea v-model="currentSeance.bilan"></textarea>
-      </div>
+      </div> -->
 
       <div class="form-actions">
               <button type="submit" class="btn-submit" :disabled="isLoading">

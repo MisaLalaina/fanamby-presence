@@ -3,9 +3,7 @@ import SideBar from '@/components/SideBar.vue';
 import { onMounted, ref } from 'vue';
 import { createJoueur } from '@/services/JoueurService';
 import { getAllPostes } from '@/services/PosteService';
-import { Poste } from '@/models/poste';
 import { getAllPiedsFort } from '@/services/PiedFortService';
-import { PiedFort } from '@/models/piedFort';
 
 export default {
   name: 'FormulaireJoueur',
@@ -111,14 +109,13 @@ export default {
 </script>
 
 <template>
-  <div class="form-container">
-    <h1>Nouveau joueurt</h1>
-    <div>
-      <router-link to="/">
+  <div class="page-header">
+      <h2>Nouveau joueur</h2>
+      <router-link to="/joueurs" class="btn-add">
         <span>Retour a la liste des joueurs</span>
       </router-link>
     </div>
-    
+  <div class="form-container">
     <form @submit.prevent="submitForm" class="player-form">
       <div class="form-row">
         <div class="form-group">

@@ -4,6 +4,7 @@ import SeanceService from '@/services/SeanceService'
 import * as JoueurService from '@/services/JoueurService'
 import { Seance } from '@/models/seance'
 import { createPresence } from '@/services/PresenceService'
+import { useRouter } from 'vue-router'
 
 const ID_STATUT_PRESENT = 1;
 const ID_STATUT_ABSENT = 2;
@@ -15,6 +16,8 @@ const selectedSeance = ref(Seance.getDefaultSeance())
 const presences = ref({})
 const searchTerm = ref('')
 const chekcAll = ref(false)
+
+const router = useRouter();
 
 // Chargement des données
 const fetchData = async () => {
@@ -29,8 +32,6 @@ const fetchData = async () => {
 }
 
 const fetchPlayersBySeance = async() => {
-  console.log(selectedSeance.value.idSeance);
-  
   if (selectedSeance.value.idSeance == null) return
   const {data: joueurData} = await JoueurService.searchJoueurs({
     dateInscriptionMax: selectedSeance.value.dateSeance
@@ -70,6 +71,7 @@ const savePresence = async () => {
     selectedSeance.value.setRealised()
     await SeanceService.updateSeance(seanceId, selectedSeance.value)
     alert("Toutes les présences ont été enregistrées !");
+    router.push({path:`/presences/${seanceId}`})
   } catch (error) {
     console.error("Erreur lors de l'enregistrement des présences :", error);
     alert("Erreur lors de l'enregistrement des présences.");
@@ -104,7 +106,12 @@ watch(() => selectedSeance.value.idSeance, (newId, oldId) => {
 <template>
   <div class="presence-container">
     <div class="card">
-      <h2>Insertion rapide des présences</h2>
+      <div class="page-header">
+        <h2>Insertion rapide des présences</h2>
+        <router-link to="/seances" class="btn-add">
+          Retour a la liste des seances
+        </router-link>
+      </div>
       <form @submit.prevent="savePresence">
         <div class="form-row">
           <div class="form-group">

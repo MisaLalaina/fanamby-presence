@@ -14,14 +14,14 @@ import MyDropdown from './MyDropdown.vue';
           <img src="@/assets/dashboard.svg" class="list-icon" alt="dashboardicon">
           <router-link to="/dashboard" class="dropdown-item" active-class="active" exact>
               <i class="fas fa-list"></i>
-              <span>dashboard</span>
+              <span>Dashboard</span>
             </router-link>
         </template>
       </MyDropdown>
       <MyDropdown>
         <template #title>
           <img src="@/assets/joueur.svg" class="list-icon" alt="Joueurs icon">
-          <router-link to="/" class="dropdown-item" active-class="active" exact>
+          <router-link to="/joueurs" class="dropdown-item" active-class="active" exact>
               <span>Joueurs</span>
             </router-link>
         </template>
@@ -30,24 +30,24 @@ import MyDropdown from './MyDropdown.vue';
       <MyDropdown>
         <template #title>
           <img src="@/assets/seance.svg" class="list-icon" alt="Joueurs icon">
-          <router-link to="/liste-seance" class="dropdown-item" active-class="active" exact>
-              <span>Séances</span>
-            </router-link>
+          <router-link to="/seances" class="dropdown-item" active-class="active" exact>
+            <span>Séances</span>
+          </router-link>
         </template>
       </MyDropdown>
 
       <MyDropdown>
         <template #title>
           <img src="@/assets/presence.svg" class="list-icon" alt="presence icon">
-          <router-link to="/presence" class="dropdown-item" active-class="active" exact>
-              <span>Presences</span>
+          <router-link to="/presences/create" class="dropdown-item" active-class="active" exact>
+              <span>Insertion Presences</span>
             </router-link>
         </template>
       </MyDropdown>
       <MyDropdown>
         <template #title>
           <img src="@/assets/match.svg" class="list-icon" alt="matchicon">
-          <router-link to="/match" class="dropdown-item" active-class="active" exact>
+          <router-link to="/matchs" class="dropdown-item" active-class="active" exact>
               <span>Matchs</span>
             </router-link>
         </template>

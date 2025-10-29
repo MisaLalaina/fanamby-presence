@@ -1,11 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getAllPresenceStatus } from '@/services/PresenceStatusService';
-import { getPresencesByIdSeance, createPresence } from '@/services/PresenceService.js';
+import { getPresencesByIdSeance, createPresence, updatePresence } from '@/services/PresenceService.js';
 import SeanceService from '@/services/SeanceService';
-import { Seance } from '@/models/seance';
 // NOUVEAU: Import du service joueur
 import * as JoueurService from '@/services/JoueurService'; 
+import { useRoute } from 'vue-router';
 
 
 // Constantes
@@ -13,8 +13,9 @@ const ID_STATUT_PRESENT = 1;
 const ID_STATUT_ABSENT = 2;
 const ID_STATUT_INCONNU = 3; // Statut par défaut si non trouvé
 
+const route = useRoute()
+
 // Reactive state
-const sessions = ref([]);
 const players = ref([]);
 const selectedSession = ref('');
 const currentSession = ref({});
@@ -31,11 +32,6 @@ const loadPresenceStatuses = async () => {
     presenceStatuses.value = response;
 };
 
-// Simulated API fetch for sessions
-const fetchSessions = async () => {
-    const response = await SeanceService.getAllSeances();
-    sessions.value = Seance.formatSeances(response);
-};
 
 // NOUVEAU: Récupère tous les joueurs éligibles pour la séance (similaire à l'insertion rapide)
 const fetchPlayersBySeance = async (seance) => {
@@ -53,53 +49,32 @@ const fetchPlayersBySeance = async (seance) => {
     }
 };
 
-// Load presence data for the selected session (MODIFIÉ)
 const loadPresences = async () => {
     if (!selectedSession.value) return;
-    
-    currentSession.value = sessions.value.find(s => s.idSeance === selectedSession.value) || {};
-    
+    currentSession.value = await SeanceService.getSeanceById(selectedSession.value);
     if (Object.keys(currentSession.value).length === 0) return;
 
     try {
-        // 1. Charger les présences déjà enregistrées
         const registeredPresences = await getPresencesByIdSeance(selectedSession.value);
-        
-        // 2. Charger la liste complète des joueurs éligibles
         const allEligiblePlayers = await fetchPlayersBySeance(currentSession.value);
-
-        // 3. Fusionner les deux listes
         const registeredIds = new Set(registeredPresences.map(p => p.idJoueur));
-        
         const missing = [];
 
         allEligiblePlayers.forEach(joueur => {
-            // L'API de recherche donne généralement des objets simples {id, nom, prenom, poste...}
-            // L'API de présence donne des objets complets avec le statut.
-            
             if (!registeredIds.has(joueur.id)) {
-                // Joueur éligible sans enregistrement de présence existant
                 missing.push({
                     idJoueur: joueur.id,
                     nom: joueur.nom,
                     prenom: joueur.prenom,
-                    // Si votre API de recherche renvoie le poste, utilisez-le, sinon vous devrez le simuler
-                    poste: joueur.idpostePoste?.libelle || 'N/A', 
-                    // Initialisation du statut à ABSENT (ou Inconnu) pour la saisie rapide
+                    poste: joueur.idpostePoste?.libelle || 'N/A',
                     idStatutPresence: ID_STATUT_ABSENT, 
                     commentaire: ''
                 });
             }
         });
-        
-        // Mettre à jour les états réactifs
         players.value = registeredPresences; // Liste des présences déjà enregistrées
         missingPlayers.value = missing;      // Liste des joueurs à ajouter
         missingPresences.value = {};         // Réinitialiser le formulaire rapide
-        
-        console.log(`Présences existantes: ${players.value.length}`);
-        console.log(`Joueurs manquants à ajouter: ${missingPlayers.value.length}`);
-
     } catch (error) {
         alert("Erreur lors du chargement des données de présence : " + error.message);
         players.value = [];
@@ -107,15 +82,12 @@ const loadPresences = async () => {
     }
 };
 
-
-// NOUVEAU: Logique pour enregistrer les joueurs manquants
 const saveMissingPresences = async () => {
     const seanceId = selectedSession.value;
     const requests = [];
 
     missingPlayers.value.forEach((joueur) => {
         const isPresent = missingPresences.value[joueur.idJoueur] || false;
-        
         const payload = {
             idSeance: seanceId,
             idJoueur: joueur.idJoueur,
@@ -146,29 +118,16 @@ const toggleEditMode = () => {
 };
 
 // Simulate updating presence status in database (Utilisé pour le mode édition)
-const updatePresence = async (player) => {
-    // ... (Logique inchangée pour la mise à jour)
-    console.log('Mise à jour présence:', {
-        idJoueur: player.idJoueur,
-        idSeance: selectedSession.value,
-        idstatutpresence: player.idStatutPresence, // Utiliser la propriété v-model
-        commentaire: player.commentaire
-    });
-    // Appeler ici la fonction d'update de votre service (e.g., updatePresenceService)
+const updateCurrentPresence = async (player) => {
+    await updatePresence(player.idPresence, player)
 };
 
 // Save all presence changes (Utilisé pour le mode édition)
 const saveAllPresences = async () => {
-    // ... (Logique inchangée)
     for (const player of players.value) {
-        await updatePresence(player);
+        await updateCurrentPresence(player);
     }
-    alert('Toutes les présences existantes ont été mises à jour avec succès!');
-};
-
-// Helpers (Inchangé)
-const formatSessionLabel = (session) => {
-    return `${session.type} - ${formatDate(session.dateSeance)} (${session.heureDebut})`;
+    toggleEditMode();
 };
 
 const formatDate = (dateStr) => {
@@ -181,36 +140,35 @@ const getStatusLabel = (idStatut) => {
     return status ? status.libelle : 'Inconnu';
 };
 
-// Initialization on mount
 onMounted(async () => {
+    selectedSession.value = Number(route.params.idSeance);
     await loadPresenceStatuses();
-    await fetchSessions();
-    // loadPresences sera appelée manuellement ou par @change
+    await loadPresences();
 });
 </script>
 
 <template>
     <div class="presence-container">
-        <h2>Gestion des Présences</h2>
+        <div class="page-header">
+            <h2>Fiche de presence</h2>
+            <div>
+                <router-link to="/seances" class="btn-add">
+                    Retour a la liste des seances
+                </router-link>
+
+                <router-link to="/presences/create" class="btn-add">
+                    Insertion presences
+                </router-link>            
+            </div>
+        </div>
 
         <div class="session-selector">
-            <div class="form-group">
-                <label>Sélectionner une séance :</label>
-                <select v-model="selectedSession" @change="loadPresences">
-                    <option value="">-- Choisir une séance --</option>
-                    <option v-for="session in sessions" :key="session.idSeance" :value="session.idSeance">
-                        {{ formatSessionLabel(session) }}
-                    </option>
-                </select>
-            </div>
-
             <div v-if="selectedSession" class="session-info">
                 <h3>{{ currentSession.type }} - {{ formatDate(currentSession.dateSeance) }}</h3>
                 <p>{{ currentSession.heureDebut }} à {{ currentSession.heureFin }} | {{ currentSession.lieu }}</p>
                 <p>Objectif : {{ currentSession.objectif }}</p>
             </div>
         </div>
-
         <div v-if="selectedSession && missingPlayers.length > 0" class="missing-players-form card">
             <h3>Joueurs manquants à l'appel ({{ missingPlayers.length }})</h3>
             <form @submit.prevent="saveMissingPresences">
@@ -241,7 +199,6 @@ onMounted(async () => {
                 </div>
             </form>
         </div>
-
         <div v-if="selectedSession" class="presence-list">
             <h3>Fiche de Présence Complète ({{ players.length }} entrées)</h3>
             <table>
@@ -258,7 +215,7 @@ onMounted(async () => {
                         <td>{{ player.nom }} {{ player.prenom }}</td>
                         <td>{{ player.poste }}</td>
                         <td>
-                            <select v-if="isEditing" v-model="player.idStatutPresence" @change="updatePresence(player)">
+                            <select v-if="isEditing" v-model="player.idStatutPresence">
                                 <option v-for="status in presenceStatuses" :key="status.idStatutPresence" :value="status.idStatutPresence">
                                     {{ status.libelle }}
                                 </option>
@@ -268,7 +225,7 @@ onMounted(async () => {
                             </span>
                         </td>
                         <td>
-                            <input v-if="isEditing" type="text" v-model="player.commentaire" @blur="updatePresence(player)" placeholder="Commentaire">
+                            <input v-if="isEditing" type="text" v-model="player.commentaire" placeholder="Commentaire">
                             <span v-else class="comment-text">
                                 {{ player.commentaire || '—' }}
                             </span>
@@ -334,8 +291,6 @@ onMounted(async () => {
 }
 
 .session-selector {
-  margin-bottom: 30px;
-  padding: 15px;
   background-color: #f5f5f5;
   border-radius: 8px;
 }

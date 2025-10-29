@@ -5,6 +5,7 @@
   import { Seance } from '@/models/seance';
   import { TypeSeance } from '@/models/typeSeance';
   import SeanceEdit from './SeanceEdit.vue'; // Assurez-vous d'avoir le bon chemin
+import { useRouter } from 'vue-router';
 
   const currentEditId = ref(null); // Stocke l'ID de la séance à modifier
 // Form functions
@@ -20,6 +21,7 @@ const handleUpdate = () => {
     currentEditId.value = null; // Masque le formulaire
     fetchInitialData(); // Recharge les données mises à jour
 };
+const router = useRouter()
 
   // Data
   const typesSeance = ref([]);
@@ -95,6 +97,10 @@ const handleUpdate = () => {
     return text.length > length ? text.substring(0, length) + '...' : text;
   };
 
+  const voirPresence = (idSeance) => {
+    router.push({path:`/presences/${idSeance}`})
+  }
+
   // Initialization
   onMounted(() => {
     fetchInitialData();
@@ -110,11 +116,19 @@ const handleUpdate = () => {
   />
 
   <div v-else class="seance-list-container">
-    <div class="header-controls">
+    <div class="page-header">
       <h1>Liste des séances</h1>
-      <button class="btn-primary" disabled>
-        + Ajouter une Séance
-      </button>
+      <div>
+        <router-link to="/seances/create" class="btn-add">
+          + Ajouter un entrainement
+        </router-link>
+        <router-link to="/matchs/create" class="btn-add">
+          + Ajouter un match
+        </router-link>
+        <router-link to="/presences/create" class="btn-add">
+          Insertion presences
+        </router-link>
+      </div>
     </div>
 
     <div class="filter-controls">
@@ -162,6 +176,7 @@ const handleUpdate = () => {
           </td>
           <td>{{ truncateText(seance.objectif, 30) }}</td>
           <td>
+            <button @click="voirPresence(seance.idSeance)" class="btn-action btn-edit" title="Voir presence">✔</button>
             <button @click="editSeance(seance)" class="btn-action btn-edit" title="Modifier">✏️</button>
             <button @click="confirmDelete(seance.idSeance)" class="btn-action btn-delete" title="Supprimer">🗑️</button>
           </td>

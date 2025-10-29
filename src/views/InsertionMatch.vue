@@ -12,8 +12,8 @@ const typesMatch = ref([]);
 const form = ref({
   // Données du match
   idTypeMatch: '1',
-  competition: 'CAN 2025',
-  adversaire: 'Tanzanie',
+  competition: '',
+  adversaire: '',
   domicile: true,
   scoreEquipe: 1,
   scoreAdversaire: 1,
@@ -22,10 +22,10 @@ const form = ref({
   
   // Données de la séance
   idTypeSeance: '2',
-  dateSeance: '2025-08-16',
-  heureDebut: '20:00',
-  heureFin: '21:00',
-  lieu: 'Antananarivo',
+  dateSeance: new Date(),
+  heureDebut: '',
+  heureFin: '',
+  lieu: '',
   objectif: '',
   bilan: ''
 });
@@ -112,9 +112,13 @@ fetchTypes();
 </script>
 
 <template>
-  <div class="match-insert-container">
+  <div class="page-header">
     <h2>Insertion d'un match</h2>
-    
+    <router-link to="/liste-seance" class="btn-add">
+      <span>Retour a la liste des seances</span>
+    </router-link>
+  </div>
+  <div class="match-insert-container">    
     <div v-if="error" class="error-message">{{ error }}</div>
     <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
     
@@ -142,7 +146,7 @@ fetchTypes();
 
       <div class="form-row">
         <div class="form-group">
-          <label>Lieu :</label>
+          <label>Domicile/Exterieur :</label>
           <select v-model="form.domicile" required>
             <option :value="true">Domicile</option>
             <option :value="false">Extérieur</option>
@@ -160,15 +164,6 @@ fetchTypes();
       
       <h3>Informations de la séance</h3>
       <div class="form-row">
-        <div class="form-group">
-          <label>Type de séance :</label>
-          <select v-model="form.idTypeSeance" required disabled>
-            <option value="">-- Choisir un type --</option>
-            <option v-for="type in typesSeance" :key="type.idTypeSeance" :value="type.idTypeSeance">
-              {{ type.libelle }}
-            </option>
-          </select>
-        </div>
         <div class="form-group">
           <label>Date :</label>
           <input type="date" v-model="form.dateSeance" required>

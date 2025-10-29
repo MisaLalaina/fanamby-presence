@@ -30,7 +30,7 @@ const createSeancePayload = (seanceData, id = null) => ({
 
 export default {
     async getAllSeances() {
-        const data = await fetchAllPages(`${BASE_URL}/seances`);
+        const data = await fetchAllPages(`${BASE_URL}/seances?sortParam=dateseance,desc`);
         return data.data.content;
     },
 
@@ -70,17 +70,6 @@ export default {
         const response = await genericGet(`${BASE_URL}/seances/${id}`);
         const seance = response.data; 
         
-        return {
-            idSeance: seance.idseance,
-            idTypeSeance: seance.idtypeseanceTypeseance?.idtypeseance,
-            clubId: seance.idclubClub?.idclub,
-            dateSeance: seance.dateseance,
-            heureDebut: seance.heuredebut?.substring(0, 5),
-            heureFin: seance.heurefin?.substring(0, 5),
-            lieu: seance.lieu,
-            objectif: seance.objectif,
-            bilan: seance.bilan,
-            statutId: seance.idstatutseanceStatutseance?.idstatutseance
-        };
+        return new Seance(seance);
     },
 };

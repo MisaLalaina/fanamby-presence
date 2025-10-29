@@ -81,9 +81,6 @@ export async function getAllCompositionsByMatchId(matchId) {
       }
     }
     const compositions = await genericSearch(COMPOSITION_URL+'/search', payload);
-    console.log(compositions);
-    
-
     return compositions.data.content.map(mapCompositionFromApi); 
 }
 
@@ -106,12 +103,7 @@ export async function getAllStatutCompositions() {
  */
 export async function createComposition(form) {
     const payload = createCompositionPayload(form);
-    
-    // genericCreate gère la requête POST, les headers, le JSON.stringify, et la gestion d'erreur complète (HTTP + API returnCode).
     const createdRawComposition = await genericCreate(COMPOSITION_URL, payload);
-    
-    // Retourne l'objet créé (vous pouvez choisir de le mapper ici si nécessaire)
-    // Ici, nous supposons que l'API renvoie l'objet créé, donc nous le retournons.
     return createdRawComposition;
 }
 

@@ -19,21 +19,33 @@ import PublicationFacebook from '@/views/PublicationFacebook.vue'
 import SuiviFacebook from '@/views/SuiviFacebook.vue'
 import ModificationSeance from '@/views/ModificationSeance.vue'
 import UpdateJoueur from '@/views/joueur/UpdateJoueur.vue'
+import JoueurProfile from '@/views/joueur/JoueurProfile.vue'
+import InsertionMatchComposition from '@/views/InsertionMatchComposition.vue'
+import MatchEdit from '@/views/MatchEdit.vue'
 const routes = [
+  {
+    path:'/',
+    redirect:'/dashboard'
+  },
    {
     path:'/login-club',
     name:'loginClub',
     component:LoginClub
   },
   {
-    path: '/',
-    name: 'liste',
+    path: '/joueurs',
+    name: 'listeJoueur',
     component: ListeJoueurs
   },
   {
-    path: '/insertion-joueur',
+    path: '/joueurs/create',
     name: 'insertionJoueur',
     component: InsertionJoueur
+  },
+  {
+    path: '/joueurs/:id',
+    name: 'profileJoueur',
+    component: JoueurProfile
   },
   {
     path: '/joueurs/update/:id',
@@ -41,68 +53,60 @@ const routes = [
     component: UpdateJoueur
   },
   {
-    path: '/liste-seance',
+    path: '/seances',
     name: 'listeSeance',
     component: ListeSeance
   },
   {
-    path: '/insertion-seance',
+    path: '/seances/create',
     name: 'insertionSeance',
     component: InsertionSeance
   },
   {
-    path:'/presence',
+    path:'/presences/:idSeance',
     name:'ListePresence',
     component:ListePresence
   },
   {
-    path:'/insertion-presence',
-    name:'InsertionPresence',
-    component:InsertionPresence
-  },
-   {
-    path: '/insertion-rapide',
+    path:'/presences/create',
     name:'insertionRapidePresence',
     component:InsertionRapidePresence
   },
   {
-    path:'/match',
+    path:'/matchs',
     name:'listeMatch',
     component:ListeMatch
   },
   {
-    path:'/insertion-match',
+    path:'/matchs/create',
     name:'InsertionMatch',
-    component:InsertionMatch
+    component:InsertionMatchComposition
+  },
+  {
+    path:'/matchs/update/:id',
+    name:'UpdateMatch',
+    component:MatchEdit
   },
   {
     path: '/composition',
     name:'listeComposition',
     component:ListeComposition
   },
-   {
+  {
     path: '/insertion-composition',
     name: 'insertionComposition',
     component: InsertionComposition
   },
-  
-  
   {
-    path: '/feuille-match/:id',
+    path: '/matchs/:id',
     name:'feuilleMatch',
     component:FeuilleMatch
   },
   {
     path: '/dashboard',
-    name:'statistique',
+    name:'dashboard',
     component: Statistique
   },
-
-  // {
-  //   path: '/statistique',
-  //   name:'dashboard',
-  //   component: Dashboard
-  // },
   
   {
     path:'/messages',
