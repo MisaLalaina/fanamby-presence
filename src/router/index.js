@@ -7,8 +7,6 @@ import InsertionSeance from '@/views/InsertionSeance.vue'
 import ListePresence from '@/views/ListePresence.vue'
 import ListeMatch from '@/views/ListeMatch.vue'
 import ListeComposition from '@/views/ListeComposition.vue'
-import InsertionPresence from '@/views/InsertionPresence.vue'
-import InsertionMatch from '@/views/InsertionMatch.vue'
 import InsertionComposition from '@/views/InsertionComposition.vue'
 import InsertionRapidePresence from '@/views/InsertionRapidePresence.vue'
 import FeuilleMatch from '@/views/FeuilleMatch.vue'
@@ -22,6 +20,7 @@ import UpdateJoueur from '@/views/joueur/UpdateJoueur.vue'
 import JoueurProfile from '@/views/joueur/JoueurProfile.vue'
 import InsertionMatchComposition from '@/views/InsertionMatchComposition.vue'
 import MatchEdit from '@/views/MatchEdit.vue'
+import SeancesCalendar from '@/views/SeancesCalendar.vue'
 const routes = [
   {
     path:'/',
@@ -55,10 +54,10 @@ const routes = [
   {
     path: '/seances',
     name: 'listeSeance',
-    component: ListeSeance
+    component: SeancesCalendar
   },
   {
-    path: '/seances/create',
+    path: '/entrainements/create',
     name: 'insertionSeance',
     component: InsertionSeance
   },

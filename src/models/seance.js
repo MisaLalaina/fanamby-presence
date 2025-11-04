@@ -26,11 +26,11 @@ export class Seance {
       return apiData.map(item => new Seance(item));
     }
   
-    static getDefaultSeance() {
+    static getDefaultSeance(data) {
       return {
         idSeance: null,
         idTypeSeance: 1,
-        dateSeance: new Date().toISOString().slice(0, 10),
+        dateSeance: data.dateSeance ?? new Date().toISOString().slice(0, 10),
         heureDebut: '',
         heureFin: '',
         lieu: '',

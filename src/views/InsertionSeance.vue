@@ -7,9 +7,11 @@ import { TypeSeance } from '@/models/typeSeance';
 import router from '@/router';
 import { useNotification } from '@/composables/useNotification';
 import NotificationToast from '@/components/NotificationToast.vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const typesSeance = ref([]);
-const currentSeance = ref(Seance.getDefaultSeance());
+const currentSeance = ref(Seance.getDefaultSeance({dateSeance: route.query.date}));
 const clubId = ref(1);
 const statutId = ref(1);
 const successMessage = ref('');
