@@ -133,8 +133,8 @@ const selectSeance = (seance) => {
   if (event) {
     selectedEvent.value = event;
     menuPosition.value = {
-        x: rect.right + 100,
-        y: rect.top + 100,
+        x: 100,
+        y: 100,
     };
 
     showEventMenu.value = true;
@@ -151,7 +151,7 @@ const fetchInitialData = async () => {
     const seancesData = await SeanceService.getAllSeances();
     seances.value = Seance.formatSeances(seancesData);
     filteredSeances.value = [...seances.value];
-    filterSeances() // applique le filtre après les données chargées
+    filterSeances()
   } catch (err) {
     error.value = err.message || 'Erreur lors du chargement des données';
   } finally {
@@ -195,8 +195,8 @@ const handleEventClick = (clickInfo) => {
   selectedEvent.value = clickInfo.event;
   const rect = clickInfo.jsEvent.target.getBoundingClientRect();
   menuPosition.value = {
-    x: rect.right + window.scrollX + 10,
-    y: rect.top + window.scrollY,
+    x: rect.x - 100 ,
+    y: rect.y,
   };
 
   showEventMenu.value = true;
@@ -209,9 +209,11 @@ const handleDateClick = (clickInfo) => {
   };
 
   const rect = clickInfo.jsEvent.target.getBoundingClientRect();
+  console.log(rect);
+  
   menuPosition.value = {
-    x: rect.right + window.scrollX + 10,
-    y: rect.top + window.scrollY,
+    x: rect.x - 100 ,
+    y: rect.y,
   };
   showEventMenu.value = true;
 };
