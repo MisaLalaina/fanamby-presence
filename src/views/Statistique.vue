@@ -117,24 +117,12 @@
                 </td>
                 <td>
                     <div class="rate-display">
-                    {{ player.tauxEntrainement }}%
-                    <div class="progress-bar small">
-                      <div 
-                        class="progress-fill" 
-                        :style="{ width: player.tauxEntrainement + '%' }"
-                      ></div>
-                    </div>
+                    {{ player.totalEntrainement }} / {{ dashboardStat.global.totalEntrainement }}
                   </div>
                 </td>
                 <td>
                     <div class="rate-display">
-                    {{ player.tauxMatch }}%
-                    <div class="progress-bar small">
-                      <div 
-                        class="progress-fill" 
-                        :style="{ width: player.tauxMatch + '%' }"
-                      ></div>
-                    </div>
+                    {{ player.totalMatch }} / {{ dashboardStat.global.totalMatch }}
                   </div>
                 </td>
                 <td> 
@@ -349,13 +337,15 @@ const dashboardStat = computed(() => {
     }
 
     if(presenceStat.global.totalSeance > 0){
-      playerStat.tauxGeneral = (playerPresence.totalpresences / presenceStat.global.totalSeance) * 100
+      playerStat.tauxGeneral =Number((playerPresence.totalpresences / presenceStat.global.totalSeance) * 100).toFixed(0)
     }
 
     presenceStat.joueurs.push({
       id:playerPresence.idjoueur,
       nom:playerPresence.nom,
       prenom:playerPresence.prenom,
+      totalEntrainement: playerPresence.entpresences,
+      totalMatch: playerPresence.matpresences,
       ...playerStat
     })
     presenceStat.sommeEntrainement = presenceStat.sommeEntrainement + playerStat.tauxEntrainement
@@ -364,15 +354,13 @@ const dashboardStat = computed(() => {
     
     presenceStat.sommeGeneral = presenceStat.sommeGeneral + playerStat.tauxGeneral
   })
-  console.log(presenceStat.sommeEntrainement);
-  console.log(presenceStat.joueurs.length);
   
   
-  presenceStat.global.tauxEntrainement = presenceStat.sommeEntrainement / presenceStat.joueurs.length
+  presenceStat.global.tauxEntrainement = Number(presenceStat.sommeEntrainement / presenceStat.joueurs.length).toFixed(0)
   
-  presenceStat.global.tauxMatch = presenceStat.sommeMatch / presenceStat.joueurs.length
+  presenceStat.global.tauxMatch = Number(presenceStat.sommeMatch / presenceStat.joueurs.length).toFixed(0)
   
-  presenceStat.global.tauxGeneral = presenceStat.sommeGeneral / presenceStat.joueurs.length  
+  presenceStat.global.tauxGeneral = Number(presenceStat.sommeGeneral / presenceStat.joueurs.length).toFixed(0)
   
   return presenceStat;
 }); 
