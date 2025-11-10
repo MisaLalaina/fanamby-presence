@@ -1,0 +1,218 @@
+CREATE TABLE public.club (
+    idclub integer NOT NULL,
+    nomclub character varying(100) NOT NULL,
+    ville character varying(50) NOT NULL,
+    datecreation date,
+    couleurs character varying(50),
+    logo character varying(255),
+    email character varying(100) NOT NULL,
+    motdepasse character varying(255) NOT NULL,
+    telephone character varying(20),
+    adresse text,
+    president character varying(100),
+    datefondation integer,
+    stadeprincipal character varying(100),
+    siteweb character varying(255),
+    CONSTRAINT chk_email CHECK (((email)::text ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::text))
+);
+
+CREATE SEQUENCE public.club_idclub_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.composition (
+    idcomposition integer NOT NULL,
+    idmatch integer NOT NULL,
+    idjoueur integer NOT NULL,
+    idstatutcomposition integer NOT NULL,
+    numeromaillot integer,
+    "position" character varying(50),
+    commentaire text,
+    iscapitaine boolean DEFAULT false,
+    CONSTRAINT composition_numeromaillot_check CHECK (((numeromaillot >= 1) AND (numeromaillot <= 99)))
+);
+
+CREATE SEQUENCE public.composition_idcomposition_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.joueur (
+    idjoueur integer NOT NULL,
+    idclub integer NOT NULL,
+    idposte integer NOT NULL,
+    idstatutjoueur integer DEFAULT 1 NOT NULL,
+    nom character varying(50) NOT NULL,
+    prenom character varying(50) NOT NULL,
+    datenaissance date NOT NULL,
+    lieunaissance character varying(100),
+    nationalite character varying(50),
+    idpiedfort integer NOT NULL,
+    taille integer,
+    poids integer,
+    photo character varying(255),
+    numeromaillot integer,
+    telephone character varying(20),
+    email character varying(100),
+    nompere character varying(100),
+    nommere character varying(100),
+    telparent character varying(20),
+    certificatmedical character varying(255),
+    datevaliditecertificat date,
+    numerolicence character varying(50),
+    dateinscription date NOT NULL,
+    datequitter date,
+    CONSTRAINT chk_date_certificat CHECK (((datevaliditecertificat IS NULL) OR (datevaliditecertificat >= CURRENT_DATE))),
+    CONSTRAINT chk_email_joueur CHECK (((email IS NULL) OR ((email)::text ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::text))),
+    CONSTRAINT joueur_numeromaillot_check CHECK (((numeromaillot >= 1) AND (numeromaillot <= 99))),
+    CONSTRAINT joueur_poids_check CHECK (((poids >= 30) AND (poids <= 150))),
+    CONSTRAINT joueur_taille_check CHECK (((taille >= 100) AND (taille <= 250)))
+);
+
+CREATE TABLE public.piedfort (
+    idpiedfort integer NOT NULL,
+    libelle character varying(20) NOT NULL
+);
+
+CREATE TABLE public.poste (
+    idposte integer NOT NULL,
+    libelle character varying(50) NOT NULL,
+    description character varying(255)
+);
+
+CREATE TABLE public.statutjoueur (
+    idstatutjoueur integer NOT NULL,
+    libelle character varying(50) NOT NULL,
+    peutjouer boolean DEFAULT true NOT NULL
+);
+
+CREATE SEQUENCE public.joueur_idjoueur_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.matchfoot (
+    idmatch integer NOT NULL,
+    idseance integer NOT NULL,
+    idtypematch integer NOT NULL,
+    competition character varying(100),
+    adversaire character varying(100) NOT NULL,
+    domicile boolean DEFAULT true,
+    scoreequipe integer,
+    scoreadversaire integer,
+    tempsadditionnel1 integer DEFAULT 0,
+    tempsadditionnel2 integer DEFAULT 0,
+    incidents text,
+    observations text,
+    CONSTRAINT chk_temps_additionnel CHECK (((tempsadditionnel1 >= 0) AND (tempsadditionnel2 >= 0))),
+    CONSTRAINT matchfoot_scoreadversaire_check CHECK ((scoreadversaire >= 0)),
+    CONSTRAINT matchfoot_scoreequipe_check CHECK ((scoreequipe >= 0))
+);
+
+CREATE SEQUENCE public.matchfoot_idmatch_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.niveaumatch (
+    idniveaumatch integer NOT NULL,
+    libelle character varying(50) NOT NULL
+);
+
+
+CREATE SEQUENCE public.niveaumatch_idniveaumatch_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE public.piedfort_idpiedfort_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE public.poste_idposte_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.presence (
+    idpresence integer NOT NULL,
+    idseance integer NOT NULL,
+    idjoueur integer NOT NULL,
+    idstatutpresence integer NOT NULL,
+    motifabsence character varying(255),
+    signature character varying(255),
+    heurearrivee time without time zone,
+    commentaires text
+);
+
+CREATE TABLE public.seance (
+    idseance integer NOT NULL,
+    idclub integer,
+    idtypeseance integer,
+    dateseance date NOT NULL,
+    heuredebut time without time zone NOT NULL,
+    heurefin time without time zone NOT NULL,
+    lieu character varying(100) NOT NULL,
+    objectif text,
+    bilan text,
+    idstatutseance integer DEFAULT 1
+);
+
+CREATE TABLE public.statutseance (
+    idstatutseance integer NOT NULL,
+    libelle character varying(20) NOT NULL
+);
+
+CREATE TABLE public.typeseance (
+    idtypeseance integer NOT NULL,
+    libelle character varying(50) NOT NULL,
+    description character varying(255)
+);
+
+CREATE TABLE public.statutpresence (
+    idstatutpresence integer NOT NULL,
+    libelle character varying(50) NOT NULL,
+    code character varying(10) NOT NULL
+);
+
+CREATE SEQUENCE public.presence_idpresence_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.statutcomposition (
+    idstatutcomposition integer NOT NULL,
+    libelle character varying(20) NOT NULL
+);
+
+CREATE TABLE public.typematch (
+    idtypematch integer NOT NULL,
+    libelle character varying(50) NOT NULL,
+    description character varying(255)
+);
