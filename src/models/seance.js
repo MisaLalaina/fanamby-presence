@@ -30,7 +30,7 @@ export class Seance {
       return {
         idSeance: null,
         idTypeSeance: 1,
-        dateSeance: data.dateSeance ?? new Date().toISOString().slice(0, 10),
+        dateSeance: data?.dateSeance ?? new Date().toISOString().slice(0, 10),
         heureDebut: '',
         heureFin: '',
         lieu: '',
