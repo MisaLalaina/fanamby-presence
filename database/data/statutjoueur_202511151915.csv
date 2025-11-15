@@ -1,0 +1,5 @@
+"idstatutjoueur","libelle","peutjouer"
+1,Actif,true
+2,Blessé,false
+4,Inactif,false
+5,En convalescence,false
